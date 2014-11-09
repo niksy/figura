@@ -218,7 +218,7 @@ var Segment1 = $.kist.segment.extend({
 		'body': 'body'
 	},
 	events: {
-		'click .testElement': 'testClick'
+		'click .foo': 'testClick'
 	},
 	init: function ( options ) {
 		console.log('Initialized.');
@@ -226,24 +226,24 @@ var Segment1 = $.kist.segment.extend({
 		console.log(this.options);
 	},
 	testClick: function () {
-		console.log('.testElement clicked!');
+		console.log('.foo clicked!');
 	}
 });
 
 var Segment2 = Segment1.extend({
 	el: 'body',
 	childrenEl: Segment1.supply('childrenEl', {
-		'div': 'div'
+		'bar': '.bar'
 	}),
 	testClick: function () {
-		console.log('.testElement clicked, with overriden method on `Bar`.');
+		console.log('.foo clicked, with overriden method on `Bar`.');
 	}
 });
 
 var segment1 = new Segment1();
 var segment2 = new Segment2();
-var segment3 = new Segment3({
-	el: 'div'
+var segment3 = new Segment2({
+	el: '.baz'
 });
 ```
 
