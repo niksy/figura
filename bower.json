@@ -1,0 +1,34 @@
+{
+  "name": "kist-segment",
+  "version": "0.0.0",
+  "description": "Simple UI view setup.",
+  "authors": [
+    "Ivan Nikolić"
+  ],
+  "license": "MIT",
+  "main": "dist/kist-segment.min.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "src",
+    "Gruntfile.js",
+    "package.json"
+  ],
+  "dependencies": {
+    "jquery": ">=1"
+  },
+  "devDependencies": {
+    "jquery": "1"
+  },
+  "homepage": "https://github.com/niksy/kist-segment",
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "kist",
+    "view"
+  ]
+}

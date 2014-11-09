@@ -1,0 +1,43 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+	<title>Basic</title>
+	<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+	<link rel="stylesheet" href="assets/style/style.css" />
+</head>
+<body>
+
+	<div class="testElement"></div>
+
+	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../src/kist-segment.js"></script>
+	<script>
+
+		var Foo = $.kist.segment.extend({
+			el: 'html',
+			childrenEl: {
+				'body': 'body'
+			},
+			events: {
+				'click .testElement': 'testClick'
+			},
+			init: function ( options ) {
+				console.log('Initialized.');
+				this.setOptions(options);
+				console.log(this.options);
+			},
+			testClick: function () {
+				console.log('.testElement clicked!');
+			}
+		});
+
+		var foo = new Foo();
+
+		console.info(Foo);
+		console.log(foo);
+
+	</script>
+</body>
+</html>
