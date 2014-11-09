@@ -1,4 +1,4 @@
-/*! kist-segment 0.0.0 - Simple UI view setup. | Author: Ivan Nikolić, 2014 | License: MIT */
+/*! kist-segment 0.1.0 - Simple UI view setup. | Author: Ivan Nikolić, 2014 | License: MIT */
 ;(function ( $, window, document, undefined ) {
 	/* jshint latedef:false */
 
