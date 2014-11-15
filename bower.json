@@ -1,12 +1,12 @@
 {
   "name": "kist-segment",
   "version": "0.1.0",
-  "description": "Simple UI view setup.",
+  "description": "Simple UI view.",
   "authors": [
-    "Ivan Nikolić"
+    "Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/)"
   ],
   "license": "MIT",
-  "main": "dist/kist-segment.min.js",
+  "main": "dist/kist-segment.js",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -29,6 +29,8 @@
   ],
   "keywords": [
     "kist",
-    "view"
+    "view",
+    "ui",
+    "browserify"
   ]
 }

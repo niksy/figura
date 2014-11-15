@@ -15,7 +15,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.js': ['src/kist-segment.js']
+					'dist/kist-segment.js': ['compiled/src/kist-segment.js']
 				}
 			}
 		},
@@ -26,7 +26,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.min.js': ['src/kist-segment.js']
+					'dist/kist-segment.min.js': ['compiled/src/kist-segment.js']
 				}
 			}
 		},
@@ -69,12 +69,44 @@ module.exports = function ( grunt ) {
 			}
 		},
 
+		browserify: {
+			options: {
+				browserifyOptions: {
+					standalone: 'jQuery.kist.segment'
+				}
+			},
+			standalone: {
+				files: {
+					'compiled/src/kist-segment.js': ['src/kist-segment.js']
+				}
+			},
+			dev: {
+				options: {
+					watch: true,
+					keepAlive: true
+				},
+				files: {
+					'compiled/src/kist-segment.js': ['src/kist-segment.js']
+				}
+			}
+		},
+
+		connect: {
+			test:{
+				options: {
+					open:true
+				}
+			}
+		}
+
 	});
 
 	require('load-grunt-tasks')(grunt);
 
+	grunt.registerTask('dev',['browserify:dev']);
+	grunt.registerTask('test',['connect:test:keepalive']);
 	grunt.registerTask('stylecheck', ['jshint:main', 'jscs:main']);
-	grunt.registerTask('default', ['stylecheck', 'concat', 'uglify']);
+	grunt.registerTask('default', ['stylecheck', 'browserify:standalone', 'concat', 'uglify']);
 	grunt.registerTask('releasePatch', ['bump-only:patch', 'default', 'bump-commit']);
 	grunt.registerTask('releaseMinor', ['bump-only:minor', 'default', 'bump-commit']);
 	grunt.registerTask('releaseMajor', ['bump-only:major', 'default', 'bump-commit']);

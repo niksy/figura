@@ -1,116 +1,148 @@
-/*! kist-segment 0.1.0 - Simple UI view setup. | Author: Ivan Nikolić, 2014 | License: MIT */
-;(function ( $, window, document, undefined ) {
-	/* jshint latedef:false */
+/*! kist-segment 0.1.0 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.segment=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+'use strict';
 
-	var plugin = {
-		name: 'segment',
-		ns: {
-			event: '.kist.segment'
-		}
-	};
+var ap      = Array.prototype;
+var concat  = ap.concat;
+var slice   = ap.slice;
+var indexOf = require('component-indexof');
 
-	var instanceCount = 0;
-	var delegateEventSplitter = /^(\S+)\s*(.*)$/;
-	var eventListSplitter = /([^\|\s]+)/g;
-	var segmentOptions = ['el','events','childrenEl'];
-	var staticProps = {
-		extend: extend,
-		supply: supply
-	};
+function except(object) {
+  var result = {};
+  var keys = concat.apply(ap, slice.call(arguments, 1));
 
-	/**
-	 * If `prop` is string, it is supposed to be property on current context
-	 * prototype. Otherwise, it is used verbatim or as object if falsy.
-	 *
-	 * @param  {Mixed} prop
-	 * @param  {Object} props
-	 *
-	 * @return {Object}
-	 */
-	function supply ( prop, props ) {
-		if ( typeof(prop) === 'string' ) {
-			prop = this.prototype[prop];
-		} else {
-			prop = prop || {};
-		}
-		return $.extend({}, prop, props);
+  for (var key in object) {
+    if (indexOf(keys, key) === -1) {
+      result[key] = object[key];
+    }
+  }
+
+  return result;
+}
+
+module.exports = except;
+
+},{"component-indexof":2}],2:[function(require,module,exports){
+module.exports = function(arr, obj){
+  if (arr.indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],3:[function(require,module,exports){
+module.exports = extend
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],4:[function(require,module,exports){
+var objExtend = require('xtend/mutable');
+
+/**
+ * @param  {Mixed} prop
+ *
+ * @return {Object}
+ */
+function supply ( prop ) {
+	if ( typeof(prop) === 'string' && this.prototype.hasOwnProperty(prop) ) {
+		prop = this.prototype[prop];
+	} else {
+		prop = typeof(prop) === 'object' ? prop : {};
+	}
+	return objExtend.apply(this, [].concat([{}, prop], [].slice.call(arguments, 1)));
+}
+
+/**
+ * @param  {Object} protoProps
+ * @param  {Object} staticProps
+ *
+ * @return {Function}
+ */
+function extend ( protoProps, staticProps ) {
+
+	var self = this;
+	var Child;
+
+	if ( protoProps && protoProps.hasOwnProperty('constructor') ) {
+		Child = protoProps.constructor;
+	} else {
+		Child = function () {
+			return Child._super.constructor.apply(this, arguments);
+		};
 	}
 
-	/**
-	 * `self` is reference to parent
-	 *
-	 * @param  {Object} protoProps
-	 *
-	 * @return {Function}
-	 */
-	function extend ( protoProps ) {
+	objExtend(Child, self, staticProps);
 
-		var self = this;
+	function ChildTemp () {}
+	ChildTemp.prototype = self.prototype;
+	Child.prototype = new ChildTemp();
+	Child.prototype.constructor = Child;
+	Child._super = self.prototype;
 
-		function Child () {
-			Child._super.constructor.apply(this, arguments);
-		}
-		function ChildTemp () {}
-		ChildTemp.prototype = self.prototype;
-		Child.prototype = new ChildTemp();
-
-		$.extend(Child.prototype, protoProps, {
-			constructor: Child
-		});
-
-		$.extend(Child, staticProps, {
-			_super: self.prototype
-		});
-
-		return Child;
-
+	if ( protoProps ) {
+		objExtend(Child.prototype, protoProps);
 	}
 
-	/**
-	 * Pick props.
-	 *
-	 * @param  {Object} obj
-	 * @param  {Array} set
-	 *
-	 * @return {Object}
-	 */
-	function pick ( obj, set ) {
-		var tmp = {};
-		for ( var prop in obj ) {
-			if ( obj.hasOwnProperty(prop) ) {
-				if ( $.inArray(prop, set) !== -1 ) {
-					tmp[prop] = obj[prop];
-				}
-			}
-		}
-		return tmp;
-	}
+	return Child;
 
-	/**
-	 * Omit props.
-	 *
-	 * @param  {Object} obj
-	 * @param  {Array} set
-	 *
-	 * @return {Object}
-	 */
-	function omit ( obj, set ) {
-		var tmp = {};
-		for ( var prop in obj ) {
-			if ( obj.hasOwnProperty(prop) ) {
-				if ( $.inArray(prop, set) !== -1 ) {
-					continue;
-				}
-				tmp[prop] = obj[prop];
-			}
-		}
-		return tmp;
-	}
+}
 
-	/**
-	 * @param {Object} options
-	 */
-	function Segment ( options ) {
+function Klass () {}
+objExtend(Klass, {
+	extend: extend,
+	supply: supply
+});
+
+module.exports = Klass;
+
+},{"xtend/mutable":3}],5:[function(require,module,exports){
+
+/*jslint nodejs:true */
+
+// Returns a random element of an array.
+//
+// Example:
+//
+// > pick([1, 2, 3]);
+// 1
+
+function pick(arr) {
+	return arr[Math.floor(Math.random() * arr.length)];
+}
+
+exports.pick = pick;
+},{}],6:[function(require,module,exports){
+(function (global){
+var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
+var pick = require('pick');
+var omit = require('except');
+var Klass = require('kist-klass');
+
+var plugin = {
+	ns: {
+		event: '.kist.segment'
+	}
+};
+var instanceCount = 0;
+var delegateEventSplitter = /^(\S+)\s*(.*)$/;
+var eventListSplitter = /([^\|\s]+)/g;
+var segmentOptions = ['el','events','childrenEl'];
+
+var Segment = Klass.extend({
+
+	constructor: function () {
 
 		options = options || {};
 
@@ -122,146 +154,145 @@
 		this._ensureElement();
 		this.init.apply(this, arguments);
 
-	}
-	$.extend(Segment, staticProps);
+		return this;
 
-	$.extend(Segment.prototype, {
+	},
 
-		$html: $('html'),
-		$body: $('body'),
-		$doc: $(document),
-		$win: $(window),
+	$html: $('html'),
+	$body: $('body'),
+	$doc: $(document),
+	$win: $(window),
 
-		_ensureElement: function () {
-			if ( !this.el ) {
-				return;
-			}
-			this.setElement(this.el);
-		},
-
-		/**
-		 * @param {Mixed} el
-		 */
-		_setElement: function ( el ) {
-			this.$el = $(typeof(el) === 'function' ? el.call(this) : el);
-			this.el = this.$el[0];
-		},
-
-		_removeElement: function () {
-			this.$el.remove();
-		},
-
-		events: {},
-
-		childrenEl: {},
-
-		/**
-		 * @param  {Mixed} selector
-		 *
-		 * @return {jQuery}
-		 */
-		$: function ( selector ) {
-			return this.$el.find(selector);
-		},
-
-		init: function () {
-
-		},
-
-		/**
-		 * @return {Segment}
-		 */
-		render: function () {
-			return this;
-		},
-
-		remove: function () {
-			this._removeElement();
-		},
-
-		/**
-		 * @param {Object} options
-		 */
-		setOptions: function ( options ) {
-			this.options = $.extend({}, this.options, omit(options, segmentOptions));
-		},
-
-		/**
-		 * @param {Element} el
-		 */
-		setElement: function ( el ) {
-			this.undelegateEvents();
-			this._setElement(el);
-			this.delegateEvents();
-			this.cacheChildrenEl();
-		},
-
-		/**
-		 * @param  {Object} childrenEl
-		 */
-		cacheChildrenEl: function ( childrenEl ) {
-			childrenEl = childrenEl || this.childrenEl;
-			$.each(childrenEl, $.proxy(function ( name, selector ) {
-				selector = this.$(typeof(selector) === 'function' ? selector.call(this) : selector);
-				if ( !selector ) {
-					return true;
-				}
-				this['$' + name] = selector;
-			}, this));
-		},
-
-		/**
-		 * @param  {Object} events
-		 */
-		delegateEvents: function ( events ) {
-			events = events || this.events;
-			var match;
-			this.undelegateEvents();
-			$.each(events, $.proxy(function ( list, method ) {
-				if ( typeof(method) !== 'function' ) {
-					method = this[method];
-				}
-				if ( !method ) {
-					return true;
-				}
-				match = list.match(delegateEventSplitter);
-				eventMatch = match[1].match(eventListSplitter);
-				for ( var i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
-					this.delegate(eventMatch[i], match[2], $.proxy(method, this));
-				}
-			}, this));
-		},
-
-		undelegateEvents: function () {
-			if ( this.$el ) {
-				this.$el.off(this.ens);
-			}
-		},
-
-		/**
-		 * @param  {String} eventName
-		 * @param  {String} selector
-		 * @param  {Function} listener
-		 */
-		delegate: function ( eventName, selector, listener ) {
-			this.$el.on(eventName + this.ens, selector, listener);
-		},
-
-		/**
-		 * @param  {String} eventName
-		 * @param  {String} selector
-		 * @param  {Function} listener
-		 *
-		 * @return {}
-		 */
-		undelegate: function ( eventName, selector, listener ) {
-			this.$el.off(eventName + this.ens, selector, listener);
+	_ensureElement: function () {
+		if ( !this.el ) {
+			return;
 		}
+		this.setElement(this.el);
+	},
 
-	});
+	/**
+	 * @param {Mixed} el
+	 */
+	_setElement: function ( el ) {
+		this.$el = $(typeof(el) === 'function' ? el.call(this) : el);
+		this.el = this.$el[0];
+	},
 
-	$.kist = $.kist || {};
+	_removeElement: function () {
+		this.$el.remove();
+	},
 
-	$.kist[plugin.name] = Segment;
+	events: {},
 
-})( jQuery, window, document );
+	childrenEl: {},
+
+	/**
+	 * @param  {Mixed} selector
+	 *
+	 * @return {jQuery}
+	 */
+	$: function ( selector ) {
+		return this.$el.find(selector);
+	},
+
+	init: function () {
+
+	},
+
+	/**
+	 * @return {Segment}
+	 */
+	render: function () {
+		return this;
+	},
+
+	remove: function () {
+		this._removeElement();
+	},
+
+	/**
+	 * @param {Object} options
+	 */
+	setOptions: function ( options ) {
+		this.options = $.extend({}, this.options, omit(options, segmentOptions));
+	},
+
+	/**
+	 * @param {Element} el
+	 */
+	setElement: function ( el ) {
+		this.undelegateEvents();
+		this._setElement(el);
+		this.delegateEvents();
+		this.cacheChildrenEl();
+	},
+
+	/**
+	 * @param  {Object} childrenEl
+	 */
+	cacheChildrenEl: function ( childrenEl ) {
+		childrenEl = childrenEl || this.childrenEl;
+		$.each(childrenEl, $.proxy(function ( name, selector ) {
+			selector = this.$(typeof(selector) === 'function' ? selector.call(this) : selector);
+			if ( !selector ) {
+				return true;
+			}
+			this['$' + name] = selector;
+		}, this));
+	},
+
+	/**
+	 * @param  {Object} events
+	 */
+	delegateEvents: function ( events ) {
+		events = events || this.events;
+		var match;
+		this.undelegateEvents();
+		$.each(events, $.proxy(function ( list, method ) {
+			if ( typeof(method) !== 'function' ) {
+				method = this[method];
+			}
+			if ( !method ) {
+				return true;
+			}
+			match = list.match(delegateEventSplitter);
+			eventMatch = match[1].match(eventListSplitter);
+			for ( var i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
+				this.delegate(eventMatch[i], match[2], $.proxy(method, this));
+			}
+		}, this));
+	},
+
+	undelegateEvents: function () {
+		if ( this.$el ) {
+			this.$el.off(this.ens);
+		}
+	},
+
+	/**
+	 * @param  {String} eventName
+	 * @param  {String} selector
+	 * @param  {Function} listener
+	 */
+	delegate: function ( eventName, selector, listener ) {
+		this.$el.on(eventName + this.ens, selector, listener);
+	},
+
+	/**
+	 * @param  {String} eventName
+	 * @param  {String} selector
+	 * @param  {Function} listener
+	 *
+	 * @return {}
+	 */
+	undelegate: function ( eventName, selector, listener ) {
+		this.$el.off(eventName + this.ens, selector, listener);
+	}
+
+});
+
+module.exports = Segment;
+
+}).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"except":1,"kist-klass":4,"pick":5}]},{},[6])(6)
+});

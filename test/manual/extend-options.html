@@ -11,16 +11,16 @@
 
 	<div class="testElement"></div>
 
-	<script src="../bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="../src/kist-segment.js"></script>
+	<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
+	<script src="../../compiled/src/kist-segment.js"></script>
 	<script>
 
 		var Foo = $.kist.segment.extend({
 			el: 'html',
 			childrenEl: {
 				'body': 'body',
-				'parent': function () {
-					return this.$el.parent();
+				'children': function () {
+					return this.$el.children();
 				}
 			},
 			events: {

@@ -1,68 +1,44 @@
 # kist-segment
 
-Simple UI view setup. Inspired by [Backbone.View](http://backbonejs.org/#View) and [simple inheritance by John Resig](http://ejohn.org/blog/simple-javascript-inheritance/).
+Simple UI view. Inspired by [Backbone.View](http://backbonejs.org/#View).
 
 ## Installation
 
 ```sh
-bower install niksy/kist-segment
+npm install kist-segment --save
+
+bower install niksy/kist-segment --save
 ```
 
 ## API
 
-### `segment(options)`
+Segment extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives all it’s default properties. API usage for those properties is explanied on project page.
 
-#### Static methods
+The only difference is list of properties and methods `extend` method can receive.
 
-##### _super
+### `.extend(options)`
 
-Type: `Object`
-
-Parent object prototype.
-
-##### extend(options)
+#### init(options)
 
 Type: `Function`
 
-Extend segment.
+Initialization method which will should run after `constructor` method.
 
-###### options
-
-Type: `Object`
-
-##### supply(prop, props)
-
-Type: `Function`  
-Returns `Object`
-
-Returns new object with property value from parent prototype and new properties.
-
-###### prop
-
-Type: `String`
-
-###### props
-
-Type: `Object`
-
-#### Options
-
-##### el
+#### el
 
 Type: `String|jQuery|Function`
 
 UI element on which should segment be initialized.
 
-##### childrenEl
+#### childrenEl
 
 Type: `Object`
 
 List of `el` children elements.
 
-Example:
+Input like this:
 
 ```js
-// Input
 {
 	'child1': '.child1',
 	'child2': $('.child2'),
@@ -70,23 +46,25 @@ Example:
 		return '.child3';
 	}
 }
+```
 
-// Output
+Translates to output like this:
+
+```js
 this.$child1 = this.$el.find('.child1');
 this.$child2 = this.$el.find($('.child2'));
 this.$child3 = this.$el.find('.child3');
 ```
 
-##### events
+#### events
 
 Type: `Object`
 
 List of `el` events, delegated to children elements.
 
-Example:
+Input like this:
 
 ```js
-// Input
 {
 	'click .child1': 'method1',
 	'submit .child2': 'method2',
@@ -97,113 +75,114 @@ Example:
 }
 ```
 
-##### $(selector)
+Translates to output like this:
+
+```js
+this.$el.on('click', '.child1', $.proxy(this.method1, this));
+this.$el.on('submit', '.child2', $.proxy(this.method2, this));
+this.$el.on('mouseenter mouseleave', '.child3', $.proxy(this.method3, this));
+this.$el.on('mouseenter', '.child4', $.proxy(function () {
+	// Do something
+}, this));
+```
+
+#### $(selector)
 
 Type: `Function`  
 Returns: `jQuery`
 
 Alias for `this.$el.find(selector)`.
 
-###### selector
+##### selector
 
 Type: `String|jQuery`
 
-String is standard CSS selector.
+`String` is standard CSS selector.
 
-##### init(options)
-
-Type: `Function`
-
-Initialization method (similar to construct).
-
-###### options
-
-Type: `Object`
-
-##### setOptions(options)
+#### setOptions(options)
 
 Type: `Function`
 
 Set instance options. It will set everything except `el`, `childrenEl` and `events`.
 
-###### options
+##### options
 
 Type: `Object`
 
-##### render
+#### render
 
 Type: `Function`
 Returns: `Segment`
 
 Render method.
 
-##### remove
+#### remove
 
 Type: `Function`
 
 Remove segment.
 
-##### setElement(element)
+#### setElement(element)
 
 Type: `Function`
 
 Sets or re-sets current UI element.
 
-###### element
+##### element
 
 Type: `String|jQuery`
 
-String is standard CSS selector.
+`String` is standard CSS selector.
 
-##### cacheChildrenEl(options)
+#### cacheChildrenEl(options)
 
 Type: `Function`
 
 Caches children elements.
 
-###### options
+##### options
 
 Type: `Object`
 
 See [`childrenEl`](#childrenel).
 
-##### delegateEvents(events)
+#### delegateEvents(events)
 
 Type: `Function`
 
 Delegates events.
 
-###### events
+##### events
 
 Type: `Object`
 
 See [`events`](#events).
 
-##### undelegateEvents
+#### undelegateEvents
 
 Type: `Function`
 
 Undelegates events.
 
-##### delegate(eventName, selector, listener)
+#### delegate(eventName, selector, listener)
 
 Type: `Function`
 
 Delegate single event.
 
-###### eventName
+##### eventName
 
 Type: `String`
 
-###### selector
+##### selector
 
 Type: `String`
 
-###### listener
+##### listener
 
 Type: `Function`
 
-##### undelegate(eventName, selector, listener)
+#### undelegate(eventName, selector, listener)
 
 Type: `Function`
 
@@ -212,7 +191,9 @@ Undelegate single event. For argument definition, see [`delegate`](#delegateeven
 ## Examples
 
 ```js
-var Segment1 = $.kist.segment.extend({
+var Segment = require('kist-segment');
+
+var Segment1 = Segment.extend({
 	el: 'html',
 	childrenEl: {
 		'body': 'body'
@@ -245,6 +226,14 @@ var segment2 = new Segment2();
 var segment3 = new Segment2({
 	el: '.baz'
 });
+```
+
+### AMD and global
+
+```js
+define(['kist-segment'], cb);
+
+window.$.kist.segment;
 ```
 
 ## Browser support
