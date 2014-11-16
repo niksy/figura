@@ -1,4 +1,4 @@
-/*! kist-segment 0.1.0 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
+/*! kist-segment 0.1.1 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.segment=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 'use strict';
 
@@ -108,25 +108,41 @@ objExtend(Klass, {
 module.exports = Klass;
 
 },{"xtend/mutable":3}],5:[function(require,module,exports){
+/*!
+ * object.pick <https://github.com/jonschlinkert/object.pick>
+ *
+ * Copyright (c) 2014 Jon Schlinkert, contributors.
+ * Licensed under the MIT License
+ */
 
-/*jslint nodejs:true */
+'use strict';
 
-// Returns a random element of an array.
-//
-// Example:
-//
-// > pick([1, 2, 3]);
-// 1
+module.exports = function pick(orig, keys) {
+  if (orig == null) {
+    return {};
+  }
 
-function pick(arr) {
-	return arr[Math.floor(Math.random() * arr.length)];
-}
+  if (typeof keys === 'string') {
+    keys = [].slice.call(arguments, 1);
+  }
 
-exports.pick = pick;
+  var len = keys.length;
+  var o = {};
+
+  for (var i = 0; i < len; i++) {
+    var key = keys[i];
+
+    if (orig.hasOwnProperty(key)) {
+      o[key] = orig[key];
+    }
+  }
+  return o;
+};
+
 },{}],6:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var pick = require('pick');
+var pick = require('object.pick');
 var omit = require('except');
 var Klass = require('kist-klass');
 
@@ -142,9 +158,9 @@ var segmentOptions = ['el','events','childrenEl'];
 
 var Segment = Klass.extend({
 
-	constructor: function () {
+	constructor: function ( options ) {
 
-		options = options || {};
+		options = typeof(options) === 'object' ? options : {};
 
 		this.uid = instanceCount++;
 		this.ens = plugin.ns.event + '.' + this.uid;
@@ -154,7 +170,7 @@ var Segment = Klass.extend({
 		this._ensureElement();
 		this.init.apply(this, arguments);
 
-		return this;
+		Segment._super.constructor.apply(this, arguments);
 
 	},
 
@@ -294,5 +310,5 @@ var Segment = Klass.extend({
 module.exports = Segment;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"except":1,"kist-klass":4,"pick":5}]},{},[6])(6)
+},{"except":1,"kist-klass":4,"object.pick":5}]},{},[6])(6)
 });
