@@ -1,150 +1,10 @@
 /*! kist-segment 0.1.1 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.segment=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
-
-var ap      = Array.prototype;
-var concat  = ap.concat;
-var slice   = ap.slice;
-var indexOf = require('component-indexof');
-
-function except(object) {
-  var result = {};
-  var keys = concat.apply(ap, slice.call(arguments, 1));
-
-  for (var key in object) {
-    if (indexOf(keys, key) === -1) {
-      result[key] = object[key];
-    }
-  }
-
-  return result;
-}
-
-module.exports = except;
-
-},{"component-indexof":2}],2:[function(require,module,exports){
-module.exports = function(arr, obj){
-  if (arr.indexOf) return arr.indexOf(obj);
-  for (var i = 0; i < arr.length; ++i) {
-    if (arr[i] === obj) return i;
-  }
-  return -1;
-};
-},{}],3:[function(require,module,exports){
-module.exports = extend
-
-function extend(target) {
-    for (var i = 1; i < arguments.length; i++) {
-        var source = arguments[i]
-
-        for (var key in source) {
-            if (source.hasOwnProperty(key)) {
-                target[key] = source[key]
-            }
-        }
-    }
-
-    return target
-}
-
-},{}],4:[function(require,module,exports){
-var objExtend = require('xtend/mutable');
-
-/**
- * @param  {Mixed} prop
- *
- * @return {Object}
- */
-function supply ( prop ) {
-	if ( typeof(prop) === 'string' && this.prototype.hasOwnProperty(prop) ) {
-		prop = this.prototype[prop];
-	} else {
-		prop = typeof(prop) === 'object' ? prop : {};
-	}
-	return objExtend.apply(this, [].concat([{}, prop], [].slice.call(arguments, 1)));
-}
-
-/**
- * @param  {Object} protoProps
- * @param  {Object} staticProps
- *
- * @return {Function}
- */
-function extend ( protoProps, staticProps ) {
-
-	var self = this;
-	var Child;
-
-	if ( protoProps && protoProps.hasOwnProperty('constructor') ) {
-		Child = protoProps.constructor;
-	} else {
-		Child = function () {
-			return Child._super.constructor.apply(this, arguments);
-		};
-	}
-
-	objExtend(Child, self, staticProps);
-
-	function ChildTemp () {}
-	ChildTemp.prototype = self.prototype;
-	Child.prototype = new ChildTemp();
-	Child.prototype.constructor = Child;
-	Child._super = self.prototype;
-
-	if ( protoProps ) {
-		objExtend(Child.prototype, protoProps);
-	}
-
-	return Child;
-
-}
-
-function Klass () {}
-objExtend(Klass, {
-	extend: extend,
-	supply: supply
-});
-
-module.exports = Klass;
-
-},{"xtend/mutable":3}],5:[function(require,module,exports){
-/*!
- * object.pick <https://github.com/jonschlinkert/object.pick>
- *
- * Copyright (c) 2014 Jon Schlinkert, contributors.
- * Licensed under the MIT License
- */
-
-'use strict';
-
-module.exports = function pick(orig, keys) {
-  if (orig == null) {
-    return {};
-  }
-
-  if (typeof keys === 'string') {
-    keys = [].slice.call(arguments, 1);
-  }
-
-  var len = keys.length;
-  var o = {};
-
-  for (var i = 0; i < len; i++) {
-    var key = keys[i];
-
-    if (orig.hasOwnProperty(key)) {
-      o[key] = orig[key];
-    }
-  }
-  return o;
-};
-
-},{}],6:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var pick = require('object.pick');
-var omit = require('except');
-var Klass = require('kist-klass');
+var pick = require(6);
+var omit = require(2);
+var Klass = require(4);
 
 var plugin = {
 	ns: {
@@ -310,5 +170,148 @@ var Segment = Klass.extend({
 module.exports = Segment;
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"except":1,"kist-klass":4,"object.pick":5}]},{},[6])(6)
+},{}],2:[function(require,module,exports){
+'use strict';
+
+var ap      = Array.prototype;
+var concat  = ap.concat;
+var slice   = ap.slice;
+var indexOf = require(3);
+
+function except(object) {
+  var result = {};
+  var keys = concat.apply(ap, slice.call(arguments, 1));
+
+  for (var key in object) {
+    if (indexOf(keys, key) === -1) {
+      result[key] = object[key];
+    }
+  }
+
+  return result;
+}
+
+module.exports = except;
+
+},{}],3:[function(require,module,exports){
+
+var indexOf = [].indexOf;
+
+module.exports = function(arr, obj){
+  if (indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],4:[function(require,module,exports){
+var objExtend = require(5);
+
+/**
+ * @param  {Mixed} prop
+ *
+ * @return {Object}
+ */
+function supply ( prop ) {
+	if ( typeof(prop) === 'string' && this.prototype.hasOwnProperty(prop) ) {
+		prop = this.prototype[prop];
+	} else {
+		prop = typeof(prop) === 'object' ? prop : {};
+	}
+	return objExtend.apply(this, [].concat([{}, prop], [].slice.call(arguments, 1)));
+}
+
+/**
+ * @param  {Object} protoProps
+ * @param  {Object} staticProps
+ *
+ * @return {Function}
+ */
+function extend ( protoProps, staticProps ) {
+
+	var self = this;
+	var Child;
+
+	if ( protoProps && protoProps.hasOwnProperty('constructor') ) {
+		Child = protoProps.constructor;
+	} else {
+		Child = function () {
+			Child._super.constructor.apply(this, arguments);
+		};
+	}
+
+	objExtend(Child, self, staticProps);
+
+	function ChildTemp () {}
+	ChildTemp.prototype = self.prototype;
+	Child.prototype = new ChildTemp();
+	Child.prototype.constructor = Child;
+	Child._super = self.prototype;
+
+	if ( protoProps ) {
+		objExtend(Child.prototype, protoProps);
+	}
+
+	return Child;
+
+}
+
+function Klass () {}
+objExtend(Klass, {
+	extend: extend,
+	supply: supply
+});
+
+module.exports = Klass;
+
+},{}],5:[function(require,module,exports){
+module.exports = extend
+
+function extend(target) {
+    for (var i = 1; i < arguments.length; i++) {
+        var source = arguments[i]
+
+        for (var key in source) {
+            if (source.hasOwnProperty(key)) {
+                target[key] = source[key]
+            }
+        }
+    }
+
+    return target
+}
+
+},{}],6:[function(require,module,exports){
+/*!
+ * object.pick <https://github.com/jonschlinkert/object.pick>
+ *
+ * Copyright (c) 2014 Jon Schlinkert, contributors.
+ * Licensed under the MIT License
+ */
+
+'use strict';
+
+module.exports = function pick(orig, keys) {
+  if (orig == null) {
+    return {};
+  }
+
+  if (typeof keys === 'string') {
+    keys = [].slice.call(arguments, 1);
+  }
+
+  var len = keys.length;
+  var o = {};
+
+  for (var i = 0; i < len; i++) {
+    var key = keys[i];
+
+    if (orig.hasOwnProperty(key)) {
+      o[key] = orig[key];
+    }
+  }
+  return o;
+};
+
+},{}]},{},[1])(1)
 });

@@ -15,7 +15,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.js': ['compiled/src/kist-segment.js']
+					'dist/kist-segment.js': ['compiled/index.js']
 				}
 			}
 		},
@@ -26,7 +26,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.min.js': ['compiled/src/kist-segment.js']
+					'dist/kist-segment.min.js': ['compiled/index.js']
 				}
 			}
 		},
@@ -52,6 +52,7 @@ module.exports = function ( grunt ) {
 				},
 				files: {
 					src: [
+						'<%= pkg.main %>',
 						'src/**/*.js'
 					]
 				}
@@ -64,6 +65,7 @@ module.exports = function ( grunt ) {
 					jshintrc: '.jshintrc'
 				},
 				src: [
+					'<%= pkg.main %>',
 					'src/**/*.js'
 				]
 			}
@@ -76,8 +78,11 @@ module.exports = function ( grunt ) {
 				}
 			},
 			standalone: {
+				options: {
+					plugin: ['bundle-collapser/plugin']
+				},
 				files: {
-					'compiled/src/kist-segment.js': ['src/kist-segment.js']
+					'compiled/index.js': ['index.js']
 				}
 			},
 			dev: {
@@ -86,7 +91,7 @@ module.exports = function ( grunt ) {
 					keepAlive: true
 				},
 				files: {
-					'compiled/src/kist-segment.js': ['src/kist-segment.js']
+					'compiled/index.js': ['index.js']
 				}
 			}
 		},
