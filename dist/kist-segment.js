@@ -5,25 +5,21 @@ var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined
 var pick = require(6);
 var omit = require(2);
 var Klass = require(4);
+var meta = require(7);
 
-var plugin = {
-	ns: {
-		event: '.kist.segment'
-	}
-};
 var instanceCount = 0;
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 var eventListSplitter = /([^\|\s]+)/g;
 var segmentOptions = ['el','events','childrenEl'];
 
-var Segment = Klass.extend({
+var Segment = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
 
 		options = typeof(options) === 'object' ? options : {};
 
 		this.uid = instanceCount++;
-		this.ens = plugin.ns.event + '.' + this.uid;
+		this.ens = meta.ns.event + '.' + this.uid;
 
 		$.extend(this, pick(options, segmentOptions));
 
@@ -167,8 +163,6 @@ var Segment = Klass.extend({
 
 });
 
-module.exports = Segment;
-
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
 'use strict';
@@ -208,20 +202,6 @@ module.exports = function(arr, obj){
 var objExtend = require(5);
 
 /**
- * @param  {Mixed} prop
- *
- * @return {Object}
- */
-function supply ( prop ) {
-	if ( typeof(prop) === 'string' && this.prototype.hasOwnProperty(prop) ) {
-		prop = this.prototype[prop];
-	} else {
-		prop = typeof(prop) === 'object' ? prop : {};
-	}
-	return objExtend.apply(this, [].concat([{}, prop], [].slice.call(arguments, 1)));
-}
-
-/**
  * @param  {Object} protoProps
  * @param  {Object} staticProps
  *
@@ -256,13 +236,8 @@ function extend ( protoProps, staticProps ) {
 
 }
 
-function Klass () {}
-objExtend(Klass, {
-	extend: extend,
-	supply: supply
-});
-
-module.exports = Klass;
+var Klass = module.exports = function () {};
+Klass.extend = extend;
 
 },{}],5:[function(require,module,exports){
 module.exports = extend
@@ -311,6 +286,13 @@ module.exports = function pick(orig, keys) {
     }
   }
   return o;
+};
+
+},{}],7:[function(require,module,exports){
+module.exports = {
+	ns: {
+		event: '.kist.segment'
+	}
 };
 
 },{}]},{},[1])(1)

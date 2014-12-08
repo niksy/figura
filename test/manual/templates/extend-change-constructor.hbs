@@ -1,18 +1,7 @@
-<!doctype html>
-<html>
-<head>
-	<meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<title>Extend change constructor</title>
-	<meta name="viewport" content="width=device-width,initial-scale=1.0" />
-	<link rel="stylesheet" href="assets/style/style.css" />
-</head>
-<body>
+{{> top title="Extend change constructor"}}
 
 	<div class="testElement"></div>
 
-	<script src="../../bower_components/jquery/dist/jquery.min.js"></script>
-	<script src="../../compiled/src/kist-segment.js"></script>
 	<script>
 
 		var Foo = $.kist.segment.extend({
@@ -44,7 +33,7 @@
 				console.info('Calling custom constructor, second time…');
 			},
 			el: 'body',
-			childrenEl: Foo.supply('childrenEl', {
+			childrenEl: $.extend({}, Foo.prototype.childrenEl, {
 				'div': 'div'
 			}),
 			testClick: function () {
@@ -63,5 +52,5 @@
 		console.log(bar);
 
 	</script>
-</body>
-</html>
+
+{{> bottom}}

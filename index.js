@@ -2,25 +2,21 @@ var $ = require('jquery');
 var pick = require('object.pick');
 var omit = require('except');
 var Klass = require('kist-klass');
+var meta = require('./src/meta');
 
-var plugin = {
-	ns: {
-		event: '.kist.segment'
-	}
-};
 var instanceCount = 0;
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 var eventListSplitter = /([^\|\s]+)/g;
 var segmentOptions = ['el','events','childrenEl'];
 
-var Segment = Klass.extend({
+var Segment = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
 
 		options = typeof(options) === 'object' ? options : {};
 
 		this.uid = instanceCount++;
-		this.ens = plugin.ns.event + '.' + this.uid;
+		this.ens = meta.ns.event + '.' + this.uid;
 
 		$.extend(this, pick(options, segmentOptions));
 
@@ -163,5 +159,3 @@ var Segment = Klass.extend({
 	}
 
 });
-
-module.exports = Segment;

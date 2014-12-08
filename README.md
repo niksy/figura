@@ -7,7 +7,7 @@ Simple UI view. Inspired by [Backbone.View](http://backbonejs.org/#View).
 ```sh
 npm install kist-segment --save
 
-bower install niksy/kist-segment --save
+bower install kist-segment --save
 ```
 
 ## API

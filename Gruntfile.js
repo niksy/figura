@@ -15,7 +15,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.js': ['compiled/index.js']
+					'dist/<%= pkg.name %>.js': ['compiled/<%= pkg.main %>']
 				}
 			}
 		},
@@ -26,7 +26,7 @@ module.exports = function ( grunt ) {
 					banner: '<%= meta.banner %>'
 				},
 				files: {
-					'dist/kist-segment.min.js': ['compiled/index.js']
+					'dist/<%= pkg.name %>.min.js': ['compiled/<%= pkg.main %>']
 				}
 			}
 		},
@@ -82,16 +82,7 @@ module.exports = function ( grunt ) {
 					plugin: ['bundle-collapser/plugin']
 				},
 				files: {
-					'compiled/index.js': ['index.js']
-				}
-			},
-			dev: {
-				options: {
-					watch: true,
-					keepAlive: true
-				},
-				files: {
-					'compiled/index.js': ['index.js']
+					'compiled/<%= pkg.main %>': ['<%= pkg.main %>']
 				}
 			}
 		},
@@ -102,14 +93,62 @@ module.exports = function ( grunt ) {
 					open:true
 				}
 			}
-		}
+		},
+
+		'compile-handlebars': {
+			test: {
+				templateData: {
+					bower: '../../../bower_components',
+					compiled: '../../../compiled',
+					assets: 'assets'
+				},
+				partials: 'test/manual/templates/partials/**/*.hbs',
+				template: 'test/manual/templates/*.hbs',
+				output: 'compiled/test/manual/*.html'
+			}
+		},
+
+		copy: {
+			test: {
+				files:[{
+					expand: true,
+					cwd: 'test/manual/assets/',
+					src: ['**'],
+					dest: 'compiled/test/manual/assets/'
+				}]
+			}
+		},
+
+		concurrent: {
+			options: {
+				logConcurrentOutput: true
+			},
+			test: ['watch','connect:test:keepalive']
+		},
+
+		watch: {
+			hbs: {
+				files: 'test/manual/**/*.hbs',
+				tasks: ['compile-handlebars:test']
+			},
+			browserify: {
+				files: ['<%= pkg.main %>', 'src/**/*.js'],
+				tasks: ['browserify:standalone']
+			}
+		},
 
 	});
 
 	require('load-grunt-tasks')(grunt);
 
-	grunt.registerTask('dev',['browserify:dev']);
-	grunt.registerTask('test',['connect:test:keepalive']);
+	grunt.registerTask('test', function () {
+		var tasks = ['compile-handlebars:test','copy:test','browserify:standalone'];
+		if ( grunt.option('watch') ) {
+			tasks.push('concurrent:test');
+		}
+		grunt.task.run(tasks);
+	});
+
 	grunt.registerTask('stylecheck', ['jshint:main', 'jscs:main']);
 	grunt.registerTask('default', ['stylecheck', 'browserify:standalone', 'concat', 'uglify']);
 	grunt.registerTask('releasePatch', ['bump-only:patch', 'default', 'bump-commit']);
