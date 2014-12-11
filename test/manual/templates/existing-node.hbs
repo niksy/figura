@@ -1,0 +1,37 @@
+{{> top title="Existing node"}}
+
+	<div class="testElement">
+		<div class="testElement2"></div>
+	</div>
+
+	<script>
+
+		var Foo = $.kist.segment.extend({
+			el: '.testElement',
+			childrenEl: {
+				'testElement2': '.testElement2',
+				'body': function () {
+					return $('body');
+				}
+			},
+			events: {
+				'click .testElement': 'testClick'
+			},
+			init: function ( options ) {
+				console.log('Initialized.');
+				this.setOptions(options);
+				console.log(this.options);
+			},
+			testClick: function () {
+				console.log('.testElement clicked!');
+			}
+		});
+
+		var foo = new Foo();
+
+		console.info(Foo);
+		console.log(foo);
+
+	</script>
+
+{{> bottom}}

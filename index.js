@@ -102,7 +102,7 @@ var Segment = module.exports = Klass.extend({
 	cacheChildrenEl: function ( childrenEl ) {
 		childrenEl = childrenEl || this.childrenEl;
 		$.each(childrenEl, $.proxy(function ( name, selector ) {
-			selector = this.$(typeof(selector) === 'function' ? selector.call(this) : selector);
+			selector = typeof(selector) === 'function' ? selector.call(this) : this.$(selector);
 			if ( !selector ) {
 				return true;
 			}
