@@ -13,6 +13,8 @@ var Segment = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
 
+		Segment.prototype.$body = Segment.prototype.$body.length ? Segment.prototype.$body : $('body');
+
 		options = typeof(options) === 'object' ? options : {};
 
 		this.uid = instanceCount++;
