@@ -1,12 +1,12 @@
 {
-  "name": "kist-segment",
+  "name": "kist-view",
   "version": "0.1.3",
   "description": "Simple UI view.",
   "authors": [
     "Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/)"
   ],
   "license": "MIT",
-  "main": "dist/kist-segment.js",
+  "main": "dist/kist-view.js",
   "ignore": [
     "**/.*",
     "node_modules",
@@ -14,6 +14,7 @@
     "test",
     "tests",
     "src",
+    "lib",
     "Gruntfile.js",
     "package.json"
   ],
@@ -23,7 +24,7 @@
   "devDependencies": {
     "jquery": "1"
   },
-  "homepage": "https://github.com/niksy/kist-segment",
+  "homepage": "https://github.com/niksy/kist-view",
   "moduleType": [
     "globals"
   ],

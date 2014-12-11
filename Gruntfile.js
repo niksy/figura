@@ -53,7 +53,7 @@ module.exports = function ( grunt ) {
 				files: {
 					src: [
 						'<%= pkg.main %>',
-						'src/**/*.js'
+						'lib/**/*.js'
 					]
 				}
 			}
@@ -66,7 +66,7 @@ module.exports = function ( grunt ) {
 				},
 				src: [
 					'<%= pkg.main %>',
-					'src/**/*.js'
+					'lib/**/*.js'
 				]
 			}
 		},
@@ -74,7 +74,7 @@ module.exports = function ( grunt ) {
 		browserify: {
 			options: {
 				browserifyOptions: {
-					standalone: 'jQuery.kist.segment'
+					standalone: 'jQuery.kist.view'
 				}
 			},
 			standalone: {
@@ -100,7 +100,8 @@ module.exports = function ( grunt ) {
 				templateData: {
 					bower: '../../../bower_components',
 					compiled: '../../../compiled',
-					assets: 'assets'
+					assets: 'assets',
+					main: '<%= pkg.main %>'
 				},
 				partials: 'test/manual/templates/partials/**/*.hbs',
 				template: 'test/manual/templates/*.hbs',
@@ -135,7 +136,7 @@ module.exports = function ( grunt ) {
 				tasks: ['compile-handlebars:test']
 			},
 			browserify: {
-				files: ['<%= pkg.main %>', 'src/**/*.js'],
+				files: ['<%= pkg.main %>', 'lib/**/*.js'],
 				tasks: ['browserify:standalone']
 			}
 		},

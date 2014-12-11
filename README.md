@@ -1,18 +1,18 @@
-# kist-segment
+# kist-view
 
 Simple UI view. Inspired by [Backbone.View](http://backbonejs.org/#View).
 
 ## Installation
 
 ```sh
-npm install kist-segment --save
+npm install kist-view --save
 
-bower install kist-segment --save
+bower install kist-view --save
 ```
 
 ## API
 
-Segment extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives all it’s default properties. API usage for those properties is explanied on project page.
+View extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives all it’s default properties. API usage for those properties is explanied on project page.
 
 The only difference is list of properties and methods `extend` method can receive.
 
@@ -28,7 +28,7 @@ Initialization method which will should run after `constructor` method.
 
 Type: `String|jQuery|Function`
 
-UI element on which should segment be initialized.
+UI element on which should view be initialized.
 
 #### childrenEl
 
@@ -112,7 +112,7 @@ Type: `Object`
 #### render
 
 Type: `Function`
-Returns: `Segment`
+Returns: `View`
 
 Render method.
 
@@ -120,7 +120,7 @@ Render method.
 
 Type: `Function`
 
-Remove segment.
+Remove view.
 
 #### setElement(element)
 
@@ -191,9 +191,9 @@ Undelegate single event. For argument definition, see [`delegate`](#delegateeven
 ## Examples
 
 ```js
-var Segment = require('kist-segment');
+var View = require('kist-view');
 
-var Segment1 = Segment.extend({
+var View1 = View.extend({
 	el: 'html',
 	childrenEl: {
 		'body': 'body'
@@ -211,9 +211,9 @@ var Segment1 = Segment.extend({
 	}
 });
 
-var Segment2 = Segment1.extend({
+var View2 = View1.extend({
 	el: 'body',
-	childrenEl: Segment1.supply('childrenEl', {
+	childrenEl: $.extend({}, View1.prototype.childrenEl, {
 		'bar': '.bar'
 	}),
 	testClick: function () {
@@ -221,9 +221,9 @@ var Segment2 = Segment1.extend({
 	}
 });
 
-var segment1 = new Segment1();
-var segment2 = new Segment2();
-var segment3 = new Segment2({
+var view1 = new View1();
+var view2 = new View2();
+var view3 = new View2({
 	el: '.baz'
 });
 ```
@@ -231,9 +231,9 @@ var segment3 = new Segment2({
 ### AMD and global
 
 ```js
-define(['kist-segment'], cb);
+define(['kist-view'], cb);
 
-window.$.kist.segment;
+window.$.kist.view;
 ```
 
 ## Browser support

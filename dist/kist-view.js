@@ -1,32 +1,34 @@
-/*! kist-segment 0.1.3 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.segment=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
+/*! kist-view 0.1.3 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.view=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
-var pick = require(6);
-var omit = require(2);
-var Klass = require(4);
-var meta = require(7);
+var pick = require(7);
+var omit = require(3);
+var Klass = require(5);
+var meta = require(2);
 
 var instanceCount = 0;
 var delegateEventSplitter = /^(\S+)\s*(.*)$/;
 var eventListSplitter = /([^\|\s]+)/g;
-var segmentOptions = ['el','events','childrenEl'];
+var viewOptions = ['el','events','childrenEl'];
 
-var Segment = module.exports = Klass.extend({
+var View = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
+
+		View.prototype.$body = View.prototype.$body.length ? View.prototype.$body : $('body');
 
 		options = typeof(options) === 'object' ? options : {};
 
 		this.uid = instanceCount++;
 		this.ens = meta.ns.event + '.' + this.uid;
 
-		$.extend(this, pick(options, segmentOptions));
+		$.extend(this, pick(options, viewOptions));
 
 		this._ensureElement();
 		this.init.apply(this, arguments);
 
-		Segment._super.constructor.apply(this, arguments);
+		View._super.constructor.apply(this, arguments);
 
 	},
 
@@ -72,7 +74,7 @@ var Segment = module.exports = Klass.extend({
 	},
 
 	/**
-	 * @return {Segment}
+	 * @return {View}
 	 */
 	render: function () {
 		return this;
@@ -86,7 +88,7 @@ var Segment = module.exports = Klass.extend({
 	 * @param {Object} options
 	 */
 	setOptions: function ( options ) {
-		this.options = $.extend({}, this.options, omit(options, segmentOptions));
+		this.options = $.extend({}, this.options, omit(options, viewOptions));
 	},
 
 	/**
@@ -105,7 +107,7 @@ var Segment = module.exports = Klass.extend({
 	cacheChildrenEl: function ( childrenEl ) {
 		childrenEl = childrenEl || this.childrenEl;
 		$.each(childrenEl, $.proxy(function ( name, selector ) {
-			selector = this.$(typeof(selector) === 'function' ? selector.call(this) : selector);
+			selector = typeof(selector) === 'function' ? selector.call(this) : this.$(selector);
 			if ( !selector ) {
 				return true;
 			}
@@ -165,12 +167,19 @@ var Segment = module.exports = Klass.extend({
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],2:[function(require,module,exports){
+module.exports = {
+	ns: {
+		event: '.kist.view'
+	}
+};
+
+},{}],3:[function(require,module,exports){
 'use strict';
 
 var ap      = Array.prototype;
 var concat  = ap.concat;
 var slice   = ap.slice;
-var indexOf = require(3);
+var indexOf = require(4);
 
 function except(object) {
   var result = {};
@@ -187,7 +196,7 @@ function except(object) {
 
 module.exports = except;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
 
 var indexOf = [].indexOf;
 
@@ -198,8 +207,8 @@ module.exports = function(arr, obj){
   }
   return -1;
 };
-},{}],4:[function(require,module,exports){
-var objExtend = require(5);
+},{}],5:[function(require,module,exports){
+var objExtend = require(6);
 
 /**
  * @param  {Object} protoProps
@@ -239,7 +248,7 @@ function extend ( protoProps, staticProps ) {
 var Klass = module.exports = function () {};
 Klass.extend = extend;
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 module.exports = extend
 
 function extend(target) {
@@ -256,7 +265,7 @@ function extend(target) {
     return target
 }
 
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * object.pick <https://github.com/jonschlinkert/object.pick>
  *
@@ -286,13 +295,6 @@ module.exports = function pick(orig, keys) {
     }
   }
   return o;
-};
-
-},{}],7:[function(require,module,exports){
-module.exports = {
-	ns: {
-		event: '.kist.segment'
-	}
 };
 
 },{}]},{},[1])(1)
