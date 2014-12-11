@@ -127,6 +127,9 @@ module.exports = function ( grunt ) {
 		},
 
 		watch: {
+			options: {
+				spawn: false
+			},
 			hbs: {
 				files: 'test/manual/**/*.hbs',
 				tasks: ['compile-handlebars:test']
