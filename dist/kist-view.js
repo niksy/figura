@@ -1,4 +1,4 @@
-/*! kist-view 0.1.4 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2014 | License: MIT */
+/*! kist-view 0.1.5 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.view=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
@@ -120,7 +120,6 @@ var View = module.exports = Klass.extend({
 	 */
 	delegateEvents: function ( events ) {
 		events = events || this.events;
-		var match;
 		this.undelegateEvents();
 		$.each(events, $.proxy(function ( list, method ) {
 			if ( typeof(method) !== 'function' ) {
@@ -129,8 +128,8 @@ var View = module.exports = Klass.extend({
 			if ( !method ) {
 				return true;
 			}
-			match = list.match(delegateEventSplitter);
-			eventMatch = match[1].match(eventListSplitter);
+			var match = list.match(delegateEventSplitter);
+			var eventMatch = match[1].match(eventListSplitter);
 			for ( var i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
 				this.delegate(eventMatch[i], match[2], $.proxy(method, this));
 			}
