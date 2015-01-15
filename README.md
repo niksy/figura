@@ -43,7 +43,7 @@ Input like this:
 	'child1': '.child1',
 	'child2': $('.child2'),
 	'child3': function () {
-		return '.child3';
+		return $('.child3');
 	}
 }
 ```
@@ -53,7 +53,7 @@ Translates to output like this:
 ```js
 this.$child1 = this.$el.find('.child1');
 this.$child2 = this.$el.find($('.child2'));
-this.$child3 = this.$el.find('.child3');
+this.$child3 = $('.child3');
 ```
 
 #### events
