@@ -1,4 +1,4 @@
-/*! kist-view 0.1.5 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
+/*! kist-view 0.1.6 - Simple UI view. | Author: Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com/), 2015 | License: MIT */
 !function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self);var n=f;n=n.jQuery||(n.jQuery={}),n=n.kist||(n.kist={}),n.view=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 (function (global){
 var $ = (typeof window !== "undefined" ? window.$ : typeof global !== "undefined" ? global.$ : null);
@@ -37,6 +37,9 @@ var View = module.exports = Klass.extend({
 	$doc: $(document),
 	$win: $(window),
 
+	events: {},
+	childrenEl: {},
+
 	_ensureElement: function () {
 		if ( !this.el ) {
 			return;
@@ -49,16 +52,11 @@ var View = module.exports = Klass.extend({
 	 */
 	_setElement: function ( el ) {
 		this.$el = $(typeof(el) === 'function' ? el.call(this) : el);
-		this.el = this.$el[0];
 	},
 
 	_removeElement: function () {
 		this.$el.remove();
 	},
-
-	events: {},
-
-	childrenEl: {},
 
 	/**
 	 * @param  {Mixed} selector
@@ -107,7 +105,7 @@ var View = module.exports = Klass.extend({
 	cacheChildrenEl: function ( childrenEl ) {
 		childrenEl = childrenEl || this.childrenEl;
 		$.each(childrenEl, $.proxy(function ( name, selector ) {
-			selector = typeof(selector) === 'function' ? selector.call(this) : this.$(selector);
+			selector = $(typeof(selector) === 'function' ? selector.call(this) : this.$(selector));
 			if ( !selector ) {
 				return true;
 			}
@@ -155,8 +153,6 @@ var View = module.exports = Klass.extend({
 	 * @param  {String} eventName
 	 * @param  {String} selector
 	 * @param  {Function} listener
-	 *
-	 * @return {}
 	 */
 	undelegate: function ( eventName, selector, listener ) {
 		this.$el.off(eventName + this.ens, selector, listener);
