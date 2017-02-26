@@ -3,6 +3,7 @@
 const assert = require('assert');
 const $ = require('jquery');
 const Fn = require('../virtual-dom');
+const IndexFn = require('../index');
 const fixture = window.__html__['test/fixtures/index.html'];
 
 beforeEach(function () {
@@ -116,18 +117,31 @@ describe('Virtual DOM', function () {
 
 		shelby.addSubview(new Fn({
 			el: '#sasha'
-		}), 'subviewPlaceholder');
+		}), 'subviewOnePlaceholder');
+		shelby.addSubview(new IndexFn({
+			el: '.lilly'
+		}), 'subviewTwoPlaceholder');
+		shelby.addSubview(new IndexFn({
+			el: '.roxie'
+		}), 'subviewThreePlaceholder');
 
-		const subview = shelby.getSubview('subviewPlaceholder');
+		const subviewOne = shelby.getSubview('subviewOnePlaceholder');
+		const subviewTwo = shelby.getSubview('subviewTwoPlaceholder');
+		const subviewThree = shelby.getSubview('subviewThreePlaceholder');
 
 		shelby.render = function () {
 			$originalEl = this.$el;
-			this.renderDiff(`<div>${subview.getRenderPlaceholder()}</div>`);
+			this.renderDiff(`<div>${subviewOne.getRenderPlaceholder()}${subviewTwo.getRenderPlaceholder()}${subviewThree.getRenderPlaceholder()}</div>`);
+			this.assignSubview('subviewTwoPlaceholder');
 			$newEl = this.$el;
 			return this;
 		};
 
-		assert.equal($(shelby.render().el).find('#sasha').length, 1);
+		const view = $(shelby.render().el);
+
+		assert.equal(view.find('#sasha').length, 1);
+		assert.equal(view.find('.lilly').length, 1);
+		assert.equal(view.find(`[data-view-uid="${subviewThree.uid}"]`).length, 1);
 		assert.equal($originalEl[0].isSameNode($newEl[0]), false);
 
 		shelby.remove();
