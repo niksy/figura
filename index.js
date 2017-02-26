@@ -50,7 +50,7 @@ const View = module.exports = Klass.extend({
 	 * @param {Mixed} el
 	 */
 	_setElement: function ( el ) {
-		this.$el = $(typeof el === 'function' ? el.call(this) : el);
+		this.$el = $(el);
 	},
 
 	_removeElement: function () {
@@ -110,17 +110,8 @@ const View = module.exports = Klass.extend({
 
 		Object.keys(childrenEl)
 			.forEach(( key ) => {
-
-				let selector = childrenEl[key];
-
-				selector = $(typeof selector === 'function' ? selector.call(this) : this.$(selector));
-
-				if ( !selector ) {
-					return true;
-				}
-
+				const selector = this.$(childrenEl[key]);
 				this[`$${key}`] = selector;
-
 			});
 
 	},
