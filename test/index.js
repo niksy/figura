@@ -320,6 +320,116 @@ describe('Methods', function () {
 
 });
 
+describe('Subviews', function () {
+
+	it('should have 3 subviews after adding them', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.addSubview(new Fn());
+		shelby.addSubview(new Fn());
+		shelby.addSubview(new Fn(), 'customKey');
+
+		assert.equal(Object.keys(shelby.subviews).length, 3);
+		assert.equal(shelby.getSubview('customKey') instanceof Fn, true);
+
+		shelby.remove();
+
+	});
+
+	it('should not have any subviews after removing them with `removeSubviews`', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.addSubview(new Fn());
+		assert.equal(Object.keys(shelby.subviews).length, 1);
+
+		shelby.removeSubviews();
+		assert.equal(Object.keys(shelby.subviews).length, 0);
+
+		shelby.remove();
+
+	});
+
+	it('should have 2 subviews after adding them again', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.addSubview(new Fn());
+		assert.equal(Object.keys(shelby.subviews).length, 1);
+
+		shelby.removeSubviews();
+		shelby.addSubview(new Fn());
+		shelby.addSubview(new Fn());
+		assert.equal(Object.keys(shelby.subviews).length, 2);
+
+		assert.equal(Object.keys(shelby.subviews).length, 2);
+
+		shelby.remove();
+
+	});
+
+	it('should render it’s subview placeholder with `getRenderPlaceholder`', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.addSubview(new Fn({
+			el: '#sasha'
+		}), 'subviewPlaceholder');
+
+		const subview = shelby.getSubview('subviewPlaceholder');
+
+		assert.equal(subview.getRenderPlaceholder(), `<div data-view-uid="${subview.uid}"></div>`);
+
+		shelby.remove();
+
+	});
+
+	it('should properly render subview content with `assignSubview`', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.addSubview(new Fn({
+			el: '#sasha'
+		}), 'subviewPlaceholder');
+
+		const subview = shelby.getSubview('subviewPlaceholder');
+
+		shelby.render = function () {
+			this.$el.html(subview.getRenderPlaceholder());
+			this.assignSubview('subviewPlaceholder');
+			return this;
+		};
+
+		assert.equal($(shelby.render().el).find('#sasha').length, 1);
+
+		shelby.remove();
+
+	});
+
+	it('should not have any subviews after removing them with `remove`', function () {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+
+		shelby.remove();
+		assert.equal(shelby.subviews, undefined); // eslint-disable-line no-undefined
+
+	});
+
+});
+
 describe('Integration', function () {
 
 	it('should handle simple view case', function () {
@@ -351,8 +461,8 @@ describe('Integration', function () {
 		shelby.$lilly.trigger('click');
 
 		assert.equal(shelby instanceof Fn, true);
-		assert.equal(shelby.uid, 13);
-		assert.equal(shelby.ens, '.kist.view.13');
+		assert.equal(shelby.uid > 0, true);
+		assert.equal(/\.kist\.view\.\d{2,}/.test(shelby.ens), true);
 		assert.deepEqual(shelby.options, {
 			jackie: 'riley',
 			rudy: 'piper'

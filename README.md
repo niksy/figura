@@ -4,6 +4,10 @@
 
 Simple UI view. Inspired by [Backbone.View](http://backbonejs.org/#View).
 
+Features:
+
+* Subview managment: adding, getting and removing
+
 ## Install
 
 ```sh
@@ -35,6 +39,11 @@ const Shelby = View.extend({
 	},
 	initialize: function ( options ) {
 		this.setOptions(options);
+		this.addSubview(new View());
+		this.addSubview(new View(), 'customKey');
+	},
+	getCustomKeyView: function () {
+		return this.getSubview('customKey');
 	},
 	clickMethod: function () {
 		console.log('.lilly clicked!');
@@ -55,6 +64,26 @@ const shelby = new Shelby();
 const sasha = new Sasha();
 const roxie = new Sasha({
 	el: '.roxie'
+});
+```
+
+Render placeholder and view assign usage.
+
+```js
+const View = require('kist-view');
+
+const Shelby = View.extend({
+	el: '#shelby',
+	initialize: function () {
+		this.addSubview(new View(), 'customKey');
+	},
+	render: function () {
+		this.$el.html(this.template({
+			customKeyComponent: this.getSubview('customKey').getRenderPlaceholder()
+		}));
+		this.assignSubview('customKey');
+		return this;
+	}
 });
 ```
 
@@ -233,6 +262,53 @@ Type: `Function`
 Type: `Function`
 
 Undelegate single event. For argument definition, see [`delegate`](#delegateeventname-selector-listener).
+
+### addSubview(view, key)
+
+Adds subview to current view.
+
+#### view
+
+Type: `View`
+
+Subview to add to current view.
+
+#### key
+
+Type: `String|Number`
+
+Subview key so it can be easily identified in subview collection. If undefined, 
+view’s `uid` property will be used.
+
+### getSubview(key)
+
+Gets subview referenced by key.
+
+#### key
+
+Type: `String|Number`
+
+Key which is used to reference subview.
+
+### removeSubviews
+
+Removes all subviews from current view.
+
+### getRenderPlaceholder
+
+Returns view’s placeholder element which will be used in resolving for
+`assignSubview`.
+
+### assignSubview(key)
+
+Replaces view’s render placeholder with real content (returned when running
+`render` method).
+
+#### key
+
+Type: `String|Number`
+
+Key which is used to reference subview.
 
 ## Test
 

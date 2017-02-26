@@ -26,6 +26,7 @@ const View = module.exports = Klass.extend({
 		this._ensureElement();
 		this.initialize.apply(this, arguments);
 
+		this.subviews = {};
 		View._super.constructor.apply(this, arguments);
 
 	},
@@ -81,6 +82,8 @@ const View = module.exports = Klass.extend({
 	},
 
 	remove: function () {
+		this.removeSubviews();
+		delete this.subviews;
 		this._removeElement();
 	},
 
@@ -160,6 +163,82 @@ const View = module.exports = Klass.extend({
 	 */
 	undelegate: function ( eventName, selector, listener ) {
 		this.$el.off(eventName + this.ens, selector, listener);
+	},
+
+	/**
+	 * Returns subview by supplied key
+	 *
+	 * @param  {String|Number} key
+	 *
+	 * @return {View}
+	 */
+	getSubview: function ( key ) {
+		return this.subviews[key];
+	},
+
+	/**
+	 * Adds a subview to the current view, which will
+	 * ensure its removal when this view is removed,
+	 * or when view.removeSubviews is called
+	 *
+	 * @param {View} view
+	 * @param {String|Number} key
+	 *
+	 * @return {View}
+	 */
+	addSubview: function ( view, key ) {
+		if ( !(view instanceof View) ) {
+			throw new Error('Subview must be a View');
+		}
+		if ( typeof key === 'undefined' ) {
+			key = view.uid;
+		}
+		this.subviews[key] = view;
+		return view;
+	},
+
+	/**
+	 * Removes any subviews associated with this view
+	 * by `addSubview`, which will in-turn remove any
+	 * children of those views, and so on
+	 *
+	 * @return {View}
+	 */
+	removeSubviews: function () {
+
+		const hasOwnProp = Object.prototype.hasOwnProperty;
+
+		for ( let key in this.subviews ) {
+			if ( hasOwnProp.call(this.subviews, key) ) {
+				const subview = this.subviews[key];
+				if ( typeof subview.remove === 'function' ) {
+					subview.remove();
+				}
+				delete this.subviews[key];
+			}
+		}
+
+		return this;
+
+	},
+
+	/**
+	 * Get subview placeholder
+	 *
+	 * @return {String}
+	 */
+	getRenderPlaceholder: function () {
+		return `<div data-view-uid="${this.uid}"></div>`;
+	},
+
+	/**
+	 * Replace subview placeholder with its real content
+	 *
+	 * @param  {String|Number} key
+	 */
+	assignSubview: function ( key ) {
+		const view = this.getSubview(key);
+		this.$(`[data-view-uid="${view.uid}"]`).replaceWith(view.render().el);
 	}
 
 });
