@@ -12,49 +12,55 @@ npm install kist-view --save
 
 ## Usage
 
-```js
-var View = require('kist-view');
+```html
+<div id="shelby">
+	<span id="sasha">
+		<button type="button" class="lilly">Lilly button</button>
+		<span class="honey">Honey content</span>
+	</span>
+	<i class="roxie">Roxie content</i>
+</div>
+```
 
-var View1 = View.extend({
-	el: 'html',
+```js
+const View = require('kist-view');
+
+const Shelby = View.extend({
+	el: '#shelby',
 	childrenEl: {
-		'body': 'body'
+		sasha: '#sasha'
 	},
 	events: {
-		'click .foo': 'testClick'
+		'click .lilly': 'clickMethod'
 	},
 	initialize: function ( options ) {
-		console.log('Initialized.');
 		this.setOptions(options);
-		console.log(this.options);
 	},
-	testClick: function () {
-		console.log('.foo clicked!');
+	clickMethod: function () {
+		console.log('.lilly clicked!');
 	}
 });
 
-var View2 = View1.extend({
-	el: 'body',
-	childrenEl: $.extend({}, View1.prototype.childrenEl, {
-		'bar': '.bar'
+var Sasha = Shelby.extend({
+	el: '#sasha',
+	childrenEl: $.extend({}, Shelby.prototype.childrenEl, {
+		honey: '.honey'
 	}),
-	testClick: function () {
-		console.log('.foo clicked, with overriden method on `Bar`.');
+	clickMethod: function () {
+		console.log('.lilly clicked, with overriden method on `Sasha`.');
 	}
 });
 
-var view1 = new View1();
-var view2 = new View2();
-var view3 = new View2({
-	el: '.baz'
+const shelby = new Shelby();
+const sasha = new Sasha();
+const roxie = new Sasha({
+	el: '.roxie'
 });
 ```
 
-More usage examples.
-
 ## API
 
-### .extend(options)
+### View.extend(options)
 
 Returns: `Object`
 
@@ -70,7 +76,7 @@ Initialization method which will should run after `constructor` method.
 
 #### el
 
-Type: `String|jQuery|Function`
+Type: `String|jQuery`
 
 UI element on which should view be initialized.
 
@@ -84,20 +90,16 @@ Input like this:
 
 ```js
 {
-	'child1': '.child1',
-	'child2': $('.child2'),
-	'child3': function () {
-		return $('.child3');
-	}
+	'shelby': '.shelby',
+	'sasha': '.sasha'
 }
 ```
 
 Translates to output like this:
 
 ```js
-this.$child1 = this.$el.find('.child1');
-this.$child2 = this.$el.find($('.child2'));
-this.$child3 = $('.child3');
+this.$shelby = this.$el.find('.shelby');
+this.$sasha = this.$el.find('.sasha');
 ```
 
 #### events
@@ -110,9 +112,9 @@ Input like this:
 
 ```js
 {
-	'click .child1': 'method1',
-	'submit .child2': 'method2',
-	'mouseenter|mouseleave .child3': 'method3',
+	'click .shelby': 'method1',
+	'submit .sasha': 'method2',
+	'mouseleave .lilly': 'method3',
 	'mouseenter .child4': function () {
 		// Do something
 	}
@@ -122,12 +124,12 @@ Input like this:
 Translates to output like this:
 
 ```js
-this.$el.on('click', '.child1', $.proxy(this.method1, this));
-this.$el.on('submit', '.child2', $.proxy(this.method2, this));
-this.$el.on('mouseenter mouseleave', '.child3', $.proxy(this.method3, this));
-this.$el.on('mouseenter', '.child4', $.proxy(function () {
+this.$el.on('click' + this.ens, '.shelby', method1.bind(this));
+this.$el.on('submit' + this.ens, '.sasha', this.method2.bind(this));
+this.$el.on('mouseleave' + this.ens, '.lilly', this.method3.bind(this));
+this.$el.on('mouseenter' + this.ens, '.child4', function () {
 	// Do something
-}, this));
+}.bind(this));
 ```
 
 #### $(selector)
