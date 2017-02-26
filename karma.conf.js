@@ -22,6 +22,12 @@ module.exports = function ( config ) {
 		colors: true,
 		logLevel: config.LOG_INFO,
 		autoWatch: false,
+		browserStack: {
+			startTunnel: true,
+			project: 'kist-view',
+			name: 'Automated (Karma)',
+			build: 'Automated (Karma)'
+		},
 		client: {
 			mocha: {
 				ui: 'bdd'
@@ -50,12 +56,36 @@ module.exports = function ( config ) {
 			}
 		},
 		customLaunchers: {
-			'Chrome-CI': {
-				base: 'Chrome',
-				flags: ['--no-sandbox']
-			}
+			'BS-Chrome': {
+				base: 'BrowserStack',
+				browser: 'Chrome',
+				os: 'Windows',
+				'os_version': '7',
+				project: 'kist-view',
+				build: 'Automated (Karma)',
+				name: 'Chrome'
+			},
+			'BS-Firefox': {
+				base: 'BrowserStack',
+				browser: 'Firefox',
+				os: 'Windows',
+				'os_version': '7',
+				project: 'kist-view',
+				build: 'Automated (Karma)',
+				name: 'Firefox'
+			},
+			'BS-IE9': {
+				base: 'BrowserStack',
+				browser: 'IE',
+				'browser_version': '9',
+				os: 'Windows',
+				'os_version': '7',
+				project: 'kist-view',
+				build: 'Automated (Karma)',
+				name: 'IE9'
+			},
 		},
-		browsers: [(process.env.TRAVIS ? 'Chrome-CI' : 'Chrome')],
+		browsers: ['BS-Chrome', 'BS-Firefox', 'BS-IE9'],
 		singleRun: true,
 		concurrency: Infinity
 	});

@@ -1,6 +1,6 @@
 # kist-view
 
-[![Build Status][ci-img]][ci]
+[![Build Status][ci-img]][ci] [![BrowserStack Status][browserstack-img]][browserstack]
 
 Simple UI view. Inspired by [Backbone.View][backbone-view].
 
@@ -378,3 +378,5 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 [virtual-dom]: https://github.com/Matt-Esch/virtual-dom
 [virtual-dom-variant]: https://github.com/niksy/kist-backbone-view/blob/master/virtual-dom.js
 [backbone-view]: http://backbonejs.org/#View
+[browserstack]: https://www.browserstack.com/
+[browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237

@@ -34,6 +34,7 @@
     "istanbul": "^0.4.3",
     "karma": "^1.1.0",
     "karma-browserify": "^5.0.5",
+    "karma-browserstack-launcher": "^1.0.0",
     "karma-chrome-launcher": "^1.0.1",
     "karma-coverage": "^1.0.0",
     "karma-html2js-preprocessor": "^1.0.0",
