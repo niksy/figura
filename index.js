@@ -50,6 +50,7 @@ const View = module.exports = Klass.extend({
 	 */
 	_setElement: function ( el ) {
 		this.$el = $(el);
+		this.el = this.$el[0];
 	},
 
 	_removeElement: function () {

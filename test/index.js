@@ -114,11 +114,18 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
+			const $shelby = $('#shelby');
+			const $lilly = $('.lilly');
 
-			assert.equal(shelby.$el.is($('#shelby')), true);
-			shelby.setElement($('.lilly'));
-			assert.equal(shelby.$el.is($('#shelby')), false);
-			assert.equal(shelby.$el.is($('.lilly')), true);
+			assert.equal(shelby.$el.is($shelby), true);
+			assert.equal(shelby.el.isEqualNode($shelby[0]), true);
+
+			shelby.setElement($lilly);
+
+			assert.equal(shelby.$el.is($shelby), false);
+			assert.equal(shelby.el.isEqualNode($shelby[0]), false);
+			assert.equal(shelby.$el.is($lilly), true);
+			assert.equal(shelby.el.isEqualNode($lilly[0]), true);
 
 			shelby.remove();
 
