@@ -6,7 +6,6 @@ const omit = require('except');
 const Klass = require('kist-klass');
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
-const eventListSplitter = /([^\|\s]+)/g;
 const viewOptions = ['el', 'events', 'childrenEl'];
 const eventNamespace = '.kist.view';
 let instanceCount = 0;
@@ -126,23 +125,14 @@ const View = module.exports = Klass.extend({
 
 		Object.keys(events)
 			.forEach(( key ) => {
-
 				let method = events[key];
-
 				if ( typeof method !== 'function' ) {
 					method = this[method];
 				}
-				if ( !method ) {
-					return true;
+				if ( method ) {
+					const match = key.match(delegateEventSplitter);
+					this.delegate(match[1], match[2], method.bind(this));
 				}
-
-				const match = key.match(delegateEventSplitter);
-				const eventMatch = match[1].match(eventListSplitter);
-
-				for ( let i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
-					this.delegate(eventMatch[i], match[2], $.proxy(method, this));
-				}
-
 			});
 
 	},
