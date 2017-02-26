@@ -1,8 +1,8 @@
 'use strict';
 
 const $ = require('jquery');
-const pick = require('object.pick');
-const omit = require('except');
+const pick = require('mout/object/pick');
+const omit = require('mout/object/omit');
 const Klass = require('kist-klass');
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
