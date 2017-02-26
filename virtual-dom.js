@@ -77,7 +77,6 @@ module.exports = View.extend({
 				if ( subview._usesRenderPlaceholder ) {
 					this.assignSubview(key);
 				}
-				delete this.subviews[key];
 			}
 		}
 
