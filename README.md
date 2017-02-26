@@ -1,22 +1,66 @@
 # kist-view
 
+[![Build Status][ci-img]][ci]
+
 Simple UI view. Inspired by [Backbone.View](http://backbonejs.org/#View).
 
-## Installation
+## Install
 
 ```sh
 npm install kist-view --save
-
-bower install kist-view --save
 ```
 
+## Usage
+
+```js
+var View = require('kist-view');
+
+var View1 = View.extend({
+	el: 'html',
+	childrenEl: {
+		'body': 'body'
+	},
+	events: {
+		'click .foo': 'testClick'
+	},
+	init: function ( options ) {
+		console.log('Initialized.');
+		this.setOptions(options);
+		console.log(this.options);
+	},
+	testClick: function () {
+		console.log('.foo clicked!');
+	}
+});
+
+var View2 = View1.extend({
+	el: 'body',
+	childrenEl: $.extend({}, View1.prototype.childrenEl, {
+		'bar': '.bar'
+	}),
+	testClick: function () {
+		console.log('.foo clicked, with overriden method on `Bar`.');
+	}
+});
+
+var view1 = new View1();
+var view2 = new View2();
+var view3 = new View2({
+	el: '.baz'
+});
+```
+
+More usage examples.
+
 ## API
+
+### .extend(options)
+
+Returns: `Object`
 
 View extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives all it’s default properties. API usage for those properties is explanied on project page.
 
 The only difference is list of properties and methods `extend` method can receive.
-
-### `.extend(options)`
 
 #### init(options)
 
@@ -188,58 +232,17 @@ Type: `Function`
 
 Undelegate single event. For argument definition, see [`delegate`](#delegateeventname-selector-listener).
 
-## Examples
+## Test
 
-```js
-var View = require('kist-view');
-
-var View1 = View.extend({
-	el: 'html',
-	childrenEl: {
-		'body': 'body'
-	},
-	events: {
-		'click .foo': 'testClick'
-	},
-	init: function ( options ) {
-		console.log('Initialized.');
-		this.setOptions(options);
-		console.log(this.options);
-	},
-	testClick: function () {
-		console.log('.foo clicked!');
-	}
-});
-
-var View2 = View1.extend({
-	el: 'body',
-	childrenEl: $.extend({}, View1.prototype.childrenEl, {
-		'bar': '.bar'
-	}),
-	testClick: function () {
-		console.log('.foo clicked, with overriden method on `Bar`.');
-	}
-});
-
-var view1 = new View1();
-var view2 = new View2();
-var view3 = new View2({
-	el: '.baz'
-});
-```
-
-### AMD and global
-
-```js
-define(['kist-view'], cb);
-
-window.$.kist.view;
-```
+For local automated tests, run `npm run test:automated:local`.
 
 ## Browser support
 
-Tested in IE8+ and all modern browsers.
+Tested in IE9+ and all modern browsers.
 
 ## License
 
 MIT © [Ivan Nikolić](http://ivannikolic.com)
+
+[ci]: https://travis-ci.org/niksy/kist-view
+[ci-img]: https://travis-ci.org/niksy/kist-view.svg?branch=master

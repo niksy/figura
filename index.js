@@ -1,24 +1,26 @@
-var $ = require('jquery');
-var pick = require('object.pick');
-var omit = require('except');
-var Klass = require('kist-klass');
-var meta = require('./meta');
+'use strict';
 
-var instanceCount = 0;
-var delegateEventSplitter = /^(\S+)\s*(.*)$/;
-var eventListSplitter = /([^\|\s]+)/g;
-var viewOptions = ['el','events','childrenEl'];
+const $ = require('jquery');
+const pick = require('object.pick');
+const omit = require('except');
+const Klass = require('kist-klass');
 
-var View = module.exports = Klass.extend({
+const delegateEventSplitter = /^(\S+)\s*(.*)$/;
+const eventListSplitter = /([^\|\s]+)/g;
+const viewOptions = ['el', 'events', 'childrenEl'];
+const eventNamespace = '.kist.view';
+let instanceCount = 0;
+
+const View = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
 
 		View.prototype.$body = View.prototype.$body.length ? View.prototype.$body : $('body');
 
-		options = typeof(options) === 'object' ? options : {};
+		options = typeof options === 'object' ? options : {};
 
 		this.uid = instanceCount++;
-		this.ens = meta.ns.event + '.' + this.uid;
+		this.ens = `${eventNamespace}.${this.uid}`;
 
 		$.extend(this, pick(options, viewOptions));
 
@@ -48,10 +50,13 @@ var View = module.exports = Klass.extend({
 	 * @param {Mixed} el
 	 */
 	_setElement: function ( el ) {
-		this.$el = $(typeof(el) === 'function' ? el.call(this) : el);
+		this.$el = $(typeof el === 'function' ? el.call(this) : el);
 	},
 
 	_removeElement: function () {
+		if ( !this.el ) {
+			return;
+		}
 		this.$el.remove();
 	},
 
@@ -100,35 +105,55 @@ var View = module.exports = Klass.extend({
 	 * @param  {Object} childrenEl
 	 */
 	cacheChildrenEl: function ( childrenEl ) {
+
 		childrenEl = childrenEl || this.childrenEl;
-		$.each(childrenEl, $.proxy(function ( name, selector ) {
-			selector = $(typeof(selector) === 'function' ? selector.call(this) : this.$(selector));
-			if ( !selector ) {
-				return true;
-			}
-			this['$' + name] = selector;
-		}, this));
+
+		Object.keys(childrenEl)
+			.forEach(( key ) => {
+
+				let selector = childrenEl[key];
+
+				selector = $(typeof selector === 'function' ? selector.call(this) : this.$(selector));
+
+				if ( !selector ) {
+					return true;
+				}
+
+				this[`$${key}`] = selector;
+
+			});
+
 	},
 
 	/**
 	 * @param  {Object} events
 	 */
 	delegateEvents: function ( events ) {
+
 		events = events || this.events;
 		this.undelegateEvents();
-		$.each(events, $.proxy(function ( list, method ) {
-			if ( typeof(method) !== 'function' ) {
-				method = this[method];
-			}
-			if ( !method ) {
-				return true;
-			}
-			var match = list.match(delegateEventSplitter);
-			var eventMatch = match[1].match(eventListSplitter);
-			for ( var i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
-				this.delegate(eventMatch[i], match[2], $.proxy(method, this));
-			}
-		}, this));
+
+		Object.keys(events)
+			.forEach(( key ) => {
+
+				let method = events[key];
+
+				if ( typeof method !== 'function' ) {
+					method = this[method];
+				}
+				if ( !method ) {
+					return true;
+				}
+
+				const match = key.match(delegateEventSplitter);
+				const eventMatch = match[1].match(eventListSplitter);
+
+				for ( let i = 0, eventMatchLength = eventMatch.length; i < eventMatchLength; i++ ) {
+					this.delegate(eventMatch[i], match[2], $.proxy(method, this));
+				}
+
+			});
+
 	},
 
 	undelegateEvents: function () {
