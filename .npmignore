@@ -1,4 +1,5 @@
 index.js
+virtual-dom.js
 lib/*
 test-dist/
 !dist/*

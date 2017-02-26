@@ -10,6 +10,8 @@ const viewOptions = ['el', 'events', 'childrenEl'];
 const eventNamespace = '.kist.view';
 let instanceCount = 0;
 
+const hasOwnProp = Object.prototype.hasOwnProperty;
+
 const View = module.exports = Klass.extend({
 
 	constructor: function ( options ) {
@@ -205,8 +207,6 @@ const View = module.exports = Klass.extend({
 	 * @return {View}
 	 */
 	removeSubviews: function () {
-
-		const hasOwnProp = Object.prototype.hasOwnProperty;
 
 		for ( let key in this.subviews ) {
 			if ( hasOwnProp.call(this.subviews, key) ) {

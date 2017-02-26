@@ -118,14 +118,14 @@ describe('Methods', function () {
 			const $lilly = $('.lilly');
 
 			assert.equal(shelby.$el.is($shelby), true);
-			assert.equal(shelby.el.isEqualNode($shelby[0]), true);
+			assert.equal(shelby.el.isSameNode($shelby[0]), true);
 
 			shelby.setElement($lilly);
 
 			assert.equal(shelby.$el.is($shelby), false);
-			assert.equal(shelby.el.isEqualNode($shelby[0]), false);
+			assert.equal(shelby.el.isSameNode($shelby[0]), false);
 			assert.equal(shelby.$el.is($lilly), true);
-			assert.equal(shelby.el.isEqualNode($lilly[0]), true);
+			assert.equal(shelby.el.isSameNode($lilly[0]), true);
 
 			shelby.remove();
 
