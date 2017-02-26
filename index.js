@@ -24,7 +24,7 @@ const View = module.exports = Klass.extend({
 		$.extend(this, pick(options, viewOptions));
 
 		this._ensureElement();
-		this.init.apply(this, arguments);
+		this.initialize.apply(this, arguments);
 
 		View._super.constructor.apply(this, arguments);
 
@@ -69,7 +69,7 @@ const View = module.exports = Klass.extend({
 		return this.$el.find(selector);
 	},
 
-	init: function () {
+	initialize: function () {
 
 	},
 

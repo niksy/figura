@@ -77,7 +77,7 @@ describe('Methods', function () {
 		it('should properly set and merge default options', function () {
 
 			const Shelby = Fn.extend({
-				init: function ( options ) {
+				initialize: function ( options ) {
 					this.setOptions(options);
 				}
 			});
@@ -334,7 +334,7 @@ describe('Integration', function () {
 			events: {
 				'click .lilly': 'testClick'
 			},
-			init: function ( options ) {
+			initialize: function ( options ) {
 				this.setOptions(options);
 			},
 			testClick: function () {
@@ -385,7 +385,7 @@ describe('Integration', function () {
 			events: {
 				'click .lilly': 'testClick'
 			},
-			init: function ( options ) {
+			initialize: function ( options ) {
 				this.setOptions(options);
 			},
 			testClick: function () {

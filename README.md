@@ -23,7 +23,7 @@ var View1 = View.extend({
 	events: {
 		'click .foo': 'testClick'
 	},
-	init: function ( options ) {
+	initialize: function ( options ) {
 		console.log('Initialized.');
 		this.setOptions(options);
 		console.log(this.options);
@@ -62,7 +62,7 @@ View extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives 
 
 The only difference is list of properties and methods `extend` method can receive.
 
-#### init(options)
+#### initialize(options)
 
 Type: `Function`
 
