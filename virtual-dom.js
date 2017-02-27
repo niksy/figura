@@ -2,9 +2,7 @@
 
 const $ = require('jquery');
 const pick = require('mout/object/pick');
-const parser = require('vdom-parser');
-const diff = require('virtual-dom/diff');
-const patch = require('virtual-dom/patch');
+const morphdom = require('morphdom');
 const View = require('./index');
 const hasOwnProp = Object.prototype.hasOwnProperty;
 
@@ -58,7 +56,7 @@ module.exports = View.extend({
 			} else {
 				this.$el.html(content);
 			}
-			this._vdomTree = parser(this.$el.clone()[0]);
+			this._vdomTree = this.$el.clone()[0];
 		} else {
 			let newEl;
 			if ( this.fromTemplate ) {
@@ -66,10 +64,9 @@ module.exports = View.extend({
 			} else {
 				newEl = this.$el.clone().html(content)[0];
 			}
-			const newTree = parser(newEl);
-			const patches = diff(this._vdomTree, newTree);
-			patch(this.el, patches);
-			this._vdomTree = newTree;
+			const newTree = newEl;
+			morphdom(this.el, newTree);
+			this._vdomTree = this.el;
 		}
 
 		for ( let key in this.subviews ) {
