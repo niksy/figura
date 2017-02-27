@@ -1,6 +1,6 @@
 {
   "name": "kist-view",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Simple UI view.",
   "main": "dist/index.js",
   "author": "Ivan Nikolić <niksy5@gmail.com> (http://ivannikolic.com)",
