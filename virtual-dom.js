@@ -24,6 +24,7 @@ function getElementFromTemplate ( template ) {
 module.exports = View.extend({
 
 	constructor: function ( options ) {
+		options = typeof options === 'object' ? options : {};
 		$.extend(this, pick(options, 'fromTemplate'));
 		View.prototype.constructor.apply(this, arguments);
 	},
