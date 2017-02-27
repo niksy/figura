@@ -2,9 +2,7 @@
 
 const $ = require('jquery');
 const pick = require('mout/object/pick');
-const parser = require('vdom-parser');
-const diff = require('virtual-dom/diff');
-const patch = require('virtual-dom/patch');
+const morphdom = require('morphdom');
 const View = require('./index');
 const hasOwnProp = Object.prototype.hasOwnProperty;
 
@@ -19,6 +17,22 @@ function getElementFromTemplate ( template ) {
 		throw new Error('View must contain only one parent element.');
 	}
 	return template;
+}
+
+/**
+ * @param  {View} ctx
+ */
+function handleSubviews ( ctx ) {
+
+	for ( let key in ctx.subviews ) {
+		if ( hasOwnProp.call(ctx.subviews, key) ) {
+			const subview = ctx.subviews[key];
+			if ( subview._usesRenderPlaceholder ) {
+				ctx.assignSubview(key);
+			}
+		}
+	}
+
 }
 
 module.exports = View.extend({
@@ -40,48 +54,52 @@ module.exports = View.extend({
 	},
 
 	/**
-	 * Renders patched content with Virtual DOM
+	 * Renders DOM diffed content
 	 *
 	 * @param  {String|Number|Element|jQuery} content
+	 * @param  {Function} cb
 	 *
 	 * @return {View}
 	 */
-	renderDiff: function ( content ) {
+	renderDiff: function ( content, cb ) {
 
-		if ( !this._vdomTree ) {
+		if ( this.fromTemplate && !this._domDiffReady ) {
+			this._domDiffReady = true;
+
 			// If we’re getting the whole view DOM from template, we first
 			// check if there is only one parent element; if it’s not,
 			// inform implementor to correct that, otherwise set `this.$el` to
 			// the parent element from template
-			if ( this.fromTemplate ) {
-				this.setElement(getElementFromTemplate(content)[0]);
-			} else {
-				this.$el.html(content);
-			}
-			this._vdomTree = parser(this.$el.clone()[0]);
-		} else {
-			let newEl;
-			if ( this.fromTemplate ) {
-				newEl = getElementFromTemplate(content)[0];
-			} else {
-				newEl = this.$el.clone().html(content)[0];
-			}
-			const newTree = parser(newEl);
-			const patches = diff(this._vdomTree, newTree);
-			patch(this.el, patches);
-			this._vdomTree = newTree;
+			this.setElement(getElementFromTemplate(content)[0]);
+			handleSubviews(this);
+
+			return this;
+
 		}
 
-		for ( let key in this.subviews ) {
-			if ( hasOwnProp.call(this.subviews, key) ) {
-				const subview = this.subviews[key];
-				if ( subview._usesRenderPlaceholder ) {
-					this.assignSubview(key);
+		this._domDiffReady = true;
+
+		let newEl;
+		if ( this.fromTemplate ) {
+			newEl = getElementFromTemplate(content)[0];
+		} else {
+			newEl = this.$el.clone().html(content)[0];
+		}
+
+		if ( typeof cb === 'function' ) {
+			morphdom(this.el, newEl, {
+				onElUpdated: () => {
+					handleSubviews(this);
+					cb();
 				}
-			}
+			});
+		} else {
+			morphdom(this.el, newEl);
+			handleSubviews(this);
 		}
 
 		return this;
+
 	}
 
 });

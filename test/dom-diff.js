@@ -2,7 +2,7 @@
 
 const assert = require('assert');
 const $ = require('jquery');
-const Fn = require('../virtual-dom');
+const Fn = require('../dom-diff');
 const IndexFn = require('../index');
 const fixture = window.__html__['test/fixtures/index.html'];
 
@@ -18,7 +18,7 @@ function template ( count ) {
 	return `<span class="hazel">${count}</span>`;
 }
 
-describe('Virtual DOM', function () {
+describe('DOM diff', function () {
 
 	it('should have proper content after render diffing', function () {
 
@@ -93,14 +93,14 @@ describe('Virtual DOM', function () {
 
 		const subview = shelby.getSubview('subviewPlaceholder');
 
-		shelby.render = function () {
-			$originalEl = this.$el;
-			this.renderDiff(subview.getRenderPlaceholder());
-			$newEl = this.$el;
-			return this;
-		};
+		$originalEl = shelby.$el;
+		const content = subview.getRenderPlaceholder();
+		shelby.renderDiff(content);
+		shelby.renderDiff(content);
+		shelby.renderDiff(content);
+		$newEl = shelby.$el;
 
-		assert.equal($(shelby.render().el).find('#sasha').length, 1);
+		assert.equal(shelby.$el.find('#sasha').length, 1);
 		assert.equal($originalEl[0].isSameNode($newEl[0]), true);
 
 		shelby.remove();
@@ -129,22 +129,68 @@ describe('Virtual DOM', function () {
 		const subviewTwo = shelby.getSubview('subviewTwoPlaceholder');
 		const subviewThree = shelby.getSubview('subviewThreePlaceholder');
 
-		shelby.render = function () {
-			$originalEl = this.$el;
-			this.renderDiff(`<div>${subviewOne.getRenderPlaceholder()}${subviewTwo.getRenderPlaceholder()}${subviewThree.getRenderPlaceholder()}</div>`);
-			this.assignSubview('subviewTwoPlaceholder');
-			$newEl = this.$el;
-			return this;
-		};
+		$originalEl = shelby.$el;
+		const content = `<div>${subviewOne.getRenderPlaceholder()}${subviewTwo.getRenderPlaceholder()}${subviewThree.getRenderPlaceholder()}</div>`;
+		shelby.renderDiff(content);
+		shelby.renderDiff(content);
+		shelby.renderDiff(content);
+		shelby.assignSubview('subviewTwoPlaceholder');
+		$newEl = shelby.$el;
 
-		const view = $(shelby.render().el);
-
-		assert.equal(view.find('#sasha').length, 1);
-		assert.equal(view.find('.lilly').length, 1);
-		assert.equal(view.find(`[data-view-uid="${subviewThree.uid}"]`).length, 1);
+		assert.equal(shelby.$el.find('#sasha').length, 1);
+		assert.equal(shelby.$el.find('.lilly').length, 1);
+		assert.equal(shelby.$el.find(`[data-view-uid="${subviewThree.uid}"]`).length, 1);
 		assert.equal($originalEl[0].isSameNode($newEl[0]), false);
 
 		shelby.remove();
+
+	});
+
+	it('should throw if template has more than one parent element when `fromTemplate` is true', function () {
+
+		let count = 0;
+		const shelby = new Fn({
+			el: '#shelby',
+			fromTemplate: true
+		});
+
+		assert.throws(() => {
+			shelby.renderDiff(`<div>hazel</div>${template(count)}`);
+		}, 'View must contain only one parent element.');
+
+		shelby.remove();
+
+	});
+
+	it('should call callback function after element is updated', function ( done ) {
+
+		const shelby = new Fn({
+			el: '#shelby'
+		});
+		let $originalEl, $newEl;
+
+		shelby.addSubview(new Fn({
+			el: '#sasha'
+		}), 'subviewPlaceholder');
+
+		const subview = shelby.getSubview('subviewPlaceholder');
+
+		$originalEl = shelby.$el;
+		const content = subview.getRenderPlaceholder();
+		shelby.renderDiff(content);
+		shelby.renderDiff(content);
+		shelby.renderDiff(content, () => {
+
+			$newEl = shelby.$el;
+
+			assert.equal(shelby.$el.find('#sasha').length, 1);
+			assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+
+			shelby.remove();
+
+			done();
+
+		});
 
 	});
 

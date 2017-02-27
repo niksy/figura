@@ -7,7 +7,7 @@ Simple UI view. Inspired by [Backbone.View][backbone-view].
 Features:
 
 * Subview managment: adding, getting and removing
-* [Optional Virtual DOM support for rendering][virtual-dom-explanation]
+* [Optional DOM diff support for rendering][dom-diff-explanation]
 
 ## Install
 
@@ -88,10 +88,10 @@ const Shelby = View.extend({
 });
 ```
 
-<a name="virtual-dom-variant"></a>Virtual DOM variant usage.
+<a name="dom-diff-variant"></a>DOM diff variant usage.
 
 ```js
-const View = require('kist-view/dist/virtual-dom');
+const View = require('kist-view/dist/dom-diff');
 
 const Shelby = View.extend({
 	el: '#shelby',
@@ -325,7 +325,7 @@ Replaces view’s render placeholder with real content (returned when running
 `render` method).
 
 If you’re using `renderDiff` for content rendering, and view is instance of
-[Virtual DOM implementation][virtual-dom-variant], explicit
+[DOM diff implementation][dom-diff-variant], explicit
 call for this method in parent view is unecessary—it will be called for every
 subview which rendered it’s placeholder with `getRenderPlaceholder`.
 
@@ -335,17 +335,27 @@ Type: `String|Number`
 
 Key which is used to reference subview.
 
-### renderDiff(content)
+### renderDiff(content, cb)
 
-Renders [`virtual-dom`][virtual-dom] patches to current view’s element.
+Renders [DOM diff][dom-diff] to current view’s element.
 
-Available only for [Virtual DOM implementation][virtual-dom-variant].
+Available only for [DOM diff implementation][dom-diff-variant].
 
 #### content
 
 Type: `String|Number|Element|jQuery`
 
 Content which should be diffed with current element and will be used to patch it.
+
+#### cb
+
+Type: `Function`
+
+Called after current view’s element is updated by using
+[morphdom’s `onElUpdated` hook][morphdom-api]. In most cases you won’t need
+to use this callback, but it can be useful if DOM tree which needs to be
+processed is large and you need to handle subview rendering after processing or
+additional DOM manipulation.
 
 ### fromTemplate
 
@@ -355,11 +365,11 @@ Should this view be fully constructed from template. Useful when you want to
 completely hold view representation inside template files (default view
 behavior is to have root element outside template).
 
-Available only for [Virtual DOM implementation][virtual-dom-variant].
+Available only for [DOM diff implementation][dom-diff-variant].
 
-## Virtual DOM
+## DOM diff
 
-Optionally you can use [`virtual-dom`][virtual-dom] implementation of this module 
+Optionally you can use [`dom-diff`][dom-diff] implementation of this module 
 to achieve performant rendering of your content. The difference in applying 
 template content is very subtle—instead of applying new content to DOM element
 directly, you use convenient `renderDiff` method.
@@ -378,9 +388,10 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 
 [ci]: https://travis-ci.org/niksy/kist-view
 [ci-img]: https://travis-ci.org/niksy/kist-view.svg?branch=master
-[virtual-dom-explanation]: #virtual-dom
-[virtual-dom]: https://github.com/Matt-Esch/virtual-dom
-[virtual-dom-variant]: #virtual-dom-variant
+[dom-diff-explanation]: #dom-diff
+[dom-diff]: https://github.com/patrick-steele-idem/morphdom
+[dom-diff-variant]: #dom-diff-variant
+[morphdom-api]: https://github.com/patrick-steele-idem/morphdom#morphdomfromnode-tonode-options--node
 [backbone-view]: http://backbonejs.org/#View
 [browserstack]: https://www.browserstack.com/
 [browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237
