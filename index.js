@@ -22,13 +22,13 @@ const View = module.exports = Klass.extend({
 
 		this.uid = instanceCount++;
 		this.ens = `${eventNamespace}.${this.uid}`;
+		this.subviews = {};
 
 		$.extend(this, pick(options, viewOptions));
 
 		this._ensureElement();
 		this.initialize.apply(this, arguments);
 
-		this.subviews = {};
 		View._super.constructor.apply(this, arguments);
 
 	},
