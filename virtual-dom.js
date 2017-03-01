@@ -19,6 +19,22 @@ function getElementFromTemplate ( template ) {
 	return template;
 }
 
+/**
+ * @param  {View} ctx
+ */
+function handleSubviews ( ctx ) {
+
+	for ( let key in ctx.subviews ) {
+		if ( hasOwnProp.call(ctx.subviews, key) ) {
+			const subview = ctx.subviews[key];
+			if ( subview._usesRenderPlaceholder ) {
+				ctx.assignSubview(key);
+			}
+		}
+	}
+
+}
+
 module.exports = View.extend({
 
 	constructor: function ( options ) {
@@ -56,7 +72,8 @@ module.exports = View.extend({
 			} else {
 				this.$el.html(content);
 			}
-			this._vdomTree = this.$el.clone()[0];
+			handleSubviews(this);
+			this._vdomTree = true;
 		} else {
 			let newEl;
 			if ( this.fromTemplate ) {
@@ -65,17 +82,11 @@ module.exports = View.extend({
 				newEl = this.$el.clone().html(content)[0];
 			}
 			const newTree = newEl;
-			morphdom(this.el, newTree);
-			this._vdomTree = this.el;
-		}
-
-		for ( let key in this.subviews ) {
-			if ( hasOwnProp.call(this.subviews, key) ) {
-				const subview = this.subviews[key];
-				if ( subview._usesRenderPlaceholder ) {
-					this.assignSubview(key);
+			morphdom(this.el, newTree, {
+				onElUpdated: () => {
+					handleSubviews(this);
 				}
-			}
+			});
 		}
 
 		return this;
