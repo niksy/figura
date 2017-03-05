@@ -112,7 +112,7 @@ module.exports = function ( config ) {
 		},
 		browsers: ['BS-Chrome', 'BS-Firefox', 'BS-IE9', 'BS-iOS 8.3', 'BS-Android 4.2'],
 		singleRun: true,
-		concurrency: Infinity
+		concurrency: 2
 	});
 
 };
