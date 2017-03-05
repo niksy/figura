@@ -9,8 +9,8 @@
     "test": "test"
   },
   "scripts": {
-    "build": "babel '{index,virtual-dom}.js' --out-dir dist/",
-    "lint": "eslint '{index,virtual-dom,test/**/*}.js'",
+    "build": "babel '{index,dom-diff}.js' --out-dir dist/",
+    "lint": "eslint '{index,dom-diff,test/**/*}.js'",
     "prepublish": "npm run build",
     "test": "npm run lint && npm run test:automated",
     "test:automated": "karma start",

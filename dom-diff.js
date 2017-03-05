@@ -54,42 +54,52 @@ module.exports = View.extend({
 	},
 
 	/**
-	 * Renders patched content with Virtual DOM
+	 * Renders DOM diffed content
 	 *
 	 * @param  {String|Number|Element|jQuery} content
+	 * @param  {Function} cb
 	 *
 	 * @return {View}
 	 */
-	renderDiff: function ( content ) {
+	renderDiff: function ( content, cb ) {
 
-		if ( !this._vdomTree ) {
+		if ( this.fromTemplate && !this._domDiffReady ) {
+			this._domDiffReady = true;
+
 			// If we’re getting the whole view DOM from template, we first
 			// check if there is only one parent element; if it’s not,
 			// inform implementor to correct that, otherwise set `this.$el` to
 			// the parent element from template
-			if ( this.fromTemplate ) {
-				this.setElement(getElementFromTemplate(content)[0]);
-			} else {
-				this.$el.html(content);
-			}
+			this.setElement(getElementFromTemplate(content)[0]);
 			handleSubviews(this);
-			this._vdomTree = true;
+
+			return this;
+
+		}
+
+		this._domDiffReady = true;
+
+		let newEl;
+		if ( this.fromTemplate ) {
+			newEl = getElementFromTemplate(content)[0];
 		} else {
-			let newEl;
-			if ( this.fromTemplate ) {
-				newEl = getElementFromTemplate(content)[0];
-			} else {
-				newEl = this.$el.clone().html(content)[0];
-			}
-			const newTree = newEl;
-			morphdom(this.el, newTree, {
+			newEl = this.$el.clone().html(content)[0];
+		}
+
+		if ( typeof cb === 'function' ) {
+			morphdom(this.el, newEl, {
 				onElUpdated: () => {
 					handleSubviews(this);
+					cb();
 				}
 			});
+		} else {
+			morphdom(this.el, newEl);
+			handleSubviews(this);
 		}
 
 		return this;
+
 	}
 
 });
