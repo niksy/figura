@@ -61,7 +61,7 @@ module.exports = View.extend({
 	 *
 	 * @return {View}
 	 */
-	renderDiff: function ( content, cb ) {
+	_renderDiff: function ( content, cb ) {
 
 		if ( this.fromTemplate && !this._domDiffReady ) {
 			this._domDiffReady = true;
@@ -100,6 +100,23 @@ module.exports = View.extend({
 
 		return this;
 
+	},
+
+	/**
+	 * Public _renderDiff method with optimized rendering via rAF where possible
+	 *
+	 * @return {View}
+	 */
+	renderDiff: function () {
+		const args = [].slice.call(arguments);
+		if ( window.requestAnimationFrame ) {
+			window.requestAnimationFrame(() => {
+				this._renderDiff.apply(this, args);
+			});
+		} else {
+			this._renderDiff.apply(this, args);
+		}
+		return this;
 	}
 
 });

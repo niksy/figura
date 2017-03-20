@@ -337,7 +337,8 @@ Key which is used to reference subview.
 
 ### renderDiff(content, cb)
 
-Renders [DOM diff][dom-diff] to current view’s element.
+Renders [DOM diff][dom-diff] to current view’s element. If [`requestAnimationFrame`][raf]
+is available, it will schedule rendering on next animation frame.
 
 Available only for [DOM diff implementation][dom-diff-variant].
 
@@ -393,5 +394,6 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 [dom-diff-variant]: #dom-diff-variant
 [morphdom-api]: https://github.com/patrick-steele-idem/morphdom#morphdomfromnode-tonode-options--node
 [backbone-view]: http://backbonejs.org/#View
+[raf]: https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame
 [browserstack]: https://www.browserstack.com/
 [browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237

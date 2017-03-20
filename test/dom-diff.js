@@ -1,6 +1,8 @@
 'use strict';
 
 const assert = require('assert');
+const createMockRaf = require('mock-raf');
+const sinon = require('sinon');
 const $ = require('jquery');
 const Fn = require('../dom-diff');
 const IndexFn = require('../index');
@@ -20,6 +22,20 @@ function template ( count ) {
 
 describe('DOM diff', function () {
 
+	const mockRaf = createMockRaf();
+	let stub;
+
+	before(function () {
+		if ( !window.requestAnimationFrame ) {
+			window.requestAnimationFrame = () => {};
+		}
+		stub = sinon.stub(window, 'requestAnimationFrame', mockRaf.raf);
+	});
+
+	after(function () {
+		stub.restore();
+	});
+
 	it('should have proper content after render diffing', function () {
 
 		let count = 0;
@@ -30,6 +46,7 @@ describe('DOM diff', function () {
 
 		$originalEl = shelby.$el;
 		shelby.renderDiff($(template(count)));
+		mockRaf.step();
 		$newEl = shelby.$el;
 
 		assert.equal(shelby.$el.find('.hazel').text(), '0');
@@ -40,6 +57,7 @@ describe('DOM diff', function () {
 
 		$originalEl = shelby.$el;
 		shelby.renderDiff($(template(count)));
+		mockRaf.step();
 		$newEl = shelby.$el;
 
 		assert.equal(shelby.$el.find('.hazel').text(), '2');
@@ -60,6 +78,7 @@ describe('DOM diff', function () {
 
 		$originalEl = shelby.$el;
 		shelby.renderDiff(template(count));
+		mockRaf.step();
 		$newEl = shelby.$el;
 
 		assert.equal(shelby.$el.is('span.hazel'), true);
@@ -71,6 +90,7 @@ describe('DOM diff', function () {
 
 		$originalEl = shelby.$el;
 		shelby.renderDiff(template(count));
+		mockRaf.step();
 		$newEl = shelby.$el;
 
 		assert.equal(shelby.$el.text(), '2');
@@ -96,8 +116,11 @@ describe('DOM diff', function () {
 		$originalEl = shelby.$el;
 		const content = subview.getRenderPlaceholder();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		$newEl = shelby.$el;
 
 		assert.equal(shelby.$el.find('#sasha').length, 1);
@@ -132,8 +155,11 @@ describe('DOM diff', function () {
 		$originalEl = shelby.$el;
 		const content = `<div>${subviewOne.getRenderPlaceholder()}${subviewTwo.getRenderPlaceholder()}${subviewThree.getRenderPlaceholder()}</div>`;
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.assignSubview('subviewTwoPlaceholder');
 		$newEl = shelby.$el;
 
@@ -156,6 +182,7 @@ describe('DOM diff', function () {
 
 		assert.throws(() => {
 			shelby.renderDiff(`<div>hazel</div>${template(count)}`);
+			mockRaf.step();
 		}, 'View must contain only one parent element.');
 
 		shelby.remove();
@@ -178,7 +205,9 @@ describe('DOM diff', function () {
 		$originalEl = shelby.$el;
 		const content = subview.getRenderPlaceholder();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content);
+		mockRaf.step();
 		shelby.renderDiff(content, () => {
 
 			$newEl = shelby.$el;
@@ -191,6 +220,7 @@ describe('DOM diff', function () {
 			done();
 
 		});
+		mockRaf.step();
 
 	});
 
