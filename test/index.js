@@ -1,9 +1,9 @@
-'use strict';
+import assert from 'assert';
+import sinon from 'sinon';
+import simulant from 'simulant';
+import scopedQuerySelectorAll from 'scoped-queryselectorall';
+import Fn from '../view';
 
-const assert = require('assert');
-const sinon = require('sinon');
-const $ = require('jquery');
-const Fn = require('../index');
 const fixture = window.__html__['test/fixtures/index.html'];
 
 beforeEach(function () {
@@ -20,11 +20,7 @@ describe('Basic', function () {
 		const shelby = new Fn();
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid, 0);
-		assert.equal(shelby.ens, '.kist.view.0');
-		assert.equal(shelby.$html.is($('html')), true);
-		assert.equal(shelby.$body.is($('body')), true);
-		assert.equal(shelby.$doc.is($(document)), true);
-		assert.equal(shelby.$win.is($(window)), true);
+		assert.equal(shelby.ens, '.figura.0');
 		shelby.remove();
 	});
 
@@ -38,7 +34,7 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
-			assert.equal(shelby.$('#sasha').is($('#sasha')), true);
+			assert.equal(shelby.$('#sasha')[0], document.querySelector('#sasha'));
 			shelby.remove();
 		});
 
@@ -62,9 +58,9 @@ describe('Methods', function () {
 				el: '#shelby'
 			});
 
-			assert.equal(shelby.$el.is($('#shelby')), true);
+			assert.equal(shelby.$el, document.querySelector('#shelby'));
 			shelby.remove();
-			assert.equal(shelby.$el.is($('#shelby')), false);
+			assert.notEqual(shelby.$el, document.querySelector('#shelby'));
 
 			shelby.remove();
 
@@ -76,11 +72,11 @@ describe('Methods', function () {
 
 		it('should properly set and merge default options', function () {
 
-			const Shelby = Fn.extend({
-				initialize: function ( options ) {
+			class Shelby extends Fn {
+				initialize ( options ) {
 					this.setOptions(options);
 				}
-			});
+			};
 
 			const shelby = new Shelby({
 				el: '#shelby',
@@ -114,18 +110,18 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
-			const $shelby = $('#shelby');
-			const $lilly = $('.lilly');
+			const $shelby = document.querySelector('#shelby');
+			const $lilly = document.querySelector('.lilly');
 
-			assert.equal(shelby.$el.is($shelby), true);
-			assert.equal(shelby.el.isSameNode($shelby[0]), true);
+			assert.equal(shelby.$el, $shelby);
+			assert.equal(shelby.$el.isSameNode($shelby), true);
 
 			shelby.setElement($lilly);
 
-			assert.equal(shelby.$el.is($shelby), false);
-			assert.equal(shelby.el.isSameNode($shelby[0]), false);
-			assert.equal(shelby.$el.is($lilly), true);
-			assert.equal(shelby.el.isSameNode($lilly[0]), true);
+			assert.notEqual(shelby.$el, $shelby);
+			assert.equal(shelby.$el.isSameNode($shelby), false);
+			assert.equal(shelby.$el, $lilly);
+			assert.equal(shelby.$el.isSameNode($lilly), true);
 
 			shelby.remove();
 
@@ -135,29 +131,41 @@ describe('Methods', function () {
 
 	describe('View#cacheChildrenEl', function () {
 
-		it('should cache children elements', function () {
+		it('should cache children elements from original elements hash', function () {
 
-			const Shelby = Fn.extend({
+			const shelby = new Fn({
+				el: '#shelby',
 				childrenEl: {
 					sasha: '#sasha',
 					lilly: '.lilly'
 				}
 			});
-			const shelby = new Shelby({
-				el: '#shelby'
+
+			assert.equal(shelby.$sasha[0], document.querySelector('#sasha'));
+			assert.equal(shelby.$lilly[0], document.querySelector('.lilly'));
+
+			shelby.remove();
+
+		});
+
+		it('should cache children elements from passed elements hash', function () {
+
+			const shelby = new Fn({
+				el: '#shelby',
+				childrenEl: {
+					sasha: '#sasha',
+					lilly: '.lilly'
+				}
 			});
 
-			assert.equal(shelby.$sasha.is('#sasha'), true);
-			assert.equal(shelby.$sasha.selector, '#shelby #sasha');
-			assert.equal(shelby.$lilly.is('.lilly'), true);
-			assert.equal(shelby.$lilly.selector, '#shelby .lilly');
+			assert.equal(shelby.$sasha[0], document.querySelector('#sasha'));
+			assert.equal(shelby.$lilly[0], document.querySelector('.lilly'));
 
 			shelby.cacheChildrenEl({
 				roxie: '.roxie'
 			});
 
-			assert.equal(shelby.$roxie.is('.roxie'), true);
-			assert.equal(shelby.$roxie.selector, '#shelby .roxie');
+			assert.equal(shelby.$roxie[0], document.querySelector('.roxie'));
 
 			shelby.remove();
 
@@ -176,10 +184,10 @@ describe('Methods', function () {
 					'click #sasha': spy
 				}
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, true);
 			assert.equal(spy.calledOnce, false);
@@ -198,13 +206,13 @@ describe('Methods', function () {
 					'click #sasha': spy
 				}
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
 			shelby.delegateEvents({
 				'click #sasha': newSpy
 			});
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, false);
 			assert.equal(spy.calledOnce, false);
@@ -218,21 +226,21 @@ describe('Methods', function () {
 		it('should handle method names as event listeners', function () {
 
 			const spy = sinon.spy();
-			const Shelby = Fn.extend({
-				gracie: function () {
+			class Shelby extends Fn {
+				gracie () {
 					spy('gracie');
 				}
-			});
+			};
 			const shelby = new Shelby({
 				el: '#shelby',
 				events: {
 					'click #sasha': 'gracie'
 				}
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, true);
 			assert.equal(spy.calledOnce, false);
@@ -255,11 +263,11 @@ describe('Methods', function () {
 					'click #sasha': spy
 				}
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
 			shelby.undelegateEvents();
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, false);
 			assert.equal(spy.calledOnce, false);
@@ -278,11 +286,11 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
 			shelby.delegate('click', '#sasha', spy);
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, true);
 			assert.equal(spy.calledOnce, false);
@@ -301,13 +309,13 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
-			const $sasha = $('#sasha');
+			const $sasha = document.querySelector('#sasha');
 
 			shelby.delegate('click', '#sasha', spy);
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
 			shelby.undelegate('click', '#sasha', spy);
-			$sasha.trigger('click');
-			$sasha.trigger('click');
+			simulant.fire($sasha, 'click');
+			simulant.fire($sasha, 'click');
 
 			assert.equal(spy.called, true);
 			assert.equal(spy.calledOnce, true);
@@ -406,12 +414,12 @@ describe('Subviews', function () {
 		const subview = shelby.getSubview('subviewPlaceholder');
 
 		shelby.render = function () {
-			this.$el.html(subview.getRenderPlaceholder());
+			this.$el.innerHTML = subview.getRenderPlaceholder();
 			this.assignSubview('subviewPlaceholder');
 			return this;
 		};
 
-		assert.equal($(shelby.render().el).find('#sasha').length, 1);
+		assert.equal([...scopedQuerySelectorAll('#sasha', shelby.render().$el)].length, 1);
 
 		shelby.remove();
 
@@ -435,34 +443,40 @@ describe('Integration', function () {
 	it('should handle simple view case', function () {
 
 		const spy = sinon.spy();
-		const Shelby = Fn.extend({
-			el: '#shelby',
-			childrenEl: {
-				sasha: '#sasha',
-				lilly: '.lilly'
-			},
-			events: {
-				'click .lilly': 'testClick'
-			},
-			initialize: function ( options ) {
+		class Shelby extends Fn {
+			get el () {
+				return '#shelby';
+			}
+			get childrenEl () {
+				return {
+					sasha: '#sasha',
+					lilly: '.lilly'
+				};
+			}
+			get events () {
+				return {
+					'click .lilly': 'testClick'
+				};
+			}
+			initialize ( options ) {
 				this.setOptions(options);
-			},
-			testClick: function () {
+			}
+			testClick () {
 				spy('.lilly clicked!');
 			}
-		});
+		};
 
 		const shelby = new Shelby({
 			jackie: 'riley',
 			rudy: 'piper'
 		});
-		shelby.$lilly.trigger('click');
-		shelby.$lilly.trigger('click');
-		shelby.$lilly.trigger('click');
+		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly[0], 'click');
 
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid > 0, true);
-		assert.equal(/\.kist\.view\.\d{2,}/.test(shelby.ens), true);
+		assert.equal(/\.figura\.\d{2,}/.test(shelby.ens), true);
 		assert.deepEqual(shelby.options, {
 			jackie: 'riley',
 			rudy: 'piper'
@@ -482,49 +496,58 @@ describe('Integration', function () {
 		const spyConstructorOne = sinon.spy();
 		const spyConstructorTwo = sinon.spy();
 
-		const Shelby = Fn.extend({
-			el: '#shelby',
-			constructor: function () {
+		class Shelby extends Fn {
+			get el () {
+				return '#shelby';
+			}
+			constructor ( ...args ) {
+				super(...args);
 				spyConstructorOne('Calling custom constructor…');
-				Fn.prototype.constructor.apply(this, arguments);
-			},
-			childrenEl: {
-				sasha: '#sasha',
-				lilly: '.lilly'
-			},
-			events: {
-				'click .lilly': 'testClick'
-			},
-			initialize: function ( options ) {
+			}
+			get childrenEl () {
+				return {
+					sasha: '#sasha',
+					lilly: '.lilly'
+				};
+			}
+			get events () {
+				return {
+					'click .lilly': 'testClick'
+				};
+			}
+			initialize ( options ) {
 				this.setOptions(options);
-			},
-			testClick: function () {
+			}
+			testClick () {
 				spyOne('.lilly clicked!');
 			}
-		});
+		};
 
-		const Sasha = Shelby.extend({
-			constructor: function () {
-				Shelby.prototype.constructor.apply(this, arguments);
+		class Sasha extends Shelby {
+			constructor ( ...args ) {
+				super(...args);
 				spyConstructorTwo('Calling custom constructor, second time…');
-			},
-			childrenEl: $.extend({}, Shelby.prototype.childrenEl, {
-				honey: '.honey'
-			}),
-			testClick: function () {
-				Shelby.prototype.testClick.call(this);
+			}
+			get childrenEl () {
+				return {
+					...super.childrenEl,
+					honey: '.honey'
+				};
+			}
+			testClick () {
+				super.testClick();
 				spyTwo('.lilly clicked, with overriden method on `Sasha`.');
 			}
-		});
+		};
 
 		const shelby = new Shelby();
 		const sasha = new Sasha();
 
-		shelby.$lilly.trigger('click');
-		shelby.$lilly.trigger('click');
-		shelby.$lilly.trigger('click');
+		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly[0], 'click');
 
-		assert.equal(sasha.$honey.is('.honey'), true);
+		assert.equal(sasha.$honey[0], document.querySelector('.honey'));
 
 		assert.equal(spyConstructorOne.called, true);
 		assert.equal(spyConstructorOne.callCount, 2);

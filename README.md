@@ -1,8 +1,8 @@
-# kist-view
+# figura
 
 [![Build Status][ci-img]][ci] [![BrowserStack Status][browserstack-img]][browserstack]
 
-Simple UI view. Inspired by [Backbone.View][backbone-view].
+View component for markup you already have. Inspired by [Backbone.View][backbone-view].
 
 Features:
 
@@ -12,7 +12,7 @@ Features:
 ## Install
 
 ```sh
-npm install kist-view --save
+npm install figura --save
 ```
 
 ## Usage
@@ -28,38 +28,49 @@ npm install kist-view --save
 ```
 
 ```js
-const View = require('kist-view');
+import View from 'figura';
 
-const Shelby = View.extend({
-	el: '#shelby',
-	childrenEl: {
-		sasha: '#sasha'
-	},
-	events: {
-		'click .lilly': 'clickMethod'
-	},
-	initialize: function ( options ) {
+class Shelby extends View {
+	get el () {
+		return '#shelby';
+	}
+	get childrenEl () {
+		return {
+			sasha: '#sasha'
+		};
+	}
+	get events () {
+		return {
+			'click .lilly': 'clickMethod'
+		};
+	}
+	initialize ( options ) {
 		this.setOptions(options);
 		this.addSubview(new View());
 		this.addSubview(new View(), 'customKey');
-	},
-	getCustomKeyView: function () {
+	}
+	getCustomKeyView () {
 		return this.getSubview('customKey');
-	},
-	clickMethod: function () {
+	}
+	clickMethod () {
 		console.log('.lilly clicked!');
 	}
-});
+}
 
-var Sasha = Shelby.extend({
-	el: '#sasha',
-	childrenEl: $.extend({}, Shelby.prototype.childrenEl, {
-		honey: '.honey'
-	}),
-	clickMethod: function () {
+class Sasha extends Shelby {
+	get el () {
+		return '#sasha';
+	}
+	get childrenEl () {
+		return {
+			...super.childrenEl,
+			honey: '.honey'
+		};
+	}
+	clickMethod () {
 		console.log('.lilly clicked, with overriden method on `Sasha`.');
 	}
-});
+}
 
 const shelby = new Shelby();
 const sasha = new Sasha();
@@ -71,51 +82,50 @@ const roxie = new Sasha({
 Render placeholder and view assign usage.
 
 ```js
-const View = require('kist-view');
+import View from 'figura';
 
-const Shelby = View.extend({
-	el: '#shelby',
-	initialize: function () {
-		this.addSubview(new View(), 'customKey');
+class Shelby extends View {
+	get el () {
+		return '#shelby';
+	}
+	template () {
+		// Your template function result
 	},
-	render: function () {
-		this.$el.html(this.template({
+	initialize () {
+		this.addSubview(new View(), 'customKey');
+	}
+	render () {
+		this.$el.innerHTML = this.template({
 			customKeyComponent: this.getSubview('customKey').getRenderPlaceholder()
-		}));
+		});
 		this.assignSubview('customKey');
 		return this;
 	}
-});
+}
 ```
 
 <a name="dom-diff-variant"></a>DOM diff variant usage.
 
 ```js
-const View = require('kist-view/dist/dom-diff');
+import { DOMDiff } from 'figura';
 
-const Shelby = View.extend({
-	el: '#shelby',
-	template: function ( data ) {
+class Shelby extends DOMDiff {
+	get el () {
+		return '#shelby';
+	}
+	template ( data ) {
 		return `<span class="honey">${data.count}</span>`;
-	},
-	render: function () {
+	}
+	render () {
 		this.renderDiff(this.template({
 			count: 42 
 		}));
 		return this;
 	}
-});
+}
 ```
 
 ## API
-
-### View.extend(options)
-
-Returns: `Object`
-
-View extends [`kist-klass`](https://github.com/niksy/kist-klass) so it receives all it’s default properties. API usage for those properties is explanied on project page.
-
-The only difference is list of properties and methods `extend` method can receive.
 
 #### initialize(options)
 
@@ -125,15 +135,15 @@ Initialization method which will should run after `constructor` method.
 
 #### el
 
-Type: `String|jQuery`
+Type: `String|Element`
 
-UI element on which should view be initialized.
+Element on which should view be initialized.
 
 #### childrenEl
 
 Type: `Object`
 
-List of `el` children elements.
+List of children elements.
 
 Input like this:
 
@@ -144,18 +154,11 @@ Input like this:
 }
 ```
 
-Translates to output like this:
-
-```js
-this.$shelby = this.$el.find('.shelby');
-this.$sasha = this.$el.find('.sasha');
-```
-
 #### events
 
 Type: `Object`
 
-List of `el` events, delegated to children elements.
+List of events, delegated to children elements.
 
 Input like this:
 
@@ -170,29 +173,18 @@ Input like this:
 }
 ```
 
-Translates to output like this:
-
-```js
-this.$el.on('click' + this.ens, '.shelby', method1.bind(this));
-this.$el.on('submit' + this.ens, '.sasha', this.method2.bind(this));
-this.$el.on('mouseleave' + this.ens, '.lilly', this.method3.bind(this));
-this.$el.on('mouseenter' + this.ens, '.child4', function () {
-	// Do something
-}.bind(this));
-```
-
 #### $(selector)
 
 Type: `Function`  
-Returns: `jQuery`
+Returns: `NodeList`
 
-Alias for `this.$el.find(selector)`.
+Finds all descendants of `$el` filtered by selector.
 
 ##### selector
 
-Type: `String|jQuery`
+Type: `String`
 
-`String` is standard CSS selector.
+Standard CSS selector.
 
 #### setOptions(options)
 
@@ -225,9 +217,7 @@ Sets or re-sets current UI element.
 
 ##### element
 
-Type: `String|jQuery`
-
-`String` is standard CSS selector.
+Type: `String|Element`
 
 #### cacheChildrenEl(options)
 
@@ -335,17 +325,22 @@ Type: `String|Number`
 
 Key which is used to reference subview.
 
+## DOM diff
+
+Optionally you can use [`dom-diff`][dom-diff] implementation of this module 
+to achieve performant rendering of your content. The difference in applying 
+template content is very subtle—instead of applying new content to DOM element
+directly, you use convenient `renderDiff` method.
+
 ### renderDiff(content, cb)
 
 Renders [DOM diff][dom-diff] to current view’s element.
 
-Available only for [DOM diff implementation][dom-diff-variant].
-
 #### content
 
-Type: `String|Number|Element|jQuery`
+Type: `String`
 
-Content which should be diffed with current element and will be used to patch it.
+Content which should be diffed with current element and will be used to patch it. It should be valid HTML string.
 
 #### cb
 
@@ -365,15 +360,6 @@ Should this view be fully constructed from template. Useful when you want to
 completely hold view representation inside template files (default view
 behavior is to have root element outside template).
 
-Available only for [DOM diff implementation][dom-diff-variant].
-
-## DOM diff
-
-Optionally you can use [`dom-diff`][dom-diff] implementation of this module 
-to achieve performant rendering of your content. The difference in applying 
-template content is very subtle—instead of applying new content to DOM element
-directly, you use convenient `renderDiff` method.
-
 ## Test
 
 For local automated tests, run `npm run test:automated:local`.
@@ -386,8 +372,8 @@ Tested in IE9+ and all modern browsers.
 
 MIT © [Ivan Nikolić](http://ivannikolic.com)
 
-[ci]: https://travis-ci.org/niksy/kist-view
-[ci-img]: https://travis-ci.org/niksy/kist-view.svg?branch=master
+[ci]: https://travis-ci.org/niksy/figura
+[ci-img]: https://travis-ci.org/niksy/figura.svg?branch=master
 [dom-diff-explanation]: #dom-diff
 [dom-diff]: https://github.com/patrick-steele-idem/morphdom
 [dom-diff-variant]: #dom-diff-variant

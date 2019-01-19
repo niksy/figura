@@ -1,22 +1,20 @@
-'use strict';
+import morphdom from 'morphdom';
+import View from './view';
 
-const $ = require('jquery');
-const pick = require('mout/object/pick');
-const morphdom = require('morphdom');
-const View = require('./index');
 const hasOwnProp = Object.prototype.hasOwnProperty;
 
 /**
- * @param  {String|Number|Element|jQuery} template
+ * @param  {String} template
  *
- * @return {jQuery}
+ * @return {Element}
  */
 function getElementFromTemplate ( template ) {
-	template = $(template);
-	if ( template.length !== 1 ) {
+	const node = document.createElement('div');
+	node.insertAdjacentHTML('beforeend', template);
+	if ( node.childNodes.length !== 1 ) {
 		throw new Error('View must contain only one parent element.');
 	}
-	return template;
+	return node.firstChild;
 }
 
 /**
@@ -35,33 +33,45 @@ function handleSubviews ( ctx ) {
 
 }
 
-module.exports = View.extend({
+class DomDiffView extends View {
 
-	constructor: function ( options ) {
-		options = typeof options === 'object' ? options : {};
-		$.extend(this, pick(options, 'fromTemplate'));
-		View.prototype.constructor.apply(this, arguments);
-	},
+	get fromTemplate () {
+		const { _fromTemplate = false } = this;
+		return _fromTemplate;
+	}
+
+	set fromTemplate ( value = false ) {
+		this._fromTemplate = value;
+	}
+
+	constructor ( options = {} ) {
+		super(options);
+		['fromTemplate'].forEach(( viewOption ) => {
+			if ( viewOption in options ) {
+				this[viewOption] = options[viewOption];
+			}
+		});
+	}
 
 	/**
 	 * Get subview placeholder
 	 *
 	 * @return {String}
 	 */
-	getRenderPlaceholder: function () {
+	getRenderPlaceholder ( ...args ) {
 		this._usesRenderPlaceholder = true;
-		return View.prototype.getRenderPlaceholder.apply(this, arguments);
-	},
+		return super.getRenderPlaceholder(...args);
+	}
 
 	/**
 	 * Renders DOM diffed content
 	 *
-	 * @param  {String|Number|Element|jQuery} content
+	 * @param  {String} content
 	 * @param  {Function} cb
 	 *
 	 * @return {View}
 	 */
-	renderDiff: function ( content, cb ) {
+	renderDiff ( content, cb ) {
 
 		if ( this.fromTemplate && !this._domDiffReady ) {
 			this._domDiffReady = true;
@@ -70,7 +80,7 @@ module.exports = View.extend({
 			// check if there is only one parent element; if it’s not,
 			// inform implementor to correct that, otherwise set `this.$el` to
 			// the parent element from template
-			this.setElement(getElementFromTemplate(content)[0]);
+			this.setElement(getElementFromTemplate(content));
 			handleSubviews(this);
 
 			return this;
@@ -81,20 +91,22 @@ module.exports = View.extend({
 
 		let newEl;
 		if ( this.fromTemplate ) {
-			newEl = getElementFromTemplate(content)[0];
+			newEl = getElementFromTemplate(content);
 		} else {
-			newEl = this.$el.clone().html(content)[0];
+			const clonedNode = this.$el.cloneNode(true);
+			clonedNode.innerHTML = content;
+			newEl = clonedNode;
 		}
 
 		if ( typeof cb === 'function' ) {
-			morphdom(this.el, newEl, {
+			morphdom(this.$el, newEl, {
 				onElUpdated: () => {
 					handleSubviews(this);
 					cb();
 				}
 			});
 		} else {
-			morphdom(this.el, newEl);
+			morphdom(this.$el, newEl);
 			handleSubviews(this);
 		}
 
@@ -102,4 +114,6 @@ module.exports = View.extend({
 
 	}
 
-});
+};
+
+export default DomDiffView;

@@ -1,9 +1,9 @@
-'use strict';
+import assert from 'assert';
+import scopedQuerySelectorAll from 'scoped-queryselectorall';
+import matches from 'dom-matches';
+import Fn from '../dom-diff';
+import IndexFn from '../view';
 
-const assert = require('assert');
-const $ = require('jquery');
-const Fn = require('../dom-diff');
-const IndexFn = require('../index');
 const fixture = window.__html__['test/fixtures/index.html'];
 
 beforeEach(function () {
@@ -29,21 +29,21 @@ describe('DOM diff', function () {
 		let $originalEl, $newEl;
 
 		$originalEl = shelby.$el;
-		shelby.renderDiff($(template(count)));
+		shelby.renderDiff(template(count));
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.find('.hazel').text(), '0');
-		assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+		assert.equal(scopedQuerySelectorAll('.hazel', shelby.$el)[0].textContent, '0');
+		assert.equal($originalEl.isSameNode($newEl), true);
 
 		count++;
 		count++;
 
 		$originalEl = shelby.$el;
-		shelby.renderDiff($(template(count)));
+		shelby.renderDiff(template(count));
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.find('.hazel').text(), '2');
-		assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+		assert.equal(scopedQuerySelectorAll('.hazel', shelby.$el)[0].textContent, '2');
+		assert.equal($originalEl.isSameNode($newEl), true);
 
 		shelby.remove();
 
@@ -62,9 +62,9 @@ describe('DOM diff', function () {
 		shelby.renderDiff(template(count));
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.is('span.hazel'), true);
-		assert.equal(shelby.$el.text(), '0');
-		assert.equal($originalEl[0].isSameNode($newEl[0]), false);
+		assert.equal(matches(shelby.$el, 'span.hazel'), true);
+		assert.equal(shelby.$el.textContent, '0');
+		assert.equal($originalEl.isSameNode($newEl), false);
 
 		count++;
 		count++;
@@ -73,8 +73,8 @@ describe('DOM diff', function () {
 		shelby.renderDiff(template(count));
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.text(), '2');
-		assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+		assert.equal(shelby.$el.textContent, '2');
+		assert.equal($originalEl.isSameNode($newEl), true);
 
 		shelby.remove();
 
@@ -100,8 +100,8 @@ describe('DOM diff', function () {
 		shelby.renderDiff(content);
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.find('#sasha').length, 1);
-		assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+		assert.equal([...scopedQuerySelectorAll('#sasha', shelby.$el)].length, 1);
+		assert.equal($originalEl.isSameNode($newEl), true);
 
 		shelby.remove();
 
@@ -137,10 +137,10 @@ describe('DOM diff', function () {
 		shelby.assignSubview('subviewTwoPlaceholder');
 		$newEl = shelby.$el;
 
-		assert.equal(shelby.$el.find('#sasha').length, 1);
-		assert.equal(shelby.$el.find('.lilly').length, 1);
-		assert.equal(shelby.$el.find(`[data-view-uid="${subviewThree.uid}"]`).length, 1);
-		assert.equal($originalEl[0].isSameNode($newEl[0]), false);
+		assert.equal([...scopedQuerySelectorAll('#sasha', shelby.$el)].length, 1);
+		assert.equal([...scopedQuerySelectorAll('.lilly', shelby.$el)].length, 1);
+		assert.equal([...scopedQuerySelectorAll(`[data-view-uid="${subviewThree.uid}"]`, shelby.$el)].length, 1);
+		assert.equal($originalEl.isSameNode($newEl), false);
 
 		shelby.remove();
 
@@ -183,8 +183,8 @@ describe('DOM diff', function () {
 
 			$newEl = shelby.$el;
 
-			assert.equal(shelby.$el.find('#sasha').length, 1);
-			assert.equal($originalEl[0].isSameNode($newEl[0]), true);
+			assert.equal([...scopedQuerySelectorAll('#sasha', shelby.$el)].length, 1);
+			assert.equal($originalEl.isSameNode($newEl), true);
 
 			shelby.remove();
 
