@@ -61,7 +61,6 @@ class View {
 		});
 
 		this._ensureElement();
-		this.initialize.apply(this, arguments);
 
 	}
 
@@ -99,10 +98,6 @@ class View {
 	 */
 	$ ( selector ) {
 		return scopedQuerySelectorAll(selector, this.$el);
-	}
-
-	initialize () {
-
 	}
 
 	/**

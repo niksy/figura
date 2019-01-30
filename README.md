@@ -45,7 +45,8 @@ class Shelby extends View {
 			'click .lilly': 'clickMethod'
 		};
 	}
-	initialize ( options ) {
+	constructor ( options ) {
+		super(options);
 		this.setOptions(options);
 		this.addSubview(new View());
 		this.addSubview(new View(), 'customKey');
@@ -91,8 +92,9 @@ class Shelby extends View {
 	}
 	template () {
 		// Your template function result
-	},
-	initialize () {
+	}
+	constructor ( options ) {
+		super(options);
 		this.addSubview(new View(), 'customKey');
 	}
 	render () {
@@ -114,7 +116,8 @@ class Sasha extends View {
 	get el () {
 		return '#sasha';
 	}
-	initialize () {
+	constructor ( options ) {
+		super(options);
 		this.setState({
 			jackie: 42,
 			romeo: '42'
@@ -160,17 +163,11 @@ class Shelby extends DOMDiff {
 
 ## API
 
-#### initialize(options)
-
-Type: `Function`
-
-Initialization method which will should run after `constructor` method.
-
 #### el
 
 Type: `String|Element`
 
-Element on which should view be initialized.
+Element on which should view be created.
 
 #### childrenEl
 

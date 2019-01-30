@@ -73,7 +73,8 @@ describe('Methods', function () {
 		it('should properly set and merge default options', function () {
 
 			class Shelby extends Fn {
-				initialize ( options ) {
+				constructor ( options ) {
+					super(options);
 					this.setOptions(options);
 				}
 			};
@@ -458,7 +459,8 @@ describe('Integration', function () {
 					'click .lilly': 'testClick'
 				};
 			}
-			initialize ( options ) {
+			constructor ( options ) {
+				super(options);
 				this.setOptions(options);
 			}
 			testClick () {
@@ -503,6 +505,7 @@ describe('Integration', function () {
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorOne('Calling custom constructor…');
+				this.setOptions(...args);
 			}
 			get childrenEl () {
 				return {
@@ -514,9 +517,6 @@ describe('Integration', function () {
 				return {
 					'click .lilly': 'testClick'
 				};
-			}
-			initialize ( options ) {
-				this.setOptions(options);
 			}
 			testClick () {
 				spyOne('.lilly clicked!');
