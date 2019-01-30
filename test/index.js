@@ -20,7 +20,6 @@ describe('Basic', function () {
 		const shelby = new Fn();
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid, 0);
-		assert.equal(shelby.ens, '.figura.0');
 		shelby.remove();
 	});
 
@@ -478,7 +477,6 @@ describe('Integration', function () {
 
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid > 0, true);
-		assert.equal(/\.figura\.\d{2,}/.test(shelby.ens), true);
 		assert.deepEqual(shelby.options, {
 			jackie: 'riley',
 			rudy: 'piper'

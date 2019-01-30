@@ -3,7 +3,6 @@ import scopedQuerySelectorAll from 'scoped-queryselectorall';
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
 const viewOptions = ['el', 'events', 'childrenEl'];
-const eventNamespace = '.figura';
 let instanceCount = 0;
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
@@ -49,7 +48,6 @@ class View {
 	constructor ( options = {} ) {
 
 		this.uid = instanceCount++;
-		this.ens = `${eventNamespace}.${this.uid}`;
 		this.subviews = {};
 		this.delegatedEvents = {};
 		this.state = {};
