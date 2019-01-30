@@ -173,14 +173,12 @@ Element on which should view be created.
 
 Type: `Object`
 
-List of children elements.
-
-Input like this:
+List of children elements, mapped to DOM nodes based on CSS selector.
 
 ```js
 {
-	'shelby': '.shelby',
-	'sasha': '.sasha'
+	'shelby': '.shelby', // this.$shelby = this.$('.shelby');
+	'sasha': '.sasha' // this.$sasha = this.$('.sasha');
 }
 ```
 
@@ -189,8 +187,6 @@ Input like this:
 Type: `Object`
 
 List of events, delegated to children elements.
-
-Input like this:
 
 ```js
 {
@@ -208,7 +204,7 @@ Input like this:
 Type: `Function`  
 Returns: `NodeList`
 
-Finds all descendants of `$el` filtered by selector.
+Finds all descendants of `$el` filtered by CSS selector.
 
 ##### selector
 
