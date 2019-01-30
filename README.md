@@ -7,6 +7,7 @@ View component for markup you already have. Inspired by [Backbone.View][backbone
 Features:
 
 * Subview managment: adding, getting and removing
+* Basic state setting and implicit rendering
 * [Optional DOM diff support for rendering][dom-diff-explanation]
 
 ## Install
@@ -104,6 +105,38 @@ class Shelby extends View {
 }
 ```
 
+Using state.
+
+```js
+import View from 'figura';
+
+class Sasha extends View {
+	get el () {
+		return '#sasha';
+	}
+	initialize () {
+		this.setState({
+			jackie: 42,
+			romeo: '42'
+		});
+		const state = this.state;
+		console.log(state.jackie); // => 42
+	}
+	stateValueModifier ( key, value ) {
+		if ( key === 'romeo' ) {
+			return parseInt(value, 10);
+		}
+		return value;
+	}
+	render ( key, state ) {
+		if ( key === 'romeo' ) {
+			this.$el.innerHTML = `romeo value is ${state.romeo}.`;
+		}
+		return this;
+	}
+}
+```
+
 <a name="dom-diff-variant"></a>DOM diff variant usage.
 
 ```js
@@ -196,12 +229,12 @@ Set instance options. It will set everything except `el`, `childrenEl` and `even
 
 Type: `Object`
 
-#### render
+#### render(key, state)
 
 Type: `Function`
 Returns: `View`
 
-Render method.
+Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
 
 #### remove
 
@@ -324,6 +357,31 @@ subview which rendered it’s placeholder with `getRenderPlaceholder`.
 Type: `String|Number`
 
 Key which is used to reference subview.
+
+#### setState(data)
+
+Type: `Function`
+
+Set state for instance.
+
+#### stateValueModifier(key, value)
+
+Type: `Function`
+Returns: `Mixed`
+
+Modify state value before setting new state.
+
+##### key
+
+Type: `String`
+
+State key for which value will be modified.
+
+##### value
+
+Type: `Mixed`
+
+State value to modify.
 
 ## DOM diff
 

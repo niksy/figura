@@ -570,3 +570,49 @@ describe('Integration', function () {
 	});
 
 });
+
+describe('Stateful', function () {
+
+	it('should set state', function () {
+
+		const view = new Fn();
+
+		view.setState({
+			jackie: 42
+		});
+
+		const state = view.state;
+
+		assert.equal(state.jackie, 42);
+
+		view.remove();
+
+	});
+
+	it('should set state with state value modified', function () {
+
+		class View extends Fn {
+			stateValueModifier ( key, value ) {
+				if ( key === 'romeo' ) {
+					return parseInt(value, 10);
+				}
+				return value;
+			}
+		}
+
+		const view = new View();
+
+		view.setState({
+			romeo: '42'
+		});
+
+		const state = view.state;
+
+		assert.equal(typeof state.romeo, 'number');
+		assert.equal(state.romeo, 42);
+
+		view.remove();
+
+	});
+
+});

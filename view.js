@@ -52,6 +52,7 @@ class View {
 		this.ens = `${eventNamespace}.${this.uid}`;
 		this.subviews = {};
 		this.delegatedEvents = {};
+		this.state = {};
 
 		viewOptions.forEach(( viewOption ) => {
 			if ( viewOption in options ) {
@@ -105,9 +106,50 @@ class View {
 	}
 
 	/**
+	 * @param {Object} data
+	 */
+	setState ( data = {} ) {
+
+		const newState = Object.entries(data)
+			.reduce(( obj, [ key, value ] ) => {
+				const modifiedValue = this.stateValueModifier(key, value);
+				return {
+					...obj,
+					[key]: modifiedValue
+				};
+			}, {});
+
+		const state = {
+			...this.state,
+			...newState
+		};
+
+		this.state = state;
+
+		Object.keys(newState)
+			.forEach(( key ) => {
+				this.render(key, state);
+			});
+
+	}
+
+	/**
+	 * @param  {String} key
+	 * @param  {Mixed} value
+	 *
+	 * @return {Mixed}
+	 */
+	stateValueModifier ( key, value ) {
+		return value;
+	}
+
+	/**
+	 * @param  {String} key
+	 * @param  {Object} state
+	 *
 	 * @return {View}
 	 */
-	render () {
+	render ( key, state = this.state ) {
 		return this;
 	}
 
