@@ -69,20 +69,22 @@ class View {
 	 * @param {String|Element} el
 	 */
 	setElement ( el = '' ) {
-		if ( typeof el === 'string' ) {
+		if ( typeof el === 'string' && el !== '' ) {
 			this.$el = document.querySelector(el);
-		} else {
+		} else if ( el instanceof Element ) {
 			this.$el = el;
+		} else {
+			this.$el = null;
 		}
 	}
 
 	/**
 	 * @param  {Mixed} selector
 	 *
-	 * @return {NodeList}
+	 * @return {Element[]}
 	 */
 	$ ( selector ) {
-		return scopedQuerySelectorAll(selector, this.$el);
+		return [].slice.call(scopedQuerySelectorAll(selector, this.$el));
 	}
 
 	/**
@@ -172,10 +174,9 @@ class View {
 			return;
 		}
 
-		Object.keys(childrenEl)
-			.forEach(( key ) => {
-				const selector = this.$(childrenEl[key]);
-				this[`$${key}`] = selector;
+		Object.entries(childrenEl)
+			.forEach(([ childName, selector ]) => {
+				this[`$${childName}`] = this.$(selector);
 			});
 
 	}
@@ -191,15 +192,12 @@ class View {
 			return;
 		}
 
-		Object.keys(events)
-			.forEach(( key ) => {
-				let method = events[key];
-				if ( typeof method !== 'function' ) {
-					method = this[method];
-				}
-				if ( method ) {
-					const match = key.match(delegateEventSplitter);
-					this.delegate(match[1], match[2], method.bind(this));
+		Object.entries(events)
+			.forEach(([ eventSelector, method ]) => {
+				const resolvedMethod = typeof method !== 'function' ? this[method] : method;
+				if ( resolvedMethod ) {
+					const [ , eventName, selector ] = eventSelector.match(delegateEventSplitter);
+					this.delegate(eventName, selector, resolvedMethod.bind(this));
 				}
 			});
 
@@ -209,10 +207,10 @@ class View {
 		if ( !this.$el ) {
 			return;
 		}
-		Object.keys(this.delegatedEvents)
-			.forEach(( handlerKey ) => {
-				const match = handlerKey.match(delegateEventSplitter);
-				this.undelegate(match[1], match[2], this.delegatedEvents[handlerKey].delegatedEvent);
+		Object.entries(this.delegatedEvents)
+			.forEach(([ eventSelector, method ]) => {
+				const [ , eventName, selector ] = eventSelector.match(delegateEventSplitter);
+				this.undelegate(eventName, selector, method.delegatedEvent);
 			});
 	}
 
