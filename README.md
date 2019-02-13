@@ -148,10 +148,15 @@ Type: `Object`
 
 List of children elements, mapped to DOM nodes based on CSS selector.
 
+To handle common use case of selecting only one element, if result contains only one element, only that element is returned, otherwise array of elements is returned.
+
+If you want to return array of elements regardless of resulting count, append `[]` to list key.
+
 ```js
 {
-	'shelby': '.shelby', // this.$shelby = this.$('.shelby');
-	'sasha': '.sasha' // this.$sasha = this.$('.sasha');
+	'shelby': '.shelby', // this.$shelby = this.$('.shelby'); - Returns either one or array of elements, based on resulting count
+	'sasha': '.sasha' // this.$sasha = this.$('.sasha'); - Returns either one or array of elements, based on resulting count
+	'rudy[]': '.rudy' // this.$rudy = this.$('.rudy'); - Always returns array of elements
 }
 ```
 

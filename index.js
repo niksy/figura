@@ -2,6 +2,7 @@ import delegate from 'delegate-event-listener';
 import scopedQuerySelectorAll from 'scoped-queryselectorall';
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
+const childNameSplitter = /^(.*?)(\[\])?$/;
 const viewOptions = ['el', 'events', 'childrenEl'];
 let instanceCount = 0;
 
@@ -80,11 +81,16 @@ class View {
 
 	/**
 	 * @param  {Mixed} selector
+	 * @param  {Boolean} returnNodesArray
 	 *
-	 * @return {Element[]}
+	 * @return {Element|Element[]}
 	 */
-	$ ( selector ) {
-		return [].slice.call(scopedQuerySelectorAll(selector, this.$el));
+	$ ( selector, returnNodesArray = false ) {
+		const nodes =  [].slice.call(scopedQuerySelectorAll(selector, this.$el));
+		if ( !returnNodesArray && nodes.length === 1 ) {
+			return nodes[0];
+		}
+		return nodes;
 	}
 
 	/**
@@ -176,7 +182,8 @@ class View {
 
 		Object.entries(childrenEl)
 			.forEach(([ childName, selector ]) => {
-				this[`$${childName}`] = this.$(selector);
+				const [ , resolvedChildName, returnNodesArray ] = childName.match(childNameSplitter);
+				this[`$${resolvedChildName}`] = this.$(selector, Boolean(returnNodesArray));
 			});
 
 	}

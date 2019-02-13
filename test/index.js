@@ -33,7 +33,7 @@ describe('Methods', function () {
 			const shelby = new Fn({
 				el: '#shelby'
 			});
-			assert.equal(shelby.$('#sasha')[0], document.querySelector('#sasha'));
+			assert.equal(shelby.$('#sasha'), document.querySelector('#sasha'));
 			shelby.remove();
 		});
 
@@ -131,18 +131,20 @@ describe('Methods', function () {
 
 	describe('View#cacheChildrenEl', function () {
 
-		it('should cache children elements from original elements hash', function () {
+		it.only('should cache children elements from original elements hash', function () {
 
 			const shelby = new Fn({
 				el: '#shelby',
 				childrenEl: {
 					sasha: '#sasha',
-					lilly: '.lilly'
+					lilly: '.lilly',
+					'honey[]': '.honey'
 				}
 			});
 
-			assert.equal(shelby.$sasha[0], document.querySelector('#sasha'));
-			assert.equal(shelby.$lilly[0], document.querySelector('.lilly'));
+			assert.equal(shelby.$sasha, document.querySelector('#sasha'));
+			assert.equal(shelby.$lilly, document.querySelector('.lilly'));
+			assert.equal(shelby.$honey[0], document.querySelector('.honey'));
 
 			shelby.remove();
 
@@ -158,8 +160,8 @@ describe('Methods', function () {
 				}
 			});
 
-			assert.equal(shelby.$sasha[0], document.querySelector('#sasha'));
-			assert.equal(shelby.$lilly[0], document.querySelector('.lilly'));
+			assert.equal(shelby.$sasha, document.querySelector('#sasha'));
+			assert.equal(shelby.$lilly, document.querySelector('.lilly'));
 
 			shelby.cacheChildrenEl({
 				roxie: '.roxie'
@@ -471,9 +473,9 @@ describe('Integration', function () {
 			jackie: 'riley',
 			rudy: 'piper'
 		});
-		simulant.fire(shelby.$lilly[0], 'click');
-		simulant.fire(shelby.$lilly[0], 'click');
-		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly, 'click');
+		simulant.fire(shelby.$lilly, 'click');
+		simulant.fire(shelby.$lilly, 'click');
 
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid > 0, true);
@@ -541,11 +543,11 @@ describe('Integration', function () {
 		const shelby = new Shelby();
 		const sasha = new Sasha();
 
-		simulant.fire(shelby.$lilly[0], 'click');
-		simulant.fire(shelby.$lilly[0], 'click');
-		simulant.fire(shelby.$lilly[0], 'click');
+		simulant.fire(shelby.$lilly, 'click');
+		simulant.fire(shelby.$lilly, 'click');
+		simulant.fire(shelby.$lilly, 'click');
 
-		assert.equal(sasha.$honey[0], document.querySelector('.honey'));
+		assert.equal(sasha.$honey, document.querySelector('.honey'));
 
 		assert.equal(spyConstructorOne.called, true);
 		assert.equal(spyConstructorOne.callCount, 2);
