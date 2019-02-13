@@ -58,34 +58,21 @@ class View {
 			}
 		});
 
-		this._ensureElement();
-
-	}
-
-	_ensureElement () {
-		if ( !this.el ) {
-			return;
-		}
+		this.undelegateEvents();
 		this.setElement(this.el);
+		this.delegateEvents(this.events);
+		this.cacheChildrenEl(this.childrenEl);
+
 	}
 
 	/**
 	 * @param {String|Element} el
 	 */
-	_setElement ( el ) {
+	setElement ( el = '' ) {
 		if ( typeof el === 'string' ) {
 			this.$el = document.querySelector(el);
 		} else {
 			this.$el = el;
-		}
-	}
-
-	_removeElement () {
-		if ( !this.el ) {
-			return;
-		}
-		if ( this.$el.parentNode !== null ) {
-			this.$el.parentNode.removeChild(this.$el);
 		}
 	}
 
@@ -147,9 +134,17 @@ class View {
 	}
 
 	remove () {
+
 		this.removeSubviews();
 		delete this.subviews;
-		this._removeElement();
+
+		if ( this.$el && this.$el.parentNode !== null ) {
+			this.$el.parentNode.removeChild(this.$el);
+		}
+		delete this.el;
+		delete this.events;
+		delete this.childrenEl;
+
 	}
 
 	/**
@@ -169,21 +164,13 @@ class View {
 	}
 
 	/**
-	 * @param {Element} el
-	 */
-	setElement ( el ) {
-		this.undelegateEvents();
-		this._setElement(el);
-		this.delegateEvents();
-		this.cacheChildrenEl();
-	}
-
-	/**
 	 * @param  {Object} childrenEl
 	 */
-	cacheChildrenEl ( childrenEl ) {
+	cacheChildrenEl ( childrenEl = {} ) {
 
-		childrenEl = childrenEl || this.childrenEl;
+		if ( !this.$el ) {
+			return;
+		}
 
 		Object.keys(childrenEl)
 			.forEach(( key ) => {
@@ -196,10 +183,13 @@ class View {
 	/**
 	 * @param  {Object} events
 	 */
-	delegateEvents ( events ) {
+	delegateEvents ( events = {} ) {
 
-		events = events || this.events;
 		this.undelegateEvents();
+
+		if ( !this.$el ) {
+			return;
+		}
 
 		Object.keys(events)
 			.forEach(( key ) => {
@@ -216,13 +206,14 @@ class View {
 	}
 
 	undelegateEvents () {
-		if ( this.$el ) {
-			Object.keys(this.delegatedEvents)
-				.forEach(( handlerKey ) => {
-					const match = handlerKey.match(delegateEventSplitter);
-					this.undelegate(match[1], match[2], this.delegatedEvents[handlerKey].delegatedEvent);
-				});
+		if ( !this.$el ) {
+			return;
 		}
+		Object.keys(this.delegatedEvents)
+			.forEach(( handlerKey ) => {
+				const match = handlerKey.match(delegateEventSplitter);
+				this.undelegate(match[1], match[2], this.delegatedEvents[handlerKey].delegatedEvent);
+			});
 	}
 
 	/**
