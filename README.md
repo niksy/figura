@@ -177,10 +177,10 @@ List of events, delegated to children elements.
 }
 ```
 
-#### $(selector)
+#### $(selector, returnAllNodes)
 
 Type: `Function`  
-Returns: `NodeList`
+Returns: `Element|Element[]`
 
 Finds all descendants of `$el` filtered by CSS selector.
 
@@ -189,6 +189,13 @@ Finds all descendants of `$el` filtered by CSS selector.
 Type: `String`
 
 Standard CSS selector.
+
+##### returnAllNodes
+
+Type: `Boolean`  
+Default: `false`
+
+Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
 #### setOptions(options)
 
