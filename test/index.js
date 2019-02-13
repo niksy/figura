@@ -2,7 +2,7 @@ import assert from 'assert';
 import sinon from 'sinon';
 import simulant from 'simulant';
 import scopedQuerySelectorAll from 'scoped-queryselectorall';
-import Fn from '../view';
+import Fn from '../index';
 
 const fixture = window.__html__['test/fixtures/index.html'];
 

@@ -6,9 +6,8 @@ View component for markup you already have. Inspired by [Backbone.View][backbone
 
 Features:
 
-* Subview managment: adding, getting and removing
 * Basic state setting and implicit rendering
-* [Optional DOM diff support for rendering][dom-diff-explanation]
+* Subview managment: adding, getting and removing
 
 ## Install
 
@@ -48,11 +47,6 @@ class Shelby extends View {
 	constructor ( options ) {
 		super(options);
 		this.setOptions(options);
-		this.addSubview(new View());
-		this.addSubview(new View(), 'customKey');
-	}
-	getCustomKeyView () {
-		return this.getSubview('customKey');
 	}
 	clickMethod () {
 		console.log('.lilly clicked!');
@@ -81,33 +75,7 @@ const roxie = new Sasha({
 });
 ```
 
-Render placeholder and view assign usage.
-
-```js
-import View from 'figura';
-
-class Shelby extends View {
-	get el () {
-		return '#shelby';
-	}
-	template () {
-		// Your template function result
-	}
-	constructor ( options ) {
-		super(options);
-		this.addSubview(new View(), 'customKey');
-	}
-	render () {
-		this.$el.innerHTML = this.template({
-			customKeyComponent: this.getSubview('customKey').getRenderPlaceholder()
-		});
-		this.assignSubview('customKey');
-		return this;
-	}
-}
-```
-
-Using state.
+Using state. **Prefer using state for render purposes** because you can contain all render specifics inside `render` method.
 
 ```js
 import View from 'figura';
@@ -133,29 +101,34 @@ class Sasha extends View {
 	}
 	render ( key, state ) {
 		if ( key === 'romeo' ) {
-			this.$el.innerHTML = `romeo value is ${state.romeo}.`;
+			this.$el.innerHTML = `romeo value is ${state.romeo}.`; // `state.romeo` is number instead of string
 		}
 		return this;
 	}
 }
 ```
 
-<a name="dom-diff-variant"></a>DOM diff variant usage.
+Render placeholder and view assign usage.
 
 ```js
-import { DOMDiff } from 'figura';
+import View from 'figura';
 
-class Shelby extends DOMDiff {
+class Shelby extends View {
 	get el () {
 		return '#shelby';
 	}
-	template ( data ) {
-		return `<span class="honey">${data.count}</span>`;
+	template () {
+		// Template function result
+	}
+	constructor ( options ) {
+		super(options);
+		this.addSubview(new View(), 'customKey');
 	}
 	render () {
-		this.renderDiff(this.template({
-			count: 42 
-		}));
+		this.$el.innerHTML = this.template({
+			customKeyComponent: this.getSubview('customKey').getRenderPlaceholder()
+		});
+		this.assignSubview('customKey');
 		return this;
 	}
 }
@@ -190,10 +163,10 @@ List of events, delegated to children elements.
 
 ```js
 {
-	'click .shelby': 'method1',
-	'submit .sasha': 'method2',
-	'mouseleave .lilly': 'method3',
-	'mouseenter .child4': function () {
+	'click .shelby': 'method1', // Delegated click event to `.shelby` calling instance method `method1`
+	'submit .sasha': 'method2', // Delegated submit event to `.sasha` calling instance method `method2`
+	'mouseleave .lilly': 'method3', // Delegated mouseleave event to `.lilly` calling instance method `method3`
+	'mouseenter .rudy': ( e ) {  // Delegated mouseenter event to `.rudy` calling anonymous function
 		// Do something
 	}
 }
@@ -299,63 +272,11 @@ Type: `Function`
 
 Undelegate single event. For argument definition, see [`delegate`](#delegateeventname-selector-listener).
 
-### addSubview(view, key)
-
-Adds subview to current view.
-
-#### view
-
-Type: `View`
-
-Subview to add to current view.
-
-#### key
-
-Type: `String|Number`
-
-Subview key so it can be easily identified in subview collection. If undefined, 
-view’s `uid` property will be used.
-
-### getSubview(key)
-
-Gets subview referenced by key.
-
-#### key
-
-Type: `String|Number`
-
-Key which is used to reference subview.
-
-### removeSubviews
-
-Removes all subviews from current view.
-
-### getRenderPlaceholder
-
-Returns view’s placeholder element which will be used in resolving for
-`assignSubview`.
-
-### assignSubview(key)
-
-Replaces view’s render placeholder with real content (returned when running
-`render` method).
-
-If you’re using `renderDiff` for content rendering, and view is instance of
-[DOM diff implementation][dom-diff-variant], explicit
-call for this method in parent view is unecessary—it will be called for every
-subview which rendered it’s placeholder with `getRenderPlaceholder`.
-
-#### key
-
-Type: `String|Number`
-
-Key which is used to reference subview.
-
 #### setState(data)
 
 Type: `Function`
 
-Set state for instance.
+Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
 
 #### stateValueModifier(key, value)
 
@@ -376,40 +297,52 @@ Type: `Mixed`
 
 State value to modify.
 
-## DOM diff
+#### addSubview(view, key)
 
-Optionally you can use [`dom-diff`][dom-diff] implementation of this module 
-to achieve performant rendering of your content. The difference in applying 
-template content is very subtle—instead of applying new content to DOM element
-directly, you use convenient `renderDiff` method.
+Adds subview to current view.
 
-### renderDiff(content, cb)
+##### view
 
-Renders [DOM diff][dom-diff] to current view’s element.
+Type: `View`
 
-#### content
+Subview to add to current view.
 
-Type: `String`
+##### key
 
-Content which should be diffed with current element and will be used to patch it. It should be valid HTML string.
+Type: `String|Number`
 
-#### cb
+Subview key so it can be easily identified in subview collection. If undefined, 
+view’s `uid` property will be used.
 
-Type: `Function`
+#### getSubview(key)
 
-Called after current view’s element is updated by using
-[morphdom’s `onElUpdated` hook][morphdom-api]. In most cases you won’t need
-to use this callback, but it can be useful if DOM tree which needs to be
-processed is large and you need to handle subview rendering after processing or
-additional DOM manipulation.
+Gets subview referenced by key.
 
-### fromTemplate
+##### key
 
-Type: `Boolean`
+Type: `String|Number`
 
-Should this view be fully constructed from template. Useful when you want to
-completely hold view representation inside template files (default view
-behavior is to have root element outside template).
+Key which is used to reference subview.
+
+#### removeSubviews
+
+Removes all subviews from current view.
+
+#### getRenderPlaceholder
+
+Returns view’s placeholder element which will be used in resolving for
+`assignSubview`.
+
+#### assignSubview(key)
+
+Replaces view’s render placeholder with real content. Real content should be rendered
+inside subview `render` method.
+
+##### key
+
+Type: `String|Number`
+
+Key which is used to reference subview.
 
 ## Test
 
@@ -425,9 +358,6 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 
 [ci]: https://travis-ci.org/niksy/figura
 [ci-img]: https://travis-ci.org/niksy/figura.svg?branch=master
-[dom-diff-explanation]: #dom-diff
-[dom-diff]: https://github.com/patrick-steele-idem/morphdom
-[dom-diff-variant]: #dom-diff-variant
 [morphdom-api]: https://github.com/patrick-steele-idem/morphdom#morphdomfromnode-tonode-options--node
 [backbone-view]: http://backbonejs.org/#View
 [browserstack]: https://www.browserstack.com/

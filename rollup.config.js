@@ -24,11 +24,5 @@ module.exports = {
 			only: ['scoped-queryselectorall']
 		}),
 		commonjs()
-	],
-	external: ( id ) => {
-		if ( id.includes('dom-diff') ) {
-			return true;
-		}
-		return false;
-	}
+	]
 };

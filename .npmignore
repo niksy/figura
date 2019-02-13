@@ -1,5 +1,0 @@
-index.js
-dom-diff.js
-lib/*
-test-dist/
-!dist/*
