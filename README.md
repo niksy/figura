@@ -361,8 +361,8 @@ Tested in IE9+ and all modern browsers.
 
 MIT © [Ivan Nikolić](http://ivannikolic.com)
 
-[ci]: https://travis-ci.org/niksy/figura
-[ci-img]: https://travis-ci.org/niksy/figura.svg?branch=master
+[ci]: https://travis-ci.com/niksy/figura
+[ci-img]: https://travis-ci.com/niksy/figura.svg?branch=master
 [morphdom-api]: https://github.com/patrick-steele-idem/morphdom#morphdomfromnode-tonode-options--node
 [backbone-view]: http://backbonejs.org/#View
 [browserstack]: https://www.browserstack.com/
