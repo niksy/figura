@@ -131,7 +131,7 @@ describe('Methods', function () {
 
 	describe('View#cacheChildrenEl', function () {
 
-		it.only('should cache children elements from original elements hash', function () {
+		it('should cache children elements from original elements hash', function () {
 
 			const shelby = new Fn({
 				el: '#shelby',
