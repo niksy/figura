@@ -2,11 +2,11 @@
 
 [![Build Status][ci-img]][ci] [![BrowserStack Status][browserstack-img]][browserstack]
 
-View component for markup you already have. Inspired by [Backbone.View][backbone-view].
+View component for markup you already have. Inspired by [Backbone.View][backbone-view], [React][react] and [Preact][preact].
 
 Features:
 
-* Basic state setting and implicit rendering
+* Basic state and props setting and implicit rendering
 * Subview managment: adding, getting and removing
 
 ## Install
@@ -44,12 +44,8 @@ class Shelby extends View {
 			'click .lilly': 'clickMethod'
 		};
 	}
-	constructor ( options ) {
-		super(options);
-		this.setOptions(options);
-	}
 	clickMethod () {
-		console.log('.lilly clicked!');
+		// .lilly clicked!
 	}
 }
 
@@ -64,7 +60,7 @@ class Sasha extends Shelby {
 		};
 	}
 	clickMethod () {
-		console.log('.lilly clicked, with overriden method on `Sasha`.');
+		// .lilly clicked, with overriden method on `Sasha`.
 	}
 }
 
@@ -75,7 +71,7 @@ const roxie = new Sasha({
 });
 ```
 
-Using state. **Prefer using state for render purposes** because you can contain all render specifics inside `render` method.
+Using state and props. All render specifics can be contained inside `render` method.
 
 ```js
 import View from 'figura';
@@ -84,24 +80,33 @@ class Sasha extends View {
 	get el () {
 		return '#sasha';
 	}
-	constructor ( options ) {
-		super(options);
+	get props () {
+		return {
+			text: 'sasha'
+		};
+	}
+	constructor ( props ) {
+		super(props);
+		this.render(); // Initial render only with props
 		this.setState({
 			jackie: 42,
 			romeo: '42'
 		});
 		const state = this.state;
-		console.log(state.jackie); // => 42
+		state.jackie; // => 42 as number
 	}
-	stateValueModifier ( key, value ) {
+	valueModifier ( key, value ) {
 		if ( key === 'romeo' ) {
-			return parseInt(value, 10);
+			return parseInt(value, 10); // '42' (string) will be parsed to 42 (number)
 		}
 		return value;
 	}
-	render ( key, state ) {
+	render ( key, state, props ) {
+		if ( typeof key === 'undefined' ) {
+			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is sasha.
+		}
 		if ( key === 'romeo' ) {
-			this.$el.innerHTML = `romeo value is ${state.romeo}.`; // `state.romeo` is number instead of string
+			this.$el.innerHTML = `Value is ${state.romeo}.`; // Value is 42.
 		}
 		return this;
 	}
@@ -120,8 +125,8 @@ class Shelby extends View {
 	template () {
 		// Template function result
 	}
-	constructor ( options ) {
-		super(options);
+	constructor ( props ) {
+		super(props);
 		this.addSubview(new View(), 'customKey');
 	}
 	render () {
@@ -197,22 +202,32 @@ Default: `false`
 
 Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
-#### setOptions(options)
-
-Type: `Function`
-
-Set instance options. It will set everything except `el`, `childrenEl` and `events`.
-
-##### options
-
-Type: `Object`
-
-#### render(key, state)
+#### render(key, state, props)
 
 Type: `Function`
 Returns: `View`
 
 Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
+
+##### key
+
+Type: 'String'
+
+Current state key that should be handled in `render`.
+
+##### state
+
+Type: 'Object'  
+Default: `{}`
+
+Current state.
+
+##### props
+
+Type: 'Object'  
+Default: `{}`
+
+Props with which this view has been initialized (except `el`, `childrenEl` and `events`).
 
 #### remove
 
@@ -230,13 +245,13 @@ Sets or re-sets current UI element.
 
 Type: `String|Element`
 
-#### cacheChildrenEl(options)
+#### cacheChildrenEl(elements)
 
 Type: `Function`
 
 Caches children elements.
 
-##### options
+##### elements
 
 Type: `Object`
 
@@ -290,24 +305,24 @@ Type: `Function`
 
 Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
 
-#### stateValueModifier(key, value)
+#### valueModifier(key, value)
 
 Type: `Function`
 Returns: `Mixed`
 
-Modify state value before setting new state.
+Modify state or props value before setting new state.
 
 ##### key
 
 Type: `String`
 
-State key for which value will be modified.
+State or props key for which value will be modified.
 
 ##### value
 
 Type: `Mixed`
 
-State value to modify.
+State or props value to modify.
 
 #### addSubview(view, key)
 
@@ -370,7 +385,8 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 
 [ci]: https://travis-ci.com/niksy/figura
 [ci-img]: https://travis-ci.com/niksy/figura.svg?branch=master
-[morphdom-api]: https://github.com/patrick-steele-idem/morphdom#morphdomfromnode-tonode-options--node
-[backbone-view]: http://backbonejs.org/#View
+[backbone-view]: https://backbonejs.org/#View
+[react]: https://reactjs.org/
+[preact]: https://preactjs.com/
 [browserstack]: https://www.browserstack.com/
 [browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237

@@ -3,7 +3,7 @@ import scopedQuerySelectorAll from 'scoped-queryselectorall';
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
 const childNameSplitter = /^(.*?)(\[\])?$/;
-const viewOptions = ['el', 'events', 'childrenEl'];
+const viewProps = ['el', 'events', 'childrenEl'];
 let instanceCount = 0;
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
@@ -37,27 +37,24 @@ class View {
 		this._childrenEl = value;
 	}
 
-	get options () {
-		const { _options = {} } = this;
-		return _options;
+	get props () {
+		const { _props = {} } = this;
+		return _props;
 	}
 
-	set options ( value = {} ) {
-		this._options = value;
+	set props ( value = {} ) {
+		this._props = value;
 	}
 
-	constructor ( options = {} ) {
+	constructor ( props = {} ) {
 
 		this.uid = instanceCount++;
 		this.subviews = {};
 		this.delegatedEvents = {};
 		this.state = {};
+		this.props = {};
 
-		viewOptions.forEach(( viewOption ) => {
-			if ( viewOption in options ) {
-				this[viewOption] = options[viewOption];
-			}
-		});
+		this._resolveProps(props);
 
 		this.undelegateEvents();
 		this.setElement(this.el);
@@ -99,13 +96,10 @@ class View {
 	setState ( data = {} ) {
 
 		const newState = Object.entries(data)
-			.reduce(( obj, [ key, value ] ) => {
-				const modifiedValue = this.stateValueModifier(key, value);
-				return {
-					...obj,
-					[key]: modifiedValue
-				};
-			}, {});
+			.reduce(( obj, [ key, value ] ) => ({
+				...obj,
+				[key]: this.valueModifier(key, value)
+			}), {});
 
 		const state = {
 			...this.state,
@@ -122,22 +116,50 @@ class View {
 	}
 
 	/**
+	 * @param {Object} data
+	 */
+	_resolveProps ( data = {} ) {
+
+		// Set view props
+		viewProps.forEach(( viewProp ) => {
+			if ( viewProp in data ) {
+				this[viewProp] = data[viewProp];
+			}
+		});
+
+		// Set props ommitting view props
+		const omitted = Object.entries(data)
+			.filter(([ key ]) => viewProps.indexOf(key) === -1)
+			.reduce(( obj, [ key, value ] ) => ({
+				...obj,
+				[key]: this.valueModifier(key, value)
+			}), {});
+
+		this.props = {
+			...this.props,
+			...omitted
+		};
+
+	}
+
+	/**
 	 * @param  {String} key
 	 * @param  {Mixed} value
 	 *
 	 * @return {Mixed}
 	 */
-	stateValueModifier ( key, value ) {
+	valueModifier ( key, value ) {
 		return value;
 	}
 
 	/**
 	 * @param  {String} key
 	 * @param  {Object} state
+	 * @param  {Object} props
 	 *
 	 * @return {View}
 	 */
-	render ( key, state = this.state ) {
+	render ( key, state = this.state, props = this.props ) {
 		return this;
 	}
 
@@ -152,22 +174,6 @@ class View {
 		delete this.el;
 		delete this.events;
 		delete this.childrenEl;
-
-	}
-
-	/**
-	 * @param {Object} options
-	 */
-	setOptions ( options = {} ) {
-
-		const omitted = Object.keys(options)
-			.filter(( key ) => viewOptions.indexOf(key) === -1)
-			.reduce(( obj, key ) => ({ ...obj, [key]: options[key] }), {});
-
-		this.options = {
-			...this.options,
-			...omitted
-		};
 
 	}
 

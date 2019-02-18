@@ -67,42 +67,6 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#setOptions', function () {
-
-		it('should properly set and merge default options', function () {
-
-			class Shelby extends Fn {
-				constructor ( options ) {
-					super(options);
-					this.setOptions(options);
-				}
-			};
-
-			const shelby = new Shelby({
-				el: '#shelby',
-				events: {},
-				jackie: 'riley',
-				rudy: 'piper'
-			});
-			assert.deepEqual(shelby.options, {
-				jackie: 'riley',
-				rudy: 'piper'
-			});
-
-			shelby.setOptions({
-				jackie: 'nala'
-			});
-			assert.deepEqual(shelby.options, {
-				jackie: 'nala',
-				rudy: 'piper'
-			});
-
-			shelby.remove();
-
-		});
-
-	});
-
 	describe('View#setElement', function () {
 
 		it('should set view element to another element', function () {
@@ -460,10 +424,6 @@ describe('Integration', function () {
 					'click .lilly': 'testClick'
 				};
 			}
-			constructor ( options ) {
-				super(options);
-				this.setOptions(options);
-			}
 			testClick () {
 				spy('.lilly clicked!');
 			}
@@ -479,7 +439,7 @@ describe('Integration', function () {
 
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid > 0, true);
-		assert.deepEqual(shelby.options, {
+		assert.deepEqual(shelby.props, {
 			jackie: 'riley',
 			rudy: 'piper'
 		});
@@ -505,7 +465,6 @@ describe('Integration', function () {
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorOne('Calling custom constructor…');
-				this.setOptions(...args);
 			}
 			get childrenEl () {
 				return {
@@ -592,7 +551,7 @@ describe('Stateful', function () {
 	it('should set state with state value modified', function () {
 
 		class View extends Fn {
-			stateValueModifier ( key, value ) {
+			valueModifier ( key, value ) {
 				if ( key === 'romeo' ) {
 					return parseInt(value, 10);
 				}
