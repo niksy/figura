@@ -59,7 +59,8 @@ describe('Methods', function () {
 
 			assert.equal(shelby.$el, document.querySelector('#shelby'));
 			shelby.remove();
-			assert.notEqual(shelby.$el, document.querySelector('#shelby'));
+			assert.equal(typeof shelby.$el, 'undefined');
+			assert.equal(document.querySelector('#shelby'), null);
 
 			shelby.remove();
 
@@ -402,6 +403,100 @@ describe('Subviews', function () {
 
 	});
 
+	it('should throw when trying to assign subview which is not proper instance', function () {
+
+		const shelby = new Fn();
+
+		assert.throws(() => shelby.addSubview('jackie'), TypeError);
+
+		shelby.remove();
+
+	});
+
+});
+
+describe('State and props', function () {
+
+	it('should set state', function () {
+
+		const view = new Fn();
+
+		view.setState({
+			jackie: 42
+		});
+
+		const state = view.state;
+
+		assert.equal(state.jackie, 42);
+
+		view.remove();
+
+	});
+
+	it('should set props', function () {
+
+		const view = new Fn({
+			jackie: 42
+		});
+
+		const props = view.props;
+
+		assert.equal(props.jackie, 42);
+
+		view.remove();
+
+	});
+
+	it('should set state with state value modified', function () {
+
+		class View extends Fn {
+			stateValueModifier ( key, value ) {
+				if ( key === 'romeo' ) {
+					return parseInt(value, 10);
+				}
+				return value;
+			}
+		}
+
+		const view = new View();
+
+		view.setState({
+			romeo: '42'
+		});
+
+		const state = view.state;
+
+		assert.equal(typeof state.romeo, 'number');
+		assert.equal(state.romeo, 42);
+
+		view.remove();
+
+	});
+
+	it('should set props with prop value modified', function () {
+
+		class View extends Fn {
+			propValueModifier ( key, value ) {
+				if ( key === 'romeo' ) {
+					return parseInt(value, 10);
+				}
+				return value;
+			}
+		}
+
+		const view = new View({
+			romeo: '42'
+		});
+
+		const props = view.props;
+
+		assert.equal(typeof props.romeo, 'number');
+		assert.equal(props.romeo, 42);
+
+		view.remove();
+
+	});
+
 });
 
 describe('Integration', function () {
@@ -410,16 +505,16 @@ describe('Integration', function () {
 
 		const spy = sinon.spy();
 		class Shelby extends Fn {
-			get el () {
+			el () {
 				return '#shelby';
 			}
-			get childrenEl () {
+			childrenEl () {
 				return {
 					sasha: '#sasha',
 					lilly: '.lilly'
 				};
 			}
-			get events () {
+			events () {
 				return {
 					'click .lilly': 'testClick'
 				};
@@ -459,20 +554,20 @@ describe('Integration', function () {
 		const spyConstructorTwo = sinon.spy();
 
 		class Shelby extends Fn {
-			get el () {
+			el () {
 				return '#shelby';
 			}
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorOne('Calling custom constructor…');
 			}
-			get childrenEl () {
+			childrenEl () {
 				return {
 					sasha: '#sasha',
 					lilly: '.lilly'
 				};
 			}
-			get events () {
+			events () {
 				return {
 					'click .lilly': 'testClick'
 				};
@@ -487,9 +582,9 @@ describe('Integration', function () {
 				super(...args);
 				spyConstructorTwo('Calling custom constructor, second time…');
 			}
-			get childrenEl () {
+			childrenEl () {
 				return {
-					...super.childrenEl,
+					...super.childrenEl(),
 					honey: '.honey'
 				};
 			}
@@ -506,6 +601,7 @@ describe('Integration', function () {
 		simulant.fire(shelby.$lilly, 'click');
 		simulant.fire(shelby.$lilly, 'click');
 
+		assert.equal(sasha.$lilly, document.querySelector('.lilly'));
 		assert.equal(sasha.$honey, document.querySelector('.honey'));
 
 		assert.equal(spyConstructorOne.called, true);
@@ -525,52 +621,6 @@ describe('Integration', function () {
 		assert.equal(spyTwo.calledWith('.lilly clicked, with overriden method on `Sasha`.'), true);
 
 		shelby.remove();
-
-	});
-
-});
-
-describe('Stateful', function () {
-
-	it('should set state', function () {
-
-		const view = new Fn();
-
-		view.setState({
-			jackie: 42
-		});
-
-		const state = view.state;
-
-		assert.equal(state.jackie, 42);
-
-		view.remove();
-
-	});
-
-	it('should set state with state value modified', function () {
-
-		class View extends Fn {
-			valueModifier ( key, value ) {
-				if ( key === 'romeo' ) {
-					return parseInt(value, 10);
-				}
-				return value;
-			}
-		}
-
-		const view = new View();
-
-		view.setState({
-			romeo: '42'
-		});
-
-		const state = view.state;
-
-		assert.equal(typeof state.romeo, 'number');
-		assert.equal(state.romeo, 42);
-
-		view.remove();
 
 	});
 

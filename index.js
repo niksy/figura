@@ -10,40 +10,20 @@ const hasOwnProp = Object.prototype.hasOwnProperty;
 
 class View {
 
-	get el () {
-		const { _el = '' } = this;
-		return _el;
+	el () {
+		return '';
 	}
 
-	set el ( value = '' ) {
-		this._el = value;
+	events () {
+		return {};
 	}
 
-	get events () {
-		const { _events = {} } = this;
-		return _events;
+	childrenEl () {
+		return {};
 	}
 
-	set events ( value = {} ) {
-		this._events = value;
-	}
-
-	get childrenEl () {
-		const { _childrenEl = {} } = this;
-		return _childrenEl;
-	}
-
-	set childrenEl ( value = {} ) {
-		this._childrenEl = value;
-	}
-
-	get props () {
-		const { _props = {} } = this;
-		return _props;
-	}
-
-	set props ( value = {} ) {
-		this._props = value;
+	defaultProps () {
+		return {};
 	}
 
 	constructor ( props = {} ) {
@@ -54,12 +34,17 @@ class View {
 		this.state = {};
 		this.props = {};
 
-		this._resolveProps(props);
+		const {
+			el,
+			events,
+			childrenEl
+		} = this._getResolvedViewProps(props);
 
-		this.undelegateEvents();
-		this.setElement(this.el);
-		this.delegateEvents(this.events);
-		this.cacheChildrenEl(this.childrenEl);
+		this._setProps(props);
+
+		this.setElement(el);
+		this.delegateEvents(events);
+		this.cacheChildrenEl(childrenEl);
 
 	}
 
@@ -98,7 +83,7 @@ class View {
 		const newState = Object.entries(data)
 			.reduce(( obj, [ key, value ] ) => ({
 				...obj,
-				[key]: this.valueModifier(key, value)
+				[key]: this.stateValueModifier(key, value)
 			}), {});
 
 		const state = {
@@ -118,27 +103,33 @@ class View {
 	/**
 	 * @param {Object} data
 	 */
-	_resolveProps ( data = {} ) {
+	_setProps ( data = {} ) {
 
-		// Set view props
-		viewProps.forEach(( viewProp ) => {
-			if ( viewProp in data ) {
-				this[viewProp] = data[viewProp];
-			}
-		});
-
-		// Set props ommitting view props
 		const omitted = Object.entries(data)
 			.filter(([ key ]) => viewProps.indexOf(key) === -1)
 			.reduce(( obj, [ key, value ] ) => ({
 				...obj,
-				[key]: this.valueModifier(key, value)
+				[key]: this.propValueModifier(key, value)
 			}), {});
 
 		this.props = {
-			...this.props,
+			...this.defaultProps(),
 			...omitted
 		};
+
+	}
+
+	/**
+	 * @param  {Object} data
+	 *
+	 * @return {Object}
+	 */
+	_getResolvedViewProps ( data = {} ) {
+
+		return viewProps.reduce(( obj, viewProp ) => ({
+			...obj,
+			[viewProp]: viewProp in data ? data[viewProp] : this[viewProp]()
+		}), {});
 
 	}
 
@@ -148,7 +139,17 @@ class View {
 	 *
 	 * @return {Mixed}
 	 */
-	valueModifier ( key, value ) {
+	propValueModifier ( key, value ) {
+		return value;
+	}
+
+	/**
+	 * @param  {String} key
+	 * @param  {Mixed} value
+	 *
+	 * @return {Mixed}
+	 */
+	stateValueModifier ( key, value ) {
 		return value;
 	}
 
@@ -165,15 +166,23 @@ class View {
 
 	remove () {
 
+		this.undelegateEvents();
+
 		this.removeSubviews();
 		delete this.subviews;
 
 		if ( this.$el && this.$el.parentNode !== null ) {
 			this.$el.parentNode.removeChild(this.$el);
 		}
-		delete this.el;
-		delete this.events;
-		delete this.childrenEl;
+
+		// Delete children element references
+		for ( let key in this ) {
+			if ( hasOwnProp.call(this, key) ) {
+				if ( /^\$/.test(key) ) {
+					delete this[key];
+				}
+			}
+		}
 
 	}
 
@@ -339,7 +348,7 @@ class View {
 	 */
 	assignSubview ( key ) {
 		const view = this.getSubview(key);
-		const node = this.$(`[data-view-uid="${view.uid}"]`)[0];
+		const node = this.$(`[data-view-uid="${view.uid}"]`);
 		const replacementNode = view.render().$el;
 		if ( node ) {
 			node.parentNode.replaceChild(replacementNode, node);

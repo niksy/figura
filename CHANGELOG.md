@@ -2,6 +2,19 @@
 
 ## [Unreleased][]
 
+### Added
+
+- `valueModifier` is split into state and prop value modifier
+
+### Changed
+
+- `el`, `childrenEl` and `events` should be functions returing values when extending component
+- When removing component all child references are also removed
+
+### Fixed
+
+- `assignSubview` not getting proper node reference
+
 ## [3.0.0][] - 2019-02-18
 
 ### Added

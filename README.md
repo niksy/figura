@@ -31,15 +31,15 @@ npm install figura --save
 import View from 'figura';
 
 class Shelby extends View {
-	get el () {
+	el () {
 		return '#shelby';
 	}
-	get childrenEl () {
+	childrenEl () {
 		return {
 			sasha: '#sasha'
 		};
 	}
-	get events () {
+	events () {
 		return {
 			'click .lilly': 'clickMethod'
 		};
@@ -50,10 +50,10 @@ class Shelby extends View {
 }
 
 class Sasha extends Shelby {
-	get el () {
+	el () {
 		return '#sasha';
 	}
-	get childrenEl () {
+	childrenEl () {
 		return {
 			...super.childrenEl,
 			honey: '.honey'
@@ -65,7 +65,8 @@ class Sasha extends Shelby {
 }
 
 const shelby = new Shelby();
-const sasha = new Sasha();
+
+// `roxie` won’t have any child elements and won’t have any event listeners since it doesn’t have any children nodes
 const roxie = new Sasha({
 	el: '.roxie'
 });
@@ -76,13 +77,13 @@ Using state and props. All render specifics can be contained inside `render` met
 ```js
 import View from 'figura';
 
-class Sasha extends View {
-	get el () {
-		return '#sasha';
+class Shelby extends View {
+	el () {
+		return '#shelby';
 	}
-	get props () {
+	defaultProps () {
 		return {
-			text: 'sasha'
+			text: 'shelby'
 		};
 	}
 	constructor ( props ) {
@@ -95,7 +96,7 @@ class Sasha extends View {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	valueModifier ( key, value ) {
+	stateValueModifier ( key, value ) {
 		if ( key === 'romeo' ) {
 			return parseInt(value, 10); // '42' (string) will be parsed to 42 (number)
 		}
@@ -103,7 +104,7 @@ class Sasha extends View {
 	}
 	render ( key, state, props ) {
 		if ( typeof key === 'undefined' ) {
-			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is sasha.
+			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is shelby.
 		}
 		if ( key === 'romeo' ) {
 			this.$el.innerHTML = `Value is ${state.romeo}.`; // Value is 42.
@@ -119,7 +120,7 @@ Render placeholder and view assign usage.
 import View from 'figura';
 
 class Shelby extends View {
-	get el () {
+	el () {
 		return '#shelby';
 	}
 	template () {
@@ -143,19 +144,25 @@ class Shelby extends View {
 
 #### el
 
-Type: `String|Element`
+Type: `String|Element`  
+Default: ``
 
 Element on which should view be created.
 
+When extending a class, it should be function returning value with valid type.
+
 #### childrenEl
 
-Type: `Object`
+Type: `Object`  
+Default: `{}`
 
 List of children elements, mapped to DOM nodes based on CSS selector.
 
 To handle common use case of selecting only one element, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
 If you want to return array of elements regardless of resulting count, append `[]` to list key.
+
+When extending a class, it should be function returning value with valid type.
 
 ```js
 {
@@ -167,9 +174,12 @@ If you want to return array of elements regardless of resulting count, append `[
 
 #### events
 
-Type: `Object`
+Type: `Object`  
+Default: `{}`
 
 List of events, delegated to children elements.
+
+When extending a class, it should be function returning value with valid type.
 
 ```js
 {
@@ -181,6 +191,13 @@ List of events, delegated to children elements.
 	}
 }
 ```
+
+#### defaultProps
+
+Type: `Function`  
+Default: `() => ({})`
+
+Default props.
 
 #### $(selector, returnAllNodes)
 
@@ -305,24 +322,43 @@ Type: `Function`
 
 Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
 
-#### valueModifier(key, value)
+#### stateValueModifier(key, value)
 
 Type: `Function`
 Returns: `Mixed`
 
-Modify state or props value before setting new state.
+Modify state value before setting new state.
 
 ##### key
 
 Type: `String`
 
-State or props key for which value will be modified.
+State key for which value will be modified.
 
 ##### value
 
 Type: `Mixed`
 
-State or props value to modify.
+State value to modify.
+
+#### propValueModifier(key, value)
+
+Type: `Function`
+Returns: `Mixed`
+
+Modify Prop value before setting prop.
+
+##### key
+
+Type: `String`
+
+Prop key for which value will be modified.
+
+##### value
+
+Type: `Mixed`
+
+Prop value to modify.
 
 #### addSubview(view, key)
 
