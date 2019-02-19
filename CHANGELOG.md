@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+## [4.0.0][] - 2019-02-19
+
 ### Added
 
 - `valueModifier` is split into state and prop value modifier
@@ -22,5 +24,6 @@
 - Initial implementation
 
 
-[Unreleased]: https://github.com/niksy/figura/compare/v3.0.0...HEAD
+[Unreleased]: https://github.com/niksy/figura/compare/v4.0.0...HEAD
+[4.0.0]: https://github.com/niksy/figura/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/niksy/figura/tree/v3.0.0
