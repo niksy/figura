@@ -228,7 +228,7 @@ Props with which this view has been initialized (except `el`, `childrenEl` and `
 
 Type: `Function`
 
-Remove view.
+Remove view, but not root DOM element—use [`removeElement`](#removeelement) for that.
 
 #### setElement(element)
 
@@ -239,6 +239,12 @@ Sets or re-sets current UI element.
 ##### element
 
 Type: `String|Element`
+
+#### removeElement
+
+Type: `Function`
+
+Remove view DOM element.
 
 #### cacheChildrenEl(elements)
 

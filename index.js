@@ -53,6 +53,14 @@ class View {
 		}
 	}
 
+	removeElement () {
+
+		if ( this.$el && this.$el.parentNode !== null ) {
+			this.$el.parentNode.removeChild(this.$el);
+		}
+
+	}
+
 	/**
 	 * @param  {Mixed} selector
 	 * @param  {Boolean} returnNodesArray
@@ -167,10 +175,6 @@ class View {
 
 		this.removeSubviews();
 		delete this.subviews;
-
-		if ( this.$el && this.$el.parentNode !== null ) {
-			this.$el.parentNode.removeChild(this.$el);
-		}
 
 		// Delete children element references
 		for ( let key in this ) {

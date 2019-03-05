@@ -51,16 +51,14 @@ describe('Methods', function () {
 
 	describe('View#remove', function () {
 
-		it('should remove element', function () {
+		it('should remove view', function () {
 
 			const shelby = new Fn({
 				el: '#shelby'
 			});
 
-			assert.equal(shelby.$el, document.querySelector('#shelby'));
 			shelby.remove();
 			assert.equal(typeof shelby.$el, 'undefined');
-			assert.equal(document.querySelector('#shelby'), null);
 
 			shelby.remove();
 
@@ -87,6 +85,24 @@ describe('Methods', function () {
 			assert.equal(shelby.$el.isSameNode($shelby), false);
 			assert.equal(shelby.$el, $lilly);
 			assert.equal(shelby.$el.isSameNode($lilly), true);
+
+			shelby.remove();
+
+		});
+
+	});
+
+	describe('View#removeElement', function () {
+
+		it('should remove element', function () {
+
+			const shelby = new Fn({
+				el: '#shelby'
+			});
+
+			assert.equal(shelby.$el, document.querySelector('#shelby'));
+			shelby.removeElement();
+			assert.equal(document.querySelector('#shelby'), null);
 
 			shelby.remove();
 
