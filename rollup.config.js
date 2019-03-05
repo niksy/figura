@@ -24,5 +24,8 @@ module.exports = {
 			only: ['scoped-queryselectorall']
 		}),
 		commonjs()
+	],
+	external: [
+		'delegate-event-listener'
 	]
 };
