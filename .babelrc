@@ -8,8 +8,9 @@
 		}]
 	],
 	"plugins": [
+		"@babel/plugin-proposal-class-properties",
 		"@babel/plugin-transform-object-assign",
-		"transform-es2017-object-entries"
+		"babel-plugin-transform-es2017-object-entries"
 	],
 	"env": {
 		"test": {

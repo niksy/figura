@@ -31,18 +31,12 @@ npm install figura --save
 import View from 'figura';
 
 class Shelby extends View {
-	el () {
-		return '#shelby';
+	static el = '#shelby'
+	static childrenEl = {
+		sasha: '#sasha'
 	}
-	childrenEl () {
-		return {
-			sasha: '#sasha'
-		};
-	}
-	events () {
-		return {
-			'click .lilly': 'clickMethod'
-		};
+	static events = {
+		'click .lilly': 'clickMethod'
 	}
 	clickMethod () {
 		// .lilly clicked!
@@ -50,14 +44,10 @@ class Shelby extends View {
 }
 
 class Sasha extends Shelby {
-	el () {
-		return '#sasha';
-	}
-	childrenEl () {
-		return {
-			...super.childrenEl,
-			honey: '.honey'
-		};
+	static el = '#sasha'
+	static childrenEl = {
+		...Shelby.childrenEl,
+		honey: '.honey'
 	}
 	clickMethod () {
 		// .lilly clicked, with overriden method on `Sasha`.
@@ -78,13 +68,9 @@ Using state and props. All render specifics can be contained inside `render` met
 import View from 'figura';
 
 class Shelby extends View {
-	el () {
-		return '#shelby';
-	}
-	defaultProps () {
-		return {
-			text: 'shelby'
-		};
+	static el = '#shelby'
+	static defaultProps = {
+		text: 'shelby'
 	}
 	constructor ( props ) {
 		super(props);
@@ -120,9 +106,7 @@ Render placeholder and view assign usage.
 import View from 'figura';
 
 class Shelby extends View {
-	el () {
-		return '#shelby';
-	}
+	static el = '#shelby'
 	template () {
 		// Template function result
 	}
@@ -149,8 +133,6 @@ Default: ``
 
 Element on which should view be created.
 
-When extending a class, it should be function returning value with valid type.
-
 #### childrenEl
 
 Type: `Object`  
@@ -161,8 +143,6 @@ List of children elements, mapped to DOM nodes based on CSS selector.
 To handle common use case of selecting only one element, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
 If you want to return array of elements regardless of resulting count, append `[]` to list key.
-
-When extending a class, it should be function returning value with valid type.
 
 ```js
 {
@@ -178,8 +158,6 @@ Type: `Object`
 Default: `{}`
 
 List of events, delegated to children elements.
-
-When extending a class, it should be function returning value with valid type.
 
 ```js
 {
@@ -413,7 +391,18 @@ For local automated tests, run `npm run test:automated:local`.
 
 ## Browser support
 
-Tested in IE9+ and all modern browsers.
+Tested in IE9+ and all modern browsers. For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
+
+```js
+// With static class properties
+class View {
+	static el = ''
+}
+
+// Without static class properties
+class View {}
+View.el = '';
+```
 
 ## License
 

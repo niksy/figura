@@ -10,21 +10,13 @@ const hasOwnProp = Object.prototype.hasOwnProperty;
 
 class View {
 
-	el () {
-		return '';
-	}
+	static el = ''
 
-	events () {
-		return {};
-	}
+	static events = {}
 
-	childrenEl () {
-		return {};
-	}
+	static childrenEl = {}
 
-	defaultProps () {
-		return {};
-	}
+	static defaultProps = {}
 
 	constructor ( props = {} ) {
 
@@ -112,8 +104,11 @@ class View {
 				[key]: this.propValueModifier(key, value)
 			}), {});
 
+		const ctor = Object.getPrototypeOf(this).constructor;
+		const { defaultProps } = ctor;
+
 		this.props = {
-			...this.defaultProps(),
+			...defaultProps,
 			...omitted
 		};
 
@@ -126,9 +121,11 @@ class View {
 	 */
 	_getResolvedViewProps ( data = {} ) {
 
+		const ctor = Object.getPrototypeOf(this).constructor;
+
 		return viewProps.reduce(( obj, viewProp ) => ({
 			...obj,
-			[viewProp]: viewProp in data ? data[viewProp] : this[viewProp]()
+			[viewProp]: viewProp in data ? data[viewProp] : ctor[viewProp]
 		}), {});
 
 	}

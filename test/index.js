@@ -505,19 +505,13 @@ describe('Integration', function () {
 
 		const spy = sinon.spy();
 		class Shelby extends Fn {
-			el () {
-				return '#shelby';
+			static el = '#shelby'
+			static childrenEl = {
+				sasha: '#sasha',
+				lilly: '.lilly'
 			}
-			childrenEl () {
-				return {
-					sasha: '#sasha',
-					lilly: '.lilly'
-				};
-			}
-			events () {
-				return {
-					'click .lilly': 'testClick'
-				};
+			static events = {
+				'click .lilly': 'testClick'
 			}
 			testClick () {
 				spy('.lilly clicked!');
@@ -554,23 +548,17 @@ describe('Integration', function () {
 		const spyConstructorTwo = sinon.spy();
 
 		class Shelby extends Fn {
-			el () {
-				return '#shelby';
+			static el = '#shelby'
+			static childrenEl = {
+				sasha: '#sasha',
+				lilly: '.lilly'
+			}
+			static events = {
+				'click .lilly': 'testClick'
 			}
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorOne('Calling custom constructor…');
-			}
-			childrenEl () {
-				return {
-					sasha: '#sasha',
-					lilly: '.lilly'
-				};
-			}
-			events () {
-				return {
-					'click .lilly': 'testClick'
-				};
 			}
 			testClick () {
 				spyOne('.lilly clicked!');
@@ -578,15 +566,13 @@ describe('Integration', function () {
 		};
 
 		class Sasha extends Shelby {
+			static childrenEl = {
+				...Shelby.childrenEl,
+				honey: '.honey'
+			}
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorTwo('Calling custom constructor, second time…');
-			}
-			childrenEl () {
-				return {
-					...super.childrenEl(),
-					honey: '.honey'
-				};
 			}
 			testClick () {
 				super.testClick();
