@@ -397,7 +397,9 @@ For local automated tests, run `npm run test:automated:local`.
 
 ## Browser support
 
-Tested in IE9+ and all modern browsers. For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
+Tested in IE9+ and all modern browsers.
+
+For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
 
 ```js
 // With static class properties
@@ -409,6 +411,8 @@ class View {
 class View {}
 View.el = '';
 ```
+
+If you need [IE <= 10 support](https://babeljs.io/docs/en/caveats/#classes-10-and-below), you will have to [polyfill `__proto__`](https://github.com/webcarrot/proto-polyfill) if you use class extending.
 
 ## License
 

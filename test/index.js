@@ -402,7 +402,7 @@ describe('Subviews', function () {
 			return this;
 		};
 
-		assert.equal([...scopedQuerySelectorAll('#sasha', shelby.render().$el)].length, 1);
+		assert.equal([].slice.call(scopedQuerySelectorAll('#sasha', shelby.render().$el)).length, 1);
 
 		shelby.remove();
 
