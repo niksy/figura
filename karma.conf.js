@@ -13,6 +13,7 @@ if ( local ) {
 	};
 } else {
 	config = {
+		hostname: 'bs-local.com',
 		browserStack: {
 			startTunnel: true,
 			project: 'figura',
@@ -48,30 +49,32 @@ if ( local ) {
 				build: 'Automated (Karma)',
 				name: 'IE9'
 			},
-			// 'BS-iOS 8.3': {
-			// 	base: 'BrowserStack',
-			// 	device: 'iPhone 6',
-			// 	browser: 'Mobile Safari',
-			// 	'browser_version': null,
-			// 	os: 'ios',
-			// 	'os_version': '8.3',
-			// 	project: 'kist-view',
-			// 	build: 'Automated (Karma)',
-			// 	name: 'iOS'
-			// },
-			// 'BS-Android 4.2': {
-			// 	base: 'BrowserStack',
-			// 	device: 'Google Nexus 4',
-			// 	browser: 'Android Browser',
-			// 	'browser_version': null,
-			// 	os: 'android',
-			// 	'os_version': '4.2',
-			// 	project: 'kist-view',
-			// 	build: 'Automated (Karma)',
-			// 	name: 'Android'
-			// }
+			'BS-iOS 10.0': {
+				base: 'BrowserStack',
+				device: 'iPhone 7 Plus',
+				browser: 'Mobile Safari',
+				'browser_version': null,
+				'real_mobile': true,
+				'os': 'ios',
+				'os_version': '10.0',
+				project: 'figura',
+				build: 'Automated (Karma)',
+				name: 'iOS'
+			},
+			'BS-Android 4.4': {
+				base: 'BrowserStack',
+				device: 'Google Nexus 5',
+				browser: 'Android Browser',
+				'browser_version': null,
+				'real_mobile': true,
+				os: 'android',
+				'os_version': '4.4',
+				project: 'figura',
+				build: 'Automated (Karma)',
+				name: 'Android'
+			}
 		},
-		browsers: ['BS-Chrome', 'BS-Firefox', 'BS-IE9']
+		browsers: ['BS-Chrome', 'BS-Firefox', 'BS-IE9', 'BS-iOS 10.0', 'BS-Android 4.4']
 	};
 }
 
