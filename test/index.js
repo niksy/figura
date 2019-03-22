@@ -463,56 +463,6 @@ describe('State and props', function () {
 
 	});
 
-	it('should set state with state value modified', function () {
-
-		class View extends Fn {
-			stateValueModifier ( key, value ) {
-				if ( key === 'romeo' ) {
-					return parseInt(value, 10);
-				}
-				return value;
-			}
-		}
-
-		const view = new View();
-
-		view.setState({
-			romeo: '42'
-		});
-
-		const state = view.state;
-
-		assert.equal(typeof state.romeo, 'number');
-		assert.equal(state.romeo, 42);
-
-		view.remove();
-
-	});
-
-	it('should set props with prop value modified', function () {
-
-		class View extends Fn {
-			propValueModifier ( key, value ) {
-				if ( key === 'romeo' ) {
-					return parseInt(value, 10);
-				}
-				return value;
-			}
-		}
-
-		const view = new View({
-			romeo: '42'
-		});
-
-		const props = view.props;
-
-		assert.equal(typeof props.romeo, 'number');
-		assert.equal(props.romeo, 42);
-
-		view.remove();
-
-	});
-
 });
 
 describe('Integration', function () {

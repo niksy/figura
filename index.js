@@ -83,7 +83,7 @@ class View {
 		const newState = Object.entries(data)
 			.reduce(( obj, [ key, value ] ) => ({
 				...obj,
-				[key]: this.stateValueModifier(key, value)
+				[key]: value
 			}), {});
 
 		const state = {
@@ -109,7 +109,7 @@ class View {
 			.filter(([ key ]) => viewProps.indexOf(key) === -1)
 			.reduce(( obj, [ key, value ] ) => ({
 				...obj,
-				[key]: this.propValueModifier(key, value)
+				[key]: value
 			}), {});
 
 		const ctor = Object.getPrototypeOf(this).constructor;
@@ -136,26 +136,6 @@ class View {
 			[viewProp]: viewProp in data ? data[viewProp] : ctor[viewProp]
 		}), {});
 
-	}
-
-	/**
-	 * @param  {String} key
-	 * @param  {Mixed} value
-	 *
-	 * @return {Mixed}
-	 */
-	propValueModifier ( key, value ) {
-		return value;
-	}
-
-	/**
-	 * @param  {String} key
-	 * @param  {Mixed} value
-	 *
-	 * @return {Mixed}
-	 */
-	stateValueModifier ( key, value ) {
-		return value;
 	}
 
 	/**

@@ -82,12 +82,6 @@ class Shelby extends View {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	stateValueModifier ( key, value ) {
-		if ( key === 'romeo' ) {
-			return parseInt(value, 10); // '42' (string) will be parsed to 42 (number)
-		}
-		return value;
-	}
 	render ( key, state, props ) {
 		if ( typeof key === 'undefined' ) {
 			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is shelby.
@@ -305,44 +299,6 @@ Undelegate single event. For argument definition, see [`delegate`](#delegateeven
 Type: `Function`
 
 Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
-
-#### stateValueModifier(key, value)
-
-Type: `Function`
-Returns: `Mixed`
-
-Modify state value before setting new state.
-
-##### key
-
-Type: `String`
-
-State key for which value will be modified.
-
-##### value
-
-Type: `Mixed`
-
-State value to modify.
-
-#### propValueModifier(key, value)
-
-Type: `Function`
-Returns: `Mixed`
-
-Modify Prop value before setting prop.
-
-##### key
-
-Type: `String`
-
-Prop key for which value will be modified.
-
-##### value
-
-Type: `Mixed`
-
-Prop value to modify.
 
 #### addSubview(view, key)
 
