@@ -2,6 +2,19 @@
 
 ## [Unreleased][]
 
+### Added
+
+- Add `removeElement` method
+
+### Changed
+
+- Use static class properties instead of methods
+- Calling `remove` method doesn’t implicitly remove DOM node
+
+### Removed
+
+- Remove `stateValueModifier` and `propValueModifier` methods
+
 ## [4.0.0][] - 2019-02-19
 
 ### Added
