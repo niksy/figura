@@ -15,6 +15,8 @@ if ( local ) {
 	config = {
 		hostname: 'bs-local.com',
 		browserStack: {
+			username: process.env.BROWSER_STACK_USERNAME,
+			accessKey: process.env.BROWSER_STACK_ACCESS_KEY,
 			startTunnel: true,
 			project: 'figura',
 			name: 'Automated (Karma)',

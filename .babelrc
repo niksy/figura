@@ -18,7 +18,8 @@
 				["babel-preset-niksy", {
 					"@babel/preset-env": {
 						"loose": true,
-						"useBuiltIns": "usage"
+						"useBuiltIns": "usage",
+						"corejs": 2
 					}
 				}]
 			],
