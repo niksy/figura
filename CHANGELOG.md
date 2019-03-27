@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+## [5.0.0][] - 2019-03-27
+
 ### Added
 
 - Add `removeElement` method
@@ -37,6 +39,7 @@
 - Initial implementation
 
 
-[Unreleased]: https://github.com/niksy/figura/compare/v4.0.0...HEAD
+[Unreleased]: https://github.com/niksy/figura/compare/v5.0.0...HEAD
+[5.0.0]: https://github.com/niksy/figura/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/niksy/figura/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/niksy/figura/tree/v3.0.0

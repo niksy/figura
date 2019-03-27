@@ -1,6 +1,6 @@
 {
   "name": "figura",
-  "version": "4.0.0",
+  "version": "5.0.0",
   "description": "View component for markup you already have.",
   "main": "index.cjs.js",
   "module": "index.esm.js",
