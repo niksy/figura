@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+## [5.2.0][] - 2019-04-03
+
 ### Changed
 
 - Rename references of `View` to `Figura`
@@ -50,7 +52,8 @@
 - Initial implementation
 
 
-[Unreleased]: https://github.com/niksy/figura/compare/v5.1.0...HEAD
+[Unreleased]: https://github.com/niksy/figura/compare/v5.2.0...HEAD
+[5.2.0]: https://github.com/niksy/figura/compare/v5.1.0...v5.2.0
 [5.1.0]: https://github.com/niksy/figura/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/niksy/figura/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/niksy/figura/compare/v3.0.0...v4.0.0
