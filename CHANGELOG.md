@@ -2,6 +2,11 @@
 
 ## [Unreleased][]
 
+### Added
+
+- Tests for `defaultProps`
+- Documentation improvements
+
 ## [5.0.0][] - 2019-03-27
 
 ### Added
