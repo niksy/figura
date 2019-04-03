@@ -2,12 +2,19 @@
 
 [![Build Status][ci-img]][ci] [![BrowserStack Status][browserstack-img]][browserstack]
 
-View component for markup you already have. Inspired by [Backbone.View][backbone-view], [React][react] and [Preact][preact].
+View component for markup you already have.
 
 Features:
 
 * Basic state and props setting and implicit rendering
 * Subview managment: adding, getting and removing
+
+Inspired by:
+
+* Event handling from [Backbone.View][backbone-view]
+* State and props management from [React][react] and [Preact][preact]
+
+**[Try it now!](https://codesandbox.io/s/64v426r9nw?expanddevtools=1&fontsize=14)**
 
 ## Install
 
@@ -120,6 +127,8 @@ class Shelby extends View {
 
 ## API
 
+Every property except `el`, `childrenEl` and `events` will be added as property on instance, where `defaultProps` serves as default values for any property which is undefined.
+
 #### el
 
 Type: `String|Element`  
@@ -167,7 +176,7 @@ List of events, delegated to children elements.
 #### defaultProps
 
 Type: `Function`  
-Default: `() => ({})`
+Default: `{}`
 
 Default props.
 
@@ -353,22 +362,22 @@ For local automated tests, run `npm run test:automated:local`.
 
 ## Browser support
 
-Tested in IE9+ and all modern browsers.
+Tested in IE9+ and all modern browsers. For [IE <= 10 support](https://babeljs.io/docs/en/caveats/#classes-10-and-below), you will have to [polyfill `__proto__`](https://github.com/webcarrot/proto-polyfill) if you use class extending.
 
 For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
 
 ```js
+import View from 'figura';
+
 // With static class properties
-class View {
+class Shelby extends View {
 	static el = ''
 }
 
 // Without static class properties
-class View {}
-View.el = '';
+class Shelby extends View {}
+Shelby.el = '';
 ```
-
-If you need [IE <= 10 support](https://babeljs.io/docs/en/caveats/#classes-10-and-below), you will have to [polyfill `__proto__`](https://github.com/webcarrot/proto-polyfill) if you use class extending.
 
 ## License
 
