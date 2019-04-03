@@ -35,9 +35,9 @@ npm install figura --save
 ```
 
 ```js
-import View from 'figura';
+import Figura from 'figura';
 
-class Shelby extends View {
+class Shelby extends Figura {
 	static el = '#shelby'
 	static childrenEl = {
 		sasha: '#sasha'
@@ -72,9 +72,9 @@ const roxie = new Sasha({
 Using state and props. All render specifics can be contained inside `render` method.
 
 ```js
-import View from 'figura';
+import Figura from 'figura';
 
-class Shelby extends View {
+class Shelby extends Figura {
 	static el = '#shelby'
 	static defaultProps = {
 		text: 'shelby'
@@ -104,16 +104,16 @@ class Shelby extends View {
 Render placeholder and view assign usage.
 
 ```js
-import View from 'figura';
+import Figura from 'figura';
 
-class Shelby extends View {
+class Shelby extends Figura {
 	static el = '#shelby'
 	template () {
 		// Template function result
 	}
 	constructor ( props ) {
 		super(props);
-		this.addSubview(new View(), 'customKey');
+		this.addSubview(new Figura(), 'customKey');
 	}
 	render () {
 		this.$el.innerHTML = this.template({
@@ -203,7 +203,7 @@ Always return array of elements. By default, if result contains only one element
 #### render(key, state, props)
 
 Type: `Function`
-Returns: `View`
+Returns: `Figura`
 
 Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
 
@@ -315,7 +315,7 @@ Adds subview to current view.
 
 ##### view
 
-Type: `View`
+Type: `Figura`
 
 Subview to add to current view.
 
@@ -367,15 +367,15 @@ Tested in IE9+ and all modern browsers. For [IE <= 10 support](https://babeljs.i
 For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
 
 ```js
-import View from 'figura';
+import Figura from 'figura';
 
 // With static class properties
-class Shelby extends View {
+class Shelby extends Figura {
 	static el = ''
 }
 
 // Without static class properties
-class Shelby extends View {}
+class Shelby extends Figura {}
 Shelby.el = '';
 ```
 

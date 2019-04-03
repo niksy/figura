@@ -27,7 +27,7 @@ describe('Basic', function () {
 
 describe('Methods', function () {
 
-	describe('View#$', function () {
+	describe('Figura#$', function () {
 
 		it('should find child node of element', function () {
 			const shelby = new Fn({
@@ -39,7 +39,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#render', function () {
+	describe('Figura#render', function () {
 
 		it('should return view instance', function () {
 			const shelby = new Fn();
@@ -49,7 +49,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#remove', function () {
+	describe('Figura#remove', function () {
 
 		it('should remove view', function () {
 
@@ -66,7 +66,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#setElement', function () {
+	describe('Figura#setElement', function () {
 
 		it('should set view element to another element', function () {
 
@@ -92,7 +92,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#removeElement', function () {
+	describe('Figura#removeElement', function () {
 
 		it('should remove element', function () {
 
@@ -110,7 +110,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#cacheChildrenEl', function () {
+	describe('Figura#cacheChildrenEl', function () {
 
 		it('should cache children elements from original elements hash', function () {
 
@@ -156,7 +156,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#delegateEvents', function () {
+	describe('Figura#delegateEvents', function () {
 
 		it('should delegate events from original events hash to child elements', function () {
 
@@ -235,7 +235,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#undelegateEvents', function () {
+	describe('Figura#undelegateEvents', function () {
 
 		it('should undelegate events from element', function () {
 
@@ -261,7 +261,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#delegate', function () {
+	describe('Figura#delegate', function () {
 
 		it('should delegate event to child element', function () {
 
@@ -284,7 +284,7 @@ describe('Methods', function () {
 
 	});
 
-	describe('View#undelegate', function () {
+	describe('Figura#undelegate', function () {
 
 		it('should undelegate event to child element', function () {
 

@@ -2,6 +2,10 @@
 
 ## [Unreleased][]
 
+### Changed
+
+- Rename references of `View` to `Figura`
+
 ## [5.1.0][] - 2019-04-03
 
 ### Added

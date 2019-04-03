@@ -8,7 +8,7 @@ let instanceCount = 0;
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
 
-class View {
+class Figura {
 
 	static el = ''
 
@@ -143,7 +143,7 @@ class View {
 	 * @param  {Object} state
 	 * @param  {Object} props
 	 *
-	 * @return {View}
+	 * @return {Figura}
 	 */
 	render ( key, state = this.state, props = this.props ) {
 		return this;
@@ -263,7 +263,7 @@ class View {
 	 *
 	 * @param  {String|Number} key
 	 *
-	 * @return {View}
+	 * @return {Figura}
 	 */
 	getSubview ( key ) {
 		return this.subviews[key];
@@ -274,14 +274,14 @@ class View {
 	 * ensure its removal when this view is removed,
 	 * or when view.removeSubviews is called
 	 *
-	 * @param {View} view
+	 * @param {Figura} view
 	 * @param {String|Number} key
 	 *
-	 * @return {View}
+	 * @return {Figura}
 	 */
 	addSubview ( view, key ) {
-		if ( !(view instanceof View) ) {
-			throw new TypeError('Subview must be a View');
+		if ( !(view instanceof Figura) ) {
+			throw new TypeError('Subview must be instance of Figura');
 		}
 		if ( typeof key === 'undefined' ) {
 			key = view.uid;
@@ -295,7 +295,7 @@ class View {
 	 * by `addSubview`, which will in-turn remove any
 	 * children of those views, and so on
 	 *
-	 * @return {View}
+	 * @return {Figura}
 	 */
 	removeSubviews () {
 
@@ -338,4 +338,4 @@ class View {
 
 };
 
-export default View;
+export default Figura;
