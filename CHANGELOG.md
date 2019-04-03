@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+## [5.1.0][] - 2019-04-03
+
 ### Added
 
 - Tests for `defaultProps`
@@ -44,7 +46,8 @@
 - Initial implementation
 
 
-[Unreleased]: https://github.com/niksy/figura/compare/v5.0.0...HEAD
+[Unreleased]: https://github.com/niksy/figura/compare/v5.1.0...HEAD
+[5.1.0]: https://github.com/niksy/figura/compare/v5.0.0...v5.1.0
 [5.0.0]: https://github.com/niksy/figura/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/niksy/figura/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/niksy/figura/tree/v3.0.0
