@@ -479,6 +479,9 @@ describe('Integration', function () {
 			static events = {
 				'click .lilly': 'testClick'
 			}
+			static defaultProps = {
+				dakota: 'dakota'
+			}
 			testClick () {
 				spy('.lilly clicked!');
 			}
@@ -495,6 +498,7 @@ describe('Integration', function () {
 		assert.equal(shelby instanceof Fn, true);
 		assert.equal(shelby.uid > 0, true);
 		assert.deepEqual(shelby.props, {
+			dakota: 'dakota',
 			jackie: 'riley',
 			rudy: 'piper'
 		});
@@ -522,6 +526,9 @@ describe('Integration', function () {
 			static events = {
 				'click .lilly': 'testClick'
 			}
+			static defaultProps = {
+				'bentley': 'bentley'
+			}
 			constructor ( ...args ) {
 				super(...args);
 				spyConstructorOne('Calling custom constructor…');
@@ -535,6 +542,9 @@ describe('Integration', function () {
 			static childrenEl = {
 				...Shelby.childrenEl,
 				honey: '.honey'
+			}
+			static defaultProps = {
+				pepper: 'pepper'
 			}
 			constructor ( ...args ) {
 				super(...args);
@@ -555,6 +565,10 @@ describe('Integration', function () {
 
 		assert.equal(sasha.$lilly, document.querySelector('.lilly'));
 		assert.equal(sasha.$honey, document.querySelector('.honey'));
+
+		assert.equal(shelby.props.bentley, 'bentley');
+		assert.equal(typeof sasha.props.bentley, 'undefined');
+		assert.equal(sasha.props.pepper, 'pepper');
 
 		assert.equal(spyConstructorOne.called, true);
 		assert.equal(spyConstructorOne.callCount, 2);

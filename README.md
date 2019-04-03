@@ -127,7 +127,7 @@ class Shelby extends View {
 
 ## API
 
-Every property except `el`, `childrenEl` and `events` will be added as property on instance, where `defaultProps` serves as default values for any property which is undefined.
+Every property except `el`, `childrenEl` and `events` will be merged with `defaultProps` and added to `this.props`.
 
 #### el
 
@@ -178,7 +178,7 @@ List of events, delegated to children elements.
 Type: `Function`  
 Default: `{}`
 
-Default props.
+Default values for props to ensure that `this.props` property has value if it hasn’t been passed when creating view instance.
 
 #### $(selector, returnAllNodes)
 
