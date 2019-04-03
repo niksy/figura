@@ -109,7 +109,7 @@ module.exports = function ( baseConfig ) {
 		},
 		webpack: {
 			mode: 'none',
-			devtool: 'inline-source-map',
+			devtool: 'cheap-module-inline-source-map',
 			module: {
 				rules: [
 					{
