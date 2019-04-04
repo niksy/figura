@@ -95,7 +95,7 @@ class Figura {
 
 		Object.keys(newState)
 			.forEach(( key ) => {
-				this.render(key, state[key], { state: state, props: this.props });
+				this.render(key, state[key]);
 			});
 
 	}
@@ -141,13 +141,10 @@ class Figura {
 	/**
 	 * @param  {String} key
 	 * @param  {*} value
-	 * @param  {Object} storage
-	 * @param  {Object} storage.state
-	 * @param  {Object} storage.props
 	 *
 	 * @return {Figura}
 	 */
-	render ( key, value, { state = this.state, props = this.props } = { state: this.state, props: this.props } ) {
+	render ( key, value ) {
 		return this;
 	}
 

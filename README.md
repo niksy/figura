@@ -89,9 +89,9 @@ class Shelby extends Figura {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	render ( key, value, { state, props } ) {
+	render ( key, value ) {
 		if ( typeof key === 'undefined' ) {
-			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is shelby.
+			this.$el.innerHTML = `Initial content is ${this.props.text}.`; // Initial content is shelby.
 		}
 		if ( key === 'romeo' ) {
 			this.$el.innerHTML = `Value is ${value}.`; // Value is 42.
@@ -187,20 +187,12 @@ Returns: `Element|Element[]`
 
 Finds all descendants of `$el` filtered by CSS selector.
 
-##### selector
+| Property | Type | Default | Description |
+| --- | --- | --- | --- |
+| `selector` | `string` | N/A | Standard CSS selector. |
+| `returnAllNodes` | `boolean` | `false` | Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned. |
 
-Type: `String`
-
-Standard CSS selector.
-
-##### returnAllNodes
-
-Type: `Boolean`  
-Default: `false`
-
-Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned.
-
-#### render(key, value, storage)
+#### render(key, value)
 
 Type: `Function`
 Returns: `Figura`
@@ -211,8 +203,6 @@ Render view. Takes into account state modifications if you use state—every tim
 | --- | --- | --- |
 | `key` | `string` | Current state key that should be handled in `render`. |
 | `value` | `*` | Value of current state key that should be handled in `render`. |
-| `storage.state` | `Object` | Current state—combination of previous and new state. |
-| `storage.props` | `Object` | Props with which this view has been initialized (except `el`, `childrenEl` and `events`). |
 
 #### remove
 

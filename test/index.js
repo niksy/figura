@@ -49,16 +49,14 @@ describe('Methods', function () {
 
 		it('should be called with proper arguments', function () {
 
-			const shelby = new Fn({
-				nala: 'rocky'
-			});
+			const shelby = new Fn();
 			const spy = sinon.spy();
 
 			shelby.render = spy;
 			shelby.setState({
 				buster: 'cash'
 			});
-			assert.equal(spy.calledWith('buster', 'cash', { state: { buster: 'cash' }, props: { nala: 'rocky' } }), true);
+			assert.equal(spy.calledWith('buster', 'cash'), true);
 
 			shelby.remove();
 
