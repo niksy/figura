@@ -194,10 +194,10 @@ Finds all descendants of `$el` filtered by CSS selector.
 
 #### render(key, value)
 
-Type: `function`
+Type: `function`  
 Returns: `Figura`
 
-Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
+Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state. In this instance, state is combination of previous and new state.
 
 | Property | Type | Description |
 | --- | --- | --- |
@@ -332,6 +332,30 @@ inside subview `render` method.
 Type: `(string|number)`
 
 Key which is used to reference subview.
+
+## FAQ
+
+**Running `setState` on multiple keys which depend on each other in that call doesn’t render changes properly.**
+
+`setState` runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key in current `setState` call), run multiple `setState` calls.
+
+For example, if `romeo` and `layla` values depend on each other in current `setState` call:
+
+```js
+// Instead of this
+this.setState({
+	romeo: 'gigi',
+	layla: 'buddy'
+});
+
+// Use this
+this.setState({
+	romeo: 'gigi'
+});
+this.setState({
+	layla: 'buddy'
+});
+```
 
 ## Test
 
