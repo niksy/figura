@@ -39,7 +39,7 @@ describe('Methods', function () {
 
 	});
 
-	describe.only('Figura#render', function () {
+	describe('Figura#render', function () {
 
 		it('should return view instance', function () {
 			const shelby = new Fn();
@@ -58,7 +58,7 @@ describe('Methods', function () {
 			shelby.setState({
 				buster: 'cash'
 			});
-			assert.equal(spy.calledWith('buster', 'cash', { buster: 'cash' }, { nala: 'rocky' }), true);
+			assert.equal(spy.calledWith('buster', 'cash', { state: { buster: 'cash' }, props: { nala: 'rocky' } }), true);
 
 			shelby.remove();
 

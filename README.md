@@ -89,7 +89,7 @@ class Shelby extends Figura {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	render ( key, value, state, props ) {
+	render ( key, value, { state, props } ) {
 		if ( typeof key === 'undefined' ) {
 			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is shelby.
 		}
@@ -200,7 +200,7 @@ Default: `false`
 
 Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
-#### render(key, value, state, props)
+#### render(key, value, storage)
 
 Type: `Function`
 Returns: `Figura`
@@ -211,8 +211,8 @@ Render view. Takes into account state modifications if you use state—every tim
 | --- | --- | --- |
 | `key` | `string` | Current state key that should be handled in `render`. |
 | `value` | `*` | Value of current state key that should be handled in `render`. |
-| `state` | `Object` | Current state. |
-| `props` | `Object` | Props with which this view has been initialized (except `el`, `childrenEl` and `events`). |
+| `storage.state` | `Object` | Current state—combination of previous and new state. |
+| `storage.props` | `Object` | Props with which this view has been initialized (except `el`, `childrenEl` and `events`). |
 
 #### remove
 
