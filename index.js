@@ -41,7 +41,7 @@ class Figura {
 	}
 
 	/**
-	 * @param {String|Element} el
+	 * @param {(string|HTMLElement)} el
 	 */
 	setElement ( el = '' ) {
 		if ( typeof el === 'string' && el !== '' ) {
@@ -62,10 +62,10 @@ class Figura {
 	}
 
 	/**
-	 * @param  {Mixed} selector
-	 * @param  {Boolean} returnNodesArray
+	 * @param  {*} selector
+	 * @param  {boolean} returnNodesArray
 	 *
-	 * @return {Element|Element[]}
+	 * @return {(HTMLElement|HTMLElement[])}
 	 */
 	$ ( selector, returnNodesArray = false ) {
 		const nodes =  [].slice.call(scopedQuerySelectorAll(selector, this.$el));
@@ -139,7 +139,7 @@ class Figura {
 	}
 
 	/**
-	 * @param  {String} key
+	 * @param  {string} key
 	 * @param  {*} value
 	 *
 	 * @return {Figura}
@@ -217,9 +217,9 @@ class Figura {
 	}
 
 	/**
-	 * @param  {String} eventName
-	 * @param  {String} selector
-	 * @param  {Function} listener
+	 * @param  {string} eventName
+	 * @param  {string} selector
+	 * @param  {function} listener
 	 */
 	delegate ( eventName, selector, listener ) {
 
@@ -239,9 +239,9 @@ class Figura {
 	}
 
 	/**
-	 * @param  {String} eventName
-	 * @param  {String} selector
-	 * @param  {Function} listener
+	 * @param  {string} eventName
+	 * @param  {string} selector
+	 * @param  {function} listener
 	 */
 	undelegate ( eventName, selector, listener ) {
 
@@ -260,7 +260,7 @@ class Figura {
 	/**
 	 * Returns subview by supplied key
 	 *
-	 * @param  {String|Number} key
+	 * @param  {(string|number)} key
 	 *
 	 * @return {Figura}
 	 */
@@ -274,7 +274,7 @@ class Figura {
 	 * or when view.removeSubviews is called
 	 *
 	 * @param {Figura} view
-	 * @param {String|Number} key
+	 * @param {(string|number)} key
 	 *
 	 * @return {Figura}
 	 */
@@ -315,7 +315,7 @@ class Figura {
 	/**
 	 * Get subview placeholder
 	 *
-	 * @return {String}
+	 * @return {string}
 	 */
 	getRenderPlaceholder () {
 		return `<div data-view-uid="${this.uid}"></div>`;
@@ -324,7 +324,7 @@ class Figura {
 	/**
 	 * Replace subview placeholder with its real content
 	 *
-	 * @param  {String|Number} key
+	 * @param  {(string|number)} key
 	 */
 	assignSubview ( key ) {
 		const view = this.getSubview(key);

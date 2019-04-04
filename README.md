@@ -131,7 +131,7 @@ Every property except `el`, `childrenEl` and `events` will be merged with `defau
 
 #### el
 
-Type: `String|Element`  
+Type: `(string|HTMLElement)`  
 Default: ``
 
 Element on which should view be created.
@@ -175,15 +175,15 @@ List of events, delegated to children elements.
 
 #### defaultProps
 
-Type: `Function`  
+Type: `function`  
 Default: `{}`
 
 Default values for props to ensure that `this.props` property has value if it hasn’t been passed when creating view instance.
 
 #### $(selector, returnAllNodes)
 
-Type: `Function`  
-Returns: `Element|Element[]`
+Type: `function`  
+Returns: `(HTMLElement|HTMLElement[])`
 
 Finds all descendants of `$el` filtered by CSS selector.
 
@@ -194,7 +194,7 @@ Finds all descendants of `$el` filtered by CSS selector.
 
 #### render(key, value)
 
-Type: `Function`
+Type: `function`
 Returns: `Figura`
 
 Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
@@ -206,13 +206,13 @@ Render view. Takes into account state modifications if you use state—every tim
 
 #### remove
 
-Type: `Function`
+Type: `function`
 
 Remove view, but not root DOM element—use [`removeElement`](#removeelement) for that.
 
 #### setElement(element)
 
-Type: `Function`
+Type: `function`
 
 Sets or re-sets current UI element.
 
@@ -222,13 +222,13 @@ Type: `String|Element`
 
 #### removeElement
 
-Type: `Function`
+Type: `function`
 
 Remove view DOM element.
 
 #### cacheChildrenEl(elements)
 
-Type: `Function`
+Type: `function`
 
 Caches children elements.
 
@@ -240,7 +240,7 @@ See [`childrenEl`](#childrenel).
 
 #### delegateEvents(events)
 
-Type: `Function`
+Type: `function`
 
 Delegates events.
 
@@ -252,37 +252,37 @@ See [`events`](#events).
 
 #### undelegateEvents
 
-Type: `Function`
+Type: `function`
 
 Undelegates events.
 
 #### delegate(eventName, selector, listener)
 
-Type: `Function`
+Type: `function`
 
 Delegate single event.
 
 ##### eventName
 
-Type: `String`
+Type: `string`
 
 ##### selector
 
-Type: `String`
+Type: `string`
 
 ##### listener
 
-Type: `Function`
+Type: `function`
 
 #### undelegate(eventName, selector, listener)
 
-Type: `Function`
+Type: `function`
 
 Undelegate single event. For argument definition, see [`delegate`](#delegateeventname-selector-listener).
 
 #### setState(data)
 
-Type: `Function`
+Type: `function`
 
 Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
 
@@ -298,7 +298,7 @@ Subview to add to current view.
 
 ##### key
 
-Type: `String|Number`
+Type: `(string|number)`
 
 Subview key so it can be easily identified in subview collection. If undefined, 
 view’s `uid` property will be used.
@@ -309,7 +309,7 @@ Gets subview referenced by key.
 
 ##### key
 
-Type: `String|Number`
+Type: `(string|number)`
 
 Key which is used to reference subview.
 
@@ -329,7 +329,7 @@ inside subview `render` method.
 
 ##### key
 
-Type: `String|Number`
+Type: `(string|number)`
 
 Key which is used to reference subview.
 
