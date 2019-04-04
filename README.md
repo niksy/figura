@@ -89,12 +89,12 @@ class Shelby extends Figura {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	render ( key, state, props ) {
+	render ( key, value, state, props ) {
 		if ( typeof key === 'undefined' ) {
 			this.$el.innerHTML = `Initial content is ${props.text}.`; // Initial content is shelby.
 		}
 		if ( key === 'romeo' ) {
-			this.$el.innerHTML = `Value is ${state.romeo}.`; // Value is 42.
+			this.$el.innerHTML = `Value is ${value}.`; // Value is 42.
 		}
 		return this;
 	}
@@ -200,32 +200,19 @@ Default: `false`
 
 Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned.
 
-#### render(key, state, props)
+#### render(key, value, state, props)
 
 Type: `Function`
 Returns: `Figura`
 
 Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state.
 
-##### key
-
-Type: 'String'
-
-Current state key that should be handled in `render`.
-
-##### state
-
-Type: 'Object'  
-Default: `{}`
-
-Current state.
-
-##### props
-
-Type: 'Object'  
-Default: `{}`
-
-Props with which this view has been initialized (except `el`, `childrenEl` and `events`).
+| Property | Type | Description |
+| --- | --- | --- |
+| `key` | `string` | Current state key that should be handled in `render`. |
+| `value` | `*` | Value of current state key that should be handled in `render`. |
+| `state` | `Object` | Current state. |
+| `props` | `Object` | Props with which this view has been initialized (except `el`, `childrenEl` and `events`). |
 
 #### remove
 

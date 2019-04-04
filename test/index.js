@@ -39,12 +39,29 @@ describe('Methods', function () {
 
 	});
 
-	describe('Figura#render', function () {
+	describe.only('Figura#render', function () {
 
 		it('should return view instance', function () {
 			const shelby = new Fn();
 			assert.equal(shelby.render() instanceof Fn, true);
 			shelby.remove();
+		});
+
+		it('should be called with proper arguments', function () {
+
+			const shelby = new Fn({
+				nala: 'rocky'
+			});
+			const spy = sinon.spy();
+
+			shelby.render = spy;
+			shelby.setState({
+				buster: 'cash'
+			});
+			assert.equal(spy.calledWith('buster', 'cash', { buster: 'cash' }, { nala: 'rocky' }), true);
+
+			shelby.remove();
+
 		});
 
 	});
