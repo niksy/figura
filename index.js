@@ -69,8 +69,13 @@ class Figura {
 	 */
 	$ ( selector, returnNodesArray = false ) {
 		const nodes =  [].slice.call(scopedQuerySelectorAll(selector, this.$el));
-		if ( !returnNodesArray && nodes.length === 1 ) {
-			return nodes[0];
+		if ( !returnNodesArray ) {
+			if ( nodes.length === 0 ) {
+				return null;
+			}
+			if ( nodes.length === 1 ) {
+				return nodes[0];
+			}
 		}
 		return nodes;
 	}

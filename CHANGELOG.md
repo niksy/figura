@@ -2,6 +2,10 @@
 
 ## [Unreleased][]
 
+### Fixed
+
+- Caching non-existent elements should return `null` to align with [`Document.querySelector`](https://developer.mozilla.org/en-US/docs/Web/API/Document/querySelector#Return_value) specification.
+
 ## [6.0.0][] - 2019-04-04
 
 ### Breaking

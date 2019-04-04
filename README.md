@@ -190,7 +190,7 @@ Finds all descendants of `$el` filtered by CSS selector.
 | Property | Type | Default | Description |
 | --- | --- | --- | --- |
 | `selector` | `string` | N/A | Standard CSS selector. |
-| `returnAllNodes` | `boolean` | `false` | Always return array of elements. By default, if result contains only one element, only that element is returned, otherwise array of elements is returned. |
+| `returnAllNodes` | `boolean` | `false` | Always return array of elements. By default, if result contains only one element only that element is returned, if result doesn’t contain any element `null` is returned, otherwise array of elements is returned. |
 
 #### render(key, value)
 

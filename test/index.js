@@ -134,13 +134,15 @@ describe('Methods', function () {
 				childrenEl: {
 					sasha: '#sasha',
 					lilly: '.lilly',
-					'honey[]': '.honey'
+					'honey[]': '.honey',
+					'noElement': '.noElement'
 				}
 			});
 
 			assert.equal(shelby.$sasha, document.querySelector('#sasha'));
 			assert.equal(shelby.$lilly, document.querySelector('.lilly'));
 			assert.equal(shelby.$honey[0], document.querySelector('.honey'));
+			assert.equal(shelby.$noElement, null);
 
 			shelby.remove();
 
