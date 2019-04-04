@@ -2,6 +2,11 @@
 
 ## [Unreleased][]
 
+### Breaking
+
+- `state` and `props` arguments in `render` method have been removed in favor of using `this.state` and `this.props` directly
+- Current state key value is now second argument in `render` method, this caters to most common use case of using `render` method
+
 ## [5.2.0][] - 2019-04-03
 
 ### Changed
