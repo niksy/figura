@@ -390,6 +390,15 @@ this.setState({
 });
 ```
 
+**Communicating with parent component from child component**
+
+There are a lot of ways you can achieve this:
+
+-   Passing parent component instance to child component instance as prop
+-   Using event emmiter and publish/subscribe pattern
+-   Passing callback from parent component to child component as prop
+    (recommended, [try the example](https://codesandbox.io/s/nwvm2n15p0))
+
 ## Test
 
 For local automated tests, run `npm run test:automated:local`.

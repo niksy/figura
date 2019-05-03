@@ -5,6 +5,7 @@
 -   Add support for managing side effects
 -   Make subviews, delegated events and side effects storage "private"
     properties
+-   Document parent/child communication
 
 ## [6.0.1][] - 2019-04-04
 
