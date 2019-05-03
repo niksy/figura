@@ -1,18 +1,19 @@
 # figura
 
-[![Build Status][ci-img]][ci] [![BrowserStack Status][browserstack-img]][browserstack]
+[![Build Status][ci-img]][ci]
+[![BrowserStack Status][browserstack-img]][browserstack]
 
 View component for markup you already have.
 
 Features:
 
-* Basic state and props setting and implicit rendering
-* Subview managment: adding, getting and removing
+-   Basic state and props setting and implicit rendering
+-   Subview managment: adding, getting and removing
 
 Inspired by:
 
-* Event handling from [Backbone.View][backbone-view]
-* State and props management from [React][react] and [Preact][preact]
+-   Event handling from [Backbone.View][backbone-view]
+-   State and props management from [React][react] and [Preact][preact]
 
 **[Try it now!](https://codesandbox.io/s/64v426r9nw?expanddevtools=1&fontsize=14)**
 
@@ -38,25 +39,25 @@ npm install figura --save
 import Figura from 'figura';
 
 class Shelby extends Figura {
-	static el = '#shelby'
+	static el = '#shelby';
 	static childrenEl = {
 		sasha: '#sasha'
-	}
+	};
 	static events = {
 		'click .lilly': 'clickMethod'
-	}
-	clickMethod () {
+	};
+	clickMethod() {
 		// .lilly clicked!
 	}
 }
 
 class Sasha extends Shelby {
-	static el = '#sasha'
+	static el = '#sasha';
 	static childrenEl = {
 		...Shelby.childrenEl,
 		honey: '.honey'
-	}
-	clickMethod () {
+	};
+	clickMethod() {
 		// .lilly clicked, with overriden method on `Sasha`.
 	}
 }
@@ -69,17 +70,18 @@ const roxie = new Sasha({
 });
 ```
 
-Using state and props. All render specifics can be contained inside `render` method.
+Using state and props. All render specifics can be contained inside `render`
+method.
 
 ```js
 import Figura from 'figura';
 
 class Shelby extends Figura {
-	static el = '#shelby'
+	static el = '#shelby';
 	static defaultProps = {
 		text: 'shelby'
-	}
-	constructor ( props ) {
+	};
+	constructor(props) {
 		super(props);
 		this.render(); // Initial render only with props
 		this.setState({
@@ -89,11 +91,11 @@ class Shelby extends Figura {
 		const state = this.state;
 		state.jackie; // => 42 as number
 	}
-	render ( key, value ) {
-		if ( typeof key === 'undefined' ) {
+	render(key, value) {
+		if (typeof key === 'undefined') {
 			this.$el.innerHTML = `Initial content is ${this.props.text}.`; // Initial content is shelby.
 		}
-		if ( key === 'romeo' ) {
+		if (key === 'romeo') {
 			this.$el.innerHTML = `Value is ${value}.`; // Value is 42.
 		}
 		return this;
@@ -107,17 +109,19 @@ Render placeholder and view assign usage.
 import Figura from 'figura';
 
 class Shelby extends Figura {
-	static el = '#shelby'
-	template () {
+	static el = '#shelby';
+	template() {
 		// Template function result
 	}
-	constructor ( props ) {
+	constructor(props) {
 		super(props);
 		this.addSubview(new Figura(), 'customKey');
 	}
-	render () {
+	render() {
 		this.$el.innerHTML = this.template({
-			customKeyComponent: this.getSubview('customKey').getRenderPlaceholder()
+			customKeyComponent: this.getSubview(
+				'customKey'
+			).getRenderPlaceholder()
 		});
 		this.assignSubview('customKey');
 		return this;
@@ -127,7 +131,8 @@ class Shelby extends Figura {
 
 ## API
 
-Every property except `el`, `childrenEl` and `events` will be merged with `defaultProps` and added to `this.props`.
+Every property except `el`, `childrenEl` and `events` will be merged with
+`defaultProps` and added to `this.props`.
 
 #### el
 
@@ -143,9 +148,12 @@ Default: `{}`
 
 List of children elements, mapped to DOM nodes based on CSS selector.
 
-To handle common use case of selecting only one element, if result contains only one element, only that element is returned, otherwise array of elements is returned.
+To handle common use case of selecting only one element, if result contains only
+one element, only that element is returned, otherwise array of elements is
+returned.
 
-If you want to return array of elements regardless of resulting count, append `[]` to list key.
+If you want to return array of elements regardless of resulting count, append
+`[]` to list key.
 
 ```js
 {
@@ -178,7 +186,8 @@ List of events, delegated to children elements.
 Type: `function`  
 Default: `{}`
 
-Default values for props to ensure that `this.props` property has value if it hasn’t been passed when creating view instance.
+Default values for props to ensure that `this.props` property has value if it
+hasn’t been passed when creating view instance.
 
 #### $(selector, returnAllNodes)
 
@@ -187,9 +196,9 @@ Returns: `(HTMLElement|HTMLElement[])`
 
 Finds all descendants of `$el` filtered by CSS selector.
 
-| Property | Type | Default | Description |
-| --- | --- | --- | --- |
-| `selector` | `string` | N/A | Standard CSS selector. |
+| Property         | Type      | Default | Description                                                                                                                                                                                                        |
+| ---------------- | --------- | ------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `selector`       | `string`  | N/A     | Standard CSS selector.                                                                                                                                                                                             |
 | `returnAllNodes` | `boolean` | `false` | Always return array of elements. By default, if result contains only one element only that element is returned, if result doesn’t contain any element `null` is returned, otherwise array of elements is returned. |
 
 #### render(key, value)
@@ -197,18 +206,21 @@ Finds all descendants of `$el` filtered by CSS selector.
 Type: `function`  
 Returns: `Figura`
 
-Render view. Takes into account state modifications if you use state—every time state is modified `render` is called with key which is changed and current state. In this instance, state is combination of previous and new state.
+Render view. Takes into account state modifications if you use state—every time
+state is modified `render` is called with key which is changed and current
+state. In this instance, state is combination of previous and new state.
 
-| Property | Type | Description |
-| --- | --- | --- |
-| `key` | `string` | Current state key that should be handled in `render`. |
-| `value` | `*` | Value of current state key that should be handled in `render`. |
+| Property | Type     | Description                                                    |
+| -------- | -------- | -------------------------------------------------------------- |
+| `key`    | `string` | Current state key that should be handled in `render`.          |
+| `value`  | `*`      | Value of current state key that should be handled in `render`. |
 
 #### remove
 
 Type: `function`
 
-Remove view, but not root DOM element—use [`removeElement`](#removeelement) for that.
+Remove view, but not root DOM element—use [`removeElement`](#removeelement) for
+that.
 
 #### setElement(element)
 
@@ -278,13 +290,16 @@ Type: `function`
 
 Type: `function`
 
-Undelegate single event. For argument definition, see [`delegate`](#delegateeventname-selector-listener).
+Undelegate single event. For argument definition, see
+[`delegate`](#delegateeventname-selector-listener).
 
 #### setState(data)
 
 Type: `function`
 
-Set state for instance. Runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key), run multiple `setState` calls with different keys.
+Set state for instance. Runs synchronously, so if one piece of state depends on
+other (e.g. one key depends on another key), run multiple `setState` calls with
+different keys.
 
 #### addSubview(view, key)
 
@@ -300,7 +315,7 @@ Subview to add to current view.
 
 Type: `(string|number)`
 
-Subview key so it can be easily identified in subview collection. If undefined, 
+Subview key so it can be easily identified in subview collection. If undefined,
 view’s `uid` property will be used.
 
 #### getSubview(key)
@@ -324,8 +339,8 @@ Returns view’s placeholder element which will be used in resolving for
 
 #### assignSubview(key)
 
-Replaces view’s render placeholder with real content. Real content should be rendered
-inside subview `render` method.
+Replaces view’s render placeholder with real content. Real content should be
+rendered inside subview `render` method.
 
 ##### key
 
@@ -335,11 +350,15 @@ Key which is used to reference subview.
 
 ## FAQ
 
-**Running `setState` on multiple keys which depend on each other in that call doesn’t render changes properly.**
+**Running `setState` on multiple keys which depend on each other in that call
+doesn’t render changes properly.**
 
-`setState` runs synchronously, so if one piece of state depends on other (e.g. one key depends on another key in current `setState` call), run multiple `setState` calls.
+`setState` runs synchronously, so if one piece of state depends on other (e.g.
+one key depends on another key in current `setState` call), run multiple
+`setState` calls.
 
-For example, if `romeo` and `layla` values depend on each other in current `setState` call:
+For example, if `romeo` and `layla` values depend on each other in current
+`setState` call:
 
 ```js
 // Instead of this
@@ -363,16 +382,20 @@ For local automated tests, run `npm run test:automated:local`.
 
 ## Browser support
 
-Tested in IE9+ and all modern browsers. For [IE <= 10 support](https://babeljs.io/docs/en/caveats/#classes-10-and-below), you will have to [polyfill `__proto__`](https://github.com/webcarrot/proto-polyfill) if you use class extending.
+Tested in IE9+ and all modern browsers. For [IE <= 10
+support][babel-ie10-support], you will have to [polyfill
+`__proto__`][proto-polyfill] if you use class extending.
 
-For [static class properties](https://github.com/tc39/proposal-class-fields), you need to use [Babel plugin](https://babeljs.io/docs/en/babel-plugin-proposal-class-properties), otherwise set properties explictly on class.
+For [static class properties][proposal-class-fields], you need to use [Babel
+plugin][babel-plugin-proposal-class-properties], otherwise set properties
+explictly on class.
 
 ```js
 import Figura from 'figura';
 
 // With static class properties
 class Shelby extends Figura {
-	static el = ''
+	static el = '';
 }
 
 // Without static class properties
@@ -384,10 +407,18 @@ Shelby.el = '';
 
 MIT © [Ivan Nikolić](http://ivannikolic.com)
 
+<!-- prettier-ignore-start -->
+
 [ci]: https://travis-ci.com/niksy/figura
 [ci-img]: https://travis-ci.com/niksy/figura.svg?branch=master
 [backbone-view]: https://backbonejs.org/#View
 [react]: https://reactjs.org/
 [preact]: https://preactjs.com/
+[babel-ie10-support]: https://babeljs.io/docs/en/caveats/#classes-10-and-below
+[proto-polyfill]: https://github.com/webcarrot/proto-polyfill
+[proposal-class-fields]: https://github.com/tc39/proposal-class-fields
+[babel-plugin-proposal-class-properties]: https://babeljs.io/docs/en/babel-plugin-proposal-class-properties
 [browserstack]: https://www.browserstack.com/
 [browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237
+
+<!-- prettier-ignore-end -->

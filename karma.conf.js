@@ -1,15 +1,29 @@
 'use strict';
 
 const path = require('path');
+const fs = require('fs');
+const resolve = require('rollup-plugin-node-resolve');
+const commonjs = require('rollup-plugin-commonjs');
+const nodeBuiltins = require('rollup-plugin-node-builtins');
+const globals = require('rollup-plugin-node-globals');
+const babel = require('rollup-plugin-babel');
+const istanbul = require('rollup-plugin-istanbul');
+const polyfill = require('rollup-plugin-polyfill');
+const rollupConfig = require('./rollup.config');
+
+const babelrc = JSON.parse(
+	fs.readFileSync(path.resolve(__dirname, '.babelrc'), 'utf8')
+);
 
 let config;
 
-const local = typeof process.env.CI === 'undefined' || process.env.CI === 'false';
+const local =
+	typeof process.env.CI === 'undefined' || process.env.CI === 'false';
 const port = 9001;
 
-if ( local ) {
+if (local) {
 	config = {
-		browsers: ['Chrome'],
+		browsers: ['Chrome']
 	};
 } else {
 	config = {
@@ -76,75 +90,98 @@ if ( local ) {
 				name: 'Android'
 			}
 		},
-		browsers: ['BS-Chrome', 'BS-Firefox', 'BS-IE9', 'BS-iOS 10.0', 'BS-Android 4.4']
+		browsers: [
+			'BS-Chrome',
+			'BS-Firefox',
+			'BS-IE9',
+			'BS-iOS 10.0',
+			'BS-Android 4.4'
+		]
 	};
 }
 
-module.exports = function ( baseConfig ) {
-
-	baseConfig.set(Object.assign({
-		basePath: '',
-		frameworks: ['mocha', 'fixture'],
-		files: [
-			'test/**/*.html',
-			'test/**/.webpack.js'
-		],
-		exclude: [],
-		preprocessors: {
-			'test/**/*.html': ['html2js'],
-			'test/**/.webpack.js': ['webpack', 'sourcemap']
-		},
-		reporters: ['mocha', 'coverage-istanbul'],
-		port: port,
-		colors: true,
-		logLevel: baseConfig.LOG_INFO,
-		autoWatch: false,
-		client: {
-			captureConsole: true
-		},
-		browserConsoleLogOptions: {
-			level: 'log',
-			format: '%b %T: %m',
-			terminal: true
-		},
-		webpack: {
-			mode: 'none',
-			devtool: 'cheap-module-inline-source-map',
-			module: {
-				rules: [
-					{
-						test: /\.js$/,
-						exclude: /node_modules/,
-						use: [{
-							loader: 'babel-loader'
-						}]
-					},
-					{
-						test: /\.js$/,
-						exclude: /(node_modules|test)/,
-						enforce: 'post',
-						use: [{
-							loader: 'istanbul-instrumenter-loader',
-							options: {
-								esModules: true
-							}
-						}]
+module.exports = function(baseConfig) {
+	baseConfig.set(
+		Object.assign(
+			{
+				basePath: '',
+				frameworks: ['mocha', 'fixture'],
+				files: [
+					'test/**/*.html',
+					{ pattern: 'test/**/*.js', watched: false }
+				],
+				exclude: [],
+				preprocessors: {
+					'test/**/*.html': ['html2js'],
+					'test/**/*.js': ['rollup', 'sourcemap']
+				},
+				reporters: ['mocha', 'coverage-istanbul'],
+				port: port,
+				colors: true,
+				logLevel: baseConfig.LOG_INFO,
+				autoWatch: false,
+				client: {
+					captureConsole: true
+				},
+				browserConsoleLogOptions: {
+					level: 'log',
+					format: '%b %T: %m',
+					terminal: true
+				},
+				rollupPreprocessor: {
+					plugins: [
+						polyfill(path.resolve(__dirname, 'test'), [
+							'proto-polyfill'
+						]),
+						nodeBuiltins(),
+						babel({
+							exclude: 'node_modules/**',
+							runtimeHelpers: true
+						}),
+						resolve({
+							preferBuiltins: true
+						}),
+						commonjs(),
+						babel(
+							Object.assign(
+								{
+									include:
+										'node_modules/{has-flag,supports-color}/**',
+									runtimeHelpers: true,
+									babelrc: false
+								},
+								babelrc
+							)
+						),
+						globals(),
+						...rollupConfig.plugins.filter(
+							({ name }) => !['babel'].includes(name)
+						),
+						istanbul({
+							exclude: ['test/**/*.js', 'node_modules/**/*']
+						})
+					],
+					output: {
+						format: 'iife',
+						name: 'figura',
+						sourcemap: 'inline',
+						intro: 'window.TYPED_ARRAY_SUPPORT = false;' // IE9
 					}
-				]
-			}
-		},
-		coverageIstanbulReporter: {
-			dir: path.join(__dirname, 'coverage/%browser%'),
-			fixWebpackSourcePaths: true,
-			reports: ['html', 'text'],
-			thresholds: {
-				global: {
-					statements: 80
-				}
-			}
-		},
-		singleRun: true,
-		concurrency: Infinity
-	}, config));
-
+				},
+				coverageIstanbulReporter: {
+					dir: path.join(__dirname, 'coverage/%browser%'),
+					fixWebpackSourcePaths: true,
+					reports: ['html', 'text'],
+					thresholds: {
+						global: {
+							statements: 80
+						}
+					}
+				},
+				singleRun: true,
+				concurrency: Infinity
+			},
+			config
+		)
+	);
 };
