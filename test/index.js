@@ -293,7 +293,7 @@ describe('Subviews', function() {
 		shelby.addSubview(new Fn());
 		shelby.addSubview(new Fn(), 'customKey');
 
-		assert.equal(Object.keys(shelby.subviews).length, 3);
+		assert.equal(Object.keys(shelby._subviews).length, 3);
 		assert.equal(shelby.getSubview('customKey') instanceof Fn, true);
 
 		shelby.remove();
@@ -305,10 +305,10 @@ describe('Subviews', function() {
 		});
 
 		shelby.addSubview(new Fn());
-		assert.equal(Object.keys(shelby.subviews).length, 1);
+		assert.equal(Object.keys(shelby._subviews).length, 1);
 
 		shelby.removeSubviews();
-		assert.equal(Object.keys(shelby.subviews).length, 0);
+		assert.equal(Object.keys(shelby._subviews).length, 0);
 
 		shelby.remove();
 	});
@@ -319,14 +319,14 @@ describe('Subviews', function() {
 		});
 
 		shelby.addSubview(new Fn());
-		assert.equal(Object.keys(shelby.subviews).length, 1);
+		assert.equal(Object.keys(shelby._subviews).length, 1);
 
 		shelby.removeSubviews();
 		shelby.addSubview(new Fn());
 		shelby.addSubview(new Fn());
-		assert.equal(Object.keys(shelby.subviews).length, 2);
+		assert.equal(Object.keys(shelby._subviews).length, 2);
 
-		assert.equal(Object.keys(shelby.subviews).length, 2);
+		assert.equal(Object.keys(shelby._subviews).length, 2);
 
 		shelby.remove();
 	});
@@ -388,7 +388,7 @@ describe('Subviews', function() {
 		});
 
 		shelby.remove();
-		assert.equal(shelby.subviews, undefined); // eslint-disable-line no-undefined
+		assert.equal(shelby._subviews, undefined); // eslint-disable-line no-undefined
 	});
 
 	it('should throw when trying to assign subview which is not proper instance', function() {

@@ -20,11 +20,11 @@ class Figura {
 
 	constructor(props = {}) {
 		this.uid = instanceCount++;
-		this.subviews = {};
-		this.delegatedEvents = {};
+		this._subviews = {};
+		this._delegatedEvents = {};
 		this.state = {};
 		this.props = {};
-		this.sideEffects = manageSideEffects();
+		this._sideEffects = manageSideEffects();
 
 		const { el, events, childrenEl } = this._getResolvedViewProps(props);
 
@@ -150,11 +150,15 @@ class Figura {
 	remove() {
 		this.undelegateEvents();
 
-		this.removeSubviews();
-		delete this.subviews;
+		if (typeof this._subviews !== 'undefined') {
+			this.removeSubviews();
+			delete this._subviews;
+		}
 
-		this.sideEffects.removeAll();
-		delete this.sideEffects;
+		if (typeof this._sideEffects !== 'undefined') {
+			this._sideEffects.removeAll();
+			delete this._sideEffects;
+		}
 
 		// Delete children element references
 		for (let key in this) {
@@ -211,7 +215,7 @@ class Figura {
 		if (!this.$el) {
 			return;
 		}
-		Object.entries(this.delegatedEvents).forEach(
+		Object.entries(this._delegatedEvents).forEach(
 			([eventSelector, method]) => {
 				const [, eventName, selector] = eventSelector.match(
 					delegateEventSplitter
@@ -228,12 +232,12 @@ class Figura {
 	 */
 	delegate(eventName, selector, listener) {
 		const handlerKey = `${eventName} ${selector}`;
-		const handler = this.delegatedEvents[handlerKey];
+		const handler = this._delegatedEvents[handlerKey];
 		const originalEvent = listener;
 		const delegatedEvent = delegate(selector, listener);
 
 		if (typeof handler === 'undefined') {
-			this.delegatedEvents[handlerKey] = {
+			this._delegatedEvents[handlerKey] = {
 				originalEvent: originalEvent,
 				delegatedEvent: delegatedEvent
 			};
@@ -248,12 +252,12 @@ class Figura {
 	 */
 	undelegate(eventName, selector, listener) {
 		const handlerKey = `${eventName} ${selector}`;
-		const handler = this.delegatedEvents[handlerKey];
+		const handler = this._delegatedEvents[handlerKey];
 		const originalEvent = handler.originalEvent;
 		const delegatedEvent = handler.delegatedEvent;
 
 		if (originalEvent === listener || delegatedEvent === listener) {
-			delete this.delegatedEvents[handlerKey];
+			delete this._delegatedEvents[handlerKey];
 			this.$el.removeEventListener(eventName, delegatedEvent, false);
 		}
 	}
@@ -262,14 +266,14 @@ class Figura {
 	 * @param {...*} args
 	 */
 	addSideEffect(...args) {
-		this.sideEffects.add(...args);
+		this._sideEffects.add(...args);
 	}
 
 	/**
 	 * @param  {...*} args
 	 */
 	removeSideEffect(...args) {
-		this.sideEffects.remove(...args);
+		this._sideEffects.remove(...args);
 	}
 
 	/**
@@ -280,7 +284,7 @@ class Figura {
 	 * @returns {Figura}
 	 */
 	getSubview(key) {
-		return this.subviews[key];
+		return this._subviews[key];
 	}
 
 	/**
@@ -300,7 +304,7 @@ class Figura {
 		if (typeof key === 'undefined') {
 			key = view.uid;
 		}
-		this.subviews[key] = view;
+		this._subviews[key] = view;
 		return view;
 	}
 
@@ -312,13 +316,13 @@ class Figura {
 	 * @returns {Figura}
 	 */
 	removeSubviews() {
-		for (let key in this.subviews) {
-			if (hasOwnProp.call(this.subviews, key)) {
-				const subview = this.subviews[key];
+		for (let key in this._subviews) {
+			if (hasOwnProp.call(this._subviews, key)) {
+				const subview = this._subviews[key];
 				if (typeof subview.remove === 'function') {
 					subview.remove();
 				}
-				delete this.subviews[key];
+				delete this._subviews[key];
 			}
 		}
 
