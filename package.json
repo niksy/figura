@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "delegate-event-listener": "^1.0.0",
+    "manage-side-effects": "^1.1.0",
     "scoped-queryselectorall": "1.0.0"
   },
   "devDependencies": {

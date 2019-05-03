@@ -189,7 +189,11 @@ Default: `{}`
 Default values for props to ensure that `this.props` property has value if it
 hasn’t been passed when creating view instance.
 
+<!-- prettier-ignore-start -->
+
 #### $(selector, returnAllNodes)
+
+<!-- prettier-ignore-end -->
 
 Type: `function`  
 Returns: `(HTMLElement|HTMLElement[])`
@@ -348,6 +352,16 @@ Type: `(string|number)`
 
 Key which is used to reference subview.
 
+#### addSideEffect(...args)
+
+Add side effect. See [`manageSideEffects.add`][manage-side-effects-add]
+documentation.
+
+#### removeSideEffect(...args)
+
+Remove side effect. See [`manageSideEffects.remove`][manage-side-effects-remove]
+documentation. Every registered side effect is removed on `remove` method call.
+
 ## FAQ
 
 **Running `setState` on multiple keys which depend on each other in that call
@@ -418,6 +432,8 @@ MIT © [Ivan Nikolić](http://ivannikolic.com)
 [proto-polyfill]: https://github.com/webcarrot/proto-polyfill
 [proposal-class-fields]: https://github.com/tc39/proposal-class-fields
 [babel-plugin-proposal-class-properties]: https://babeljs.io/docs/en/babel-plugin-proposal-class-properties
+[manage-side-effects-add]: https://github.com/niksy/manage-side-effects#instanceaddsideeffect-id
+[manage-side-effects-remove]: https://github.com/niksy/manage-side-effects#instanceremoveid
 [browserstack]: https://www.browserstack.com/
 [browserstack-img]: https://www.browserstack.com/automate/badge.svg?badge_key=Q0ZXeVQzQU5pdDJLOUVHTWNtTWdhM3pHTGdiZ0lZMzU5VDhpOWhpYmNyRT0tLWtWVStVZUJmNXV4TUlucnJ4MWZXTVE9PQ==--000033e0b3d995123228f4139bca45946653f237
 

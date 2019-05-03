@@ -575,4 +575,41 @@ describe('Integration', function() {
 
 		shelby.remove();
 	});
+
+	it('should handle side effects', function() {
+		const spyOne = sinon.spy();
+		const spyTwo = sinon.spy();
+
+		const fn = new Fn({
+			el: '#shelby',
+			childrenEl: {
+				'sasha': '#sasha'
+			}
+		});
+
+		const $sasha = fn.$sasha;
+
+		fn.addSideEffect(() => {
+			$sasha.addEventListener('click', spyOne);
+			return () => {
+				$sasha.removeEventListener('click', spyOne);
+			};
+		});
+
+		fn.addSideEffect(() => {
+			$sasha.addEventListener('click', spyTwo);
+			return () => {
+				$sasha.removeEventListener('click', spyTwo);
+			};
+		}, 'sasha');
+
+		simulant.fire($sasha, 'click');
+		fn.removeSideEffect('sasha');
+		simulant.fire($sasha, 'click');
+		fn.remove();
+		simulant.fire($sasha, 'click');
+
+		assert.equal(spyOne.callCount, 2);
+		assert.equal(spyTwo.callCount, 1);
+	});
 });

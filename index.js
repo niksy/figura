@@ -1,4 +1,5 @@
 import delegate from 'delegate-event-listener';
+import manageSideEffects from 'manage-side-effects';
 import scopedQuerySelectorAll from 'scoped-queryselectorall';
 
 const delegateEventSplitter = /^(\S+)\s*(.*)$/;
@@ -23,6 +24,7 @@ class Figura {
 		this.delegatedEvents = {};
 		this.state = {};
 		this.props = {};
+		this.sideEffects = manageSideEffects();
 
 		const { el, events, childrenEl } = this._getResolvedViewProps(props);
 
@@ -151,6 +153,9 @@ class Figura {
 		this.removeSubviews();
 		delete this.subviews;
 
+		this.sideEffects.removeAll();
+		delete this.sideEffects;
+
 		// Delete children element references
 		for (let key in this) {
 			if (hasOwnProp.call(this, key)) {
@@ -251,6 +256,20 @@ class Figura {
 			delete this.delegatedEvents[handlerKey];
 			this.$el.removeEventListener(eventName, delegatedEvent, false);
 		}
+	}
+
+	/**
+	 * @param {...*} args
+	 */
+	addSideEffect(...args) {
+		this.sideEffects.add(...args);
+	}
+
+	/**
+	 * @param  {...*} args
+	 */
+	removeSideEffect(...args) {
+		this.sideEffects.remove(...args);
 	}
 
 	/**

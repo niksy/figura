@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+-   Add support for managing side effects
+
 ## [6.0.1][] - 2019-04-04
 
 ### Fixed

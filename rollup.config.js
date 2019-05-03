@@ -27,5 +27,5 @@ module.exports = {
 		}),
 		commonjs()
 	],
-	external: ['delegate-event-listener']
+	external: ['delegate-event-listener', 'manage-side-effects']
 };
