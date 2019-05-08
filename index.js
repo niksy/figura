@@ -138,39 +138,6 @@ class Figura {
 	}
 
 	/**
-	 * @param  {string} key
-	 * @param  {*} value
-	 *
-	 * @returns {Figura}
-	 */
-	render(key, value) {
-		return this;
-	}
-
-	remove() {
-		this.undelegateEvents();
-
-		if (typeof this._subviews !== 'undefined') {
-			this.removeSubviews();
-			delete this._subviews;
-		}
-
-		if (typeof this._sideEffects !== 'undefined') {
-			this._sideEffects.removeAll();
-			delete this._sideEffects;
-		}
-
-		// Delete children element references
-		for (let key in this) {
-			if (hasOwnProp.call(this, key)) {
-				if (/^\$/.test(key)) {
-					delete this[key];
-				}
-			}
-		}
-	}
-
-	/**
 	 * @param  {Object} childrenEl
 	 */
 	cacheChildrenEl(childrenEl = {}) {
@@ -349,6 +316,39 @@ class Figura {
 		const replacementNode = view.render().$el;
 		if (node) {
 			node.parentNode.replaceChild(replacementNode, node);
+		}
+	}
+
+	/**
+	 * @param  {string} key
+	 * @param  {*} value
+	 *
+	 * @returns {Figura}
+	 */
+	render(key, value) {
+		return this;
+	}
+
+	remove() {
+		this.undelegateEvents();
+
+		if (typeof this._subviews !== 'undefined') {
+			this.removeSubviews();
+			delete this._subviews;
+		}
+
+		if (typeof this._sideEffects !== 'undefined') {
+			this._sideEffects.removeAll();
+			delete this._sideEffects;
+		}
+
+		// Delete children element references
+		for (let key in this) {
+			if (hasOwnProp.call(this, key)) {
+				if (/^\$/.test(key)) {
+					delete this[key];
+				}
+			}
 		}
 	}
 }
