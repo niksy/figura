@@ -174,6 +174,8 @@ There are certain considerations to take when using Figura’s event delegation:
 
 -   Since delegating `focus` and `blur` events is not natively possible, those
     events are mapped to `focusin` and `focusout` respectively
+-   If you don’t provide selector to which you want to delegate event, that
+    event will be attached to root element (i.e., `el` property value).
 
 ```js
 {
@@ -182,7 +184,8 @@ There are certain considerations to take when using Figura’s event delegation:
 	'mouseleave .lilly': 'method3', // Delegated mouseleave event to `.lilly` calling instance method `method3`
 	'mouseenter .rudy': ( e ) {  // Delegated mouseenter event to `.rudy` calling anonymous function
 		// Do something
-	}
+	},
+	'click': 'method4' // Attached to root element since there is no selector to delegate to
 }
 ```
 
@@ -282,6 +285,8 @@ Undelegates events.
 Type: `function`
 
 Delegate single event.
+
+If you provide empty string selector, event will be attached to root element.
 
 ##### eventName
 

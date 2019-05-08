@@ -6,6 +6,7 @@
 -   Make subviews, delegated events and side effects storage "private"
     properties
 -   Add support for delegated `focus` and `blur` events
+-   Attach listener on root element if selector for delegated event is empty
 -   Document parent/child communication
 
 ## [6.0.1][] - 2019-04-04

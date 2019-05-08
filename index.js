@@ -214,10 +214,11 @@ class Figura {
 	 * @param  {Function} listener
 	 */
 	delegate(eventName, selector, listener) {
-		const handlerKey = `${eventName} ${selector}`;
+		const handlerKey = `${eventName} ${selector}`.trim();
 		const handler = this._delegatedEvents[handlerKey];
 		const originalEvent = listener;
-		const delegatedEvent = delegate(selector, listener);
+		const delegatedEvent =
+			selector === '' ? listener : delegate(selector, listener);
 
 		if (typeof handler === 'undefined') {
 			this._delegatedEvents[handlerKey] = {
@@ -238,7 +239,7 @@ class Figura {
 	 * @param  {Function} listener
 	 */
 	undelegate(eventName, selector, listener) {
-		const handlerKey = `${eventName} ${selector}`;
+		const handlerKey = `${eventName} ${selector}`.trim();
 		const handler = this._delegatedEvents[handlerKey];
 		const originalEvent = handler.originalEvent;
 		const delegatedEvent = handler.delegatedEvent;

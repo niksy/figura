@@ -218,6 +218,25 @@ describe('Methods', function() {
 
 			shelby.remove();
 		});
+
+		it('should handle empty selector and attach event to root element', function() {
+			const spy = sinon.spy();
+			const shelby = new Fn({
+				el: '#shelby',
+				events: {
+					'click': spy
+				}
+			});
+			const $shelby = document.querySelector('#shelby');
+
+			simulant.fire($shelby, 'click');
+			simulant.fire($shelby, 'click');
+
+			assert.equal(spy.called, true);
+			assert.equal(spy.calledOnce, false);
+
+			shelby.remove();
+		});
 	});
 
 	describe('Figura#undelegateEvents', function() {
@@ -234,6 +253,26 @@ describe('Methods', function() {
 			shelby.undelegateEvents();
 			simulant.fire($sasha, 'click');
 			simulant.fire($sasha, 'click');
+
+			assert.equal(spy.called, false);
+			assert.equal(spy.calledOnce, false);
+
+			shelby.remove();
+		});
+
+		it('should handle empty selector and remove event from root element', function() {
+			const spy = sinon.spy();
+			const shelby = new Fn({
+				el: '#shelby',
+				events: {
+					'click': spy
+				}
+			});
+			const $shelby = document.querySelector('#shelby');
+
+			shelby.undelegateEvents();
+			simulant.fire($shelby, 'click');
+			simulant.fire($shelby, 'click');
 
 			assert.equal(spy.called, false);
 			assert.equal(spy.calledOnce, false);
