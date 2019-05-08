@@ -170,6 +170,11 @@ Default: `{}`
 
 List of events, delegated to children elements.
 
+There are certain considerations to take when using Figura’s event delegation:
+
+-   Since delegating `focus` and `blur` events is not natively possible, those
+    events are mapped to `focusin` and `focusout` respectively
+
 ```js
 {
 	'click .shelby': 'method1', // Delegated click event to `.shelby` calling instance method `method1`

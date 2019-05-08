@@ -9,6 +9,22 @@ let instanceCount = 0;
 
 const hasOwnProp = Object.prototype.hasOwnProperty;
 
+/**
+ * @param  {string} eventName
+ *
+ * @return {string}
+ */
+function resolveEventName(eventName) {
+	switch (eventName) {
+		case 'focus':
+			return 'focusin';
+		case 'blur':
+			return 'focusout';
+		default:
+			return eventName;
+	}
+}
+
 class Figura {
 	static el = '';
 
@@ -208,7 +224,11 @@ class Figura {
 				originalEvent: originalEvent,
 				delegatedEvent: delegatedEvent
 			};
-			this.$el.addEventListener(eventName, delegatedEvent, false);
+			this.$el.addEventListener(
+				resolveEventName(eventName),
+				delegatedEvent,
+				false
+			);
 		}
 	}
 
@@ -225,7 +245,11 @@ class Figura {
 
 		if (originalEvent === listener || delegatedEvent === listener) {
 			delete this._delegatedEvents[handlerKey];
-			this.$el.removeEventListener(eventName, delegatedEvent, false);
+			this.$el.removeEventListener(
+				resolveEventName(eventName),
+				delegatedEvent,
+				false
+			);
 		}
 	}
 

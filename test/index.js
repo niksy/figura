@@ -259,6 +259,24 @@ describe('Methods', function() {
 
 			shelby.remove();
 		});
+
+		it('should handle focus and blur events', function () {
+			const spy = sinon.spy();
+			const shelby = new Fn({
+				el: '#shelby'
+			});
+			const $hazel = document.querySelector('.hazel');
+
+			shelby.delegate('focus', '.hazel', spy);
+			shelby.delegate('blur', '.hazel', spy);
+			$hazel.focus();
+			$hazel.blur();
+
+			assert.equal(spy.called, true);
+			assert.equal(spy.callCount, 2);
+
+			shelby.remove();
+		});
 	});
 
 	describe('Figura#undelegate', function() {
@@ -277,6 +295,28 @@ describe('Methods', function() {
 
 			assert.equal(spy.called, true);
 			assert.equal(spy.calledOnce, true);
+
+			shelby.remove();
+		});
+
+		it('should handle focus and blur events', function () {
+			const spy = sinon.spy();
+			const shelby = new Fn({
+				el: '#shelby'
+			});
+			const $hazel = document.querySelector('.hazel');
+
+			shelby.delegate('focus', '.hazel', spy);
+			shelby.delegate('blur', '.hazel', spy);
+			$hazel.focus();
+			$hazel.blur();
+			shelby.undelegate('focus', '.hazel', spy);
+			shelby.undelegate('blur', '.hazel', spy);
+			$hazel.focus();
+			$hazel.blur();
+
+			assert.equal(spy.called, true);
+			assert.equal(spy.callCount, 2);
 
 			shelby.remove();
 		});
