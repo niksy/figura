@@ -2,6 +2,8 @@
 
 ## [Unreleased][]
 
+## [6.1.0][] - 2019-05-09
+
 -   Add support for managing side effects
 -   Make subviews, delegated events and side effects storage "private"
     properties
@@ -84,3 +86,7 @@
 [5.0.0]: https://github.com/niksy/figura/compare/v4.0.0...v5.0.0
 [4.0.0]: https://github.com/niksy/figura/compare/v3.0.0...v4.0.0
 [3.0.0]: https://github.com/niksy/figura/tree/v3.0.0
+
+
+[Unreleased]: https://github.com/niksy/figura/compare/v6.1.0...HEAD
+[6.1.0]: https://github.com/niksy/figura/tree/v6.1.0
