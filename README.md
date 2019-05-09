@@ -191,7 +191,7 @@ There are certain considerations to take when using Figura’s event delegation:
 
 #### defaultProps
 
-Type: `function`  
+Type: `Function`  
 Default: `{}`
 
 Default values for props to ensure that `this.props` property has value if it
@@ -203,7 +203,7 @@ hasn’t been passed when creating view instance.
 
 <!-- prettier-ignore-end -->
 
-Type: `function`  
+Type: `Function`  
 Returns: `(HTMLElement|HTMLElement[])`
 
 Finds all descendants of `$el` filtered by CSS selector.
@@ -215,7 +215,7 @@ Finds all descendants of `$el` filtered by CSS selector.
 
 #### render(key, value)
 
-Type: `function`  
+Type: `Function`  
 Returns: `Figura`
 
 Render view. Takes into account state modifications if you use state—every time
@@ -229,30 +229,30 @@ state. In this instance, state is combination of previous and new state.
 
 #### remove
 
-Type: `function`
+Type: `Function`
 
 Remove view, but not root DOM element—use [`removeElement`](#removeelement) for
 that.
 
 #### setElement(element)
 
-Type: `function`
+Type: `Function`
 
 Sets or re-sets current UI element.
 
 ##### element
 
-Type: `String|Element`
+Type: `(string|HTMLElement)`
 
 #### removeElement
 
-Type: `function`
+Type: `Function`
 
 Remove view DOM element.
 
 #### cacheChildrenEl(elements)
 
-Type: `function`
+Type: `Function`
 
 Caches children elements.
 
@@ -264,7 +264,7 @@ See [`childrenEl`](#childrenel).
 
 #### delegateEvents(events)
 
-Type: `function`
+Type: `Function`
 
 Delegates events.
 
@@ -276,13 +276,13 @@ See [`events`](#events).
 
 #### undelegateEvents
 
-Type: `function`
+Type: `Function`
 
 Undelegates events.
 
 #### delegate(eventName, selector, listener)
 
-Type: `function`
+Type: `Function`
 
 Delegate single event.
 
@@ -298,18 +298,18 @@ Type: `string`
 
 ##### listener
 
-Type: `function`
+Type: `Function`
 
 #### undelegate(eventName, selector, listener)
 
-Type: `function`
+Type: `Function`
 
 Undelegate single event. For argument definition, see
 [`delegate`](#delegateeventname-selector-listener).
 
 #### setState(data)
 
-Type: `function`
+Type: `Function`
 
 Set state for instance. Runs synchronously, so if one piece of state depends on
 other (e.g. one key depends on another key), run multiple `setState` calls with
